@@ -4,7 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const saltRounds = 12;
 
 const port = process.env.PORT || 3000;
@@ -77,12 +77,11 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-
 app.get('/collection', (req,res)=>{
     res.render('collection');
   });
 
-  app.get('/login', (req, res) => {
+app.get('/login', (req, res) => {
     res.render("login");
 });
 
