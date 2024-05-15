@@ -1,0 +1,53 @@
+<%- include("templates/header") %>
+    <div class="container p-0" style="height: 110vh; overflow-y: auto;">
+        <div class="p-4 mt-2">
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-light fs-6">Cancel</button>
+                <h3>Edit Request</h3>
+                <button type="button" class="btn btn-light fs-6">Update</button>
+            </div>
+        </div>
+        <div class="form-floating py-3">
+            <input name="title" type="title" class="form-control" placeholder="title">
+            <label for="floatingInput">Title</label>
+        </div>
+
+        <div class="form-floating py-3">
+            <input name="description" type="description" class="form-control" placeholder="description">
+            <label for="floatingInput">Description</label>
+        </div>
+
+        <div class="form-floating py-3">
+            <select class="form-select" id="visibility" required="">
+                <option selected>Global</option>
+                <option>Group 1</option>
+                <option>Group 2</option>
+                <!--Create a function that includes all the groups that user is in-->
+            </select>
+            <label for="visibility">Edit Visibility</label>
+            <div class="invalid-feedback">
+                Please select a valid visibility.
+            </div>
+        </div>
+
+        <div class="form-floating py-3">
+            <select class="form-select" id="status" required="">
+                <option selected>Available</option>
+                <option>Unavailable</option>
+                <!--Create a function that includes all the groups that user is in-->
+            </select>
+            <label for="status">Edit Status</label>
+            <div class="invalid-feedback">
+                Please select a valid status.
+            </div>
+        </div>
+
+        <div class="btn-lg">
+            <div class="row mx-auto mt-3">
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include("templates/footer") %>

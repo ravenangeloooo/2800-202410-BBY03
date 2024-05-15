@@ -84,6 +84,14 @@ app.get('/collection', (req,res)=>{
 app.get('/login', (req, res) => {
     res.render("login");
 });
+app.get('/editItem', (req, res) => {
+    res.render('editItem');
+});
+
+app.get('/editRequest', (req, res) => {
+    res.render('editRequest');
+});
+
 
 
 app.post('/loggingin', async (req, res) => {
