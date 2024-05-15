@@ -1,0 +1,22 @@
+{
+  "name": "2800-202410-bby03",
+  "version": "1.0.0",
+  "description": "Team Name: BBY-03\r Team Members:\r - Vanessa La\r - Baojimin Sha\r - Zion Li\r - Raven Angelo Saballa\r - Aira Jane Bassig",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "joi": "^17.13.1",
+    "mongodb": "^6.6.1",
+    "nodemon": "^3.1.0"
+  }
+}
