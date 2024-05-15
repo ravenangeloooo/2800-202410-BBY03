@@ -77,10 +77,57 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-
 app.get('/collection', (req,res)=>{
     res.render('collection');
   })
+
+// Step 3: Log in page
+app.get('/login', (req, res) => {
+    res.render("login");
+});
+
+
+app.post('/loggingin', async (req, res) => {
+    var email = req.body.email;
+    var password = req.body.password;
+
+    
+    const emailSchema = Joi.string().email().required();
+    const { error: emailError } = emailSchema.validate(email);
+    if (emailError) {
+        console.log(emailError);
+        return res.redirect("/login");
+    }
+
+    // Find user by email in the database
+    const user = await userCollection.findOne({ email: email });
+    if (!user) {
+        console.log("User not found");
+        return res.redirect("/login");
+    }
+
+    // Compare passwords
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (isPasswordCorrect) {
+        console.log("Correct password");
+        // Store user information in session
+        req.session.authenticated = true;
+        req.session.user_type =user.user_type;
+        req.session.email = email;
+        req.session.name = user.name; // Store user's name in the session
+        req.session.cookie.maxAge = expireTime;
+        return res.redirect('/home');
+    } else {
+        // Incorrect password
+        return res.send(`
+            <h1>Incorrect password</h1>
+            <a href="/login">Try again</a>
+        `);
+    }
+});
+
+
+
 
 
 app.use(express.static(__dirname + "/public"));
