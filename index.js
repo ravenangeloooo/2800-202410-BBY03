@@ -78,6 +78,9 @@ app.get('/signup', (req, res) => {
 });
 
 
+app.get('/collection', (req,res)=>{
+    res.render('collection');
+  })
 
 
 app.use(express.static(__dirname + "/public"));
