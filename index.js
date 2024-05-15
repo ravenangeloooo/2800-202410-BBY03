@@ -94,6 +94,23 @@ app.get('/editRequest', (req, res) => {
     res.render('editRequest');
 });
 
+//Post page
+app.get('/post', (req,res)=>{
+    res.render('post');
+  });
+
+//Group page
+app.get('/groups', (req,res)=>{
+    res.render('groups');
+  });
+
+//Profile page
+app.get('/profile', (req,res)=>{
+    res.render('profile');
+  });
+
+
+
 //Signup form posts the form fields and validates all inputs 
 app.post('/signupSubmit', async (req,res) => {
     var username = req.body.username;
