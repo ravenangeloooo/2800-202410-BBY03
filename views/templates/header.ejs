@@ -19,12 +19,18 @@
         
 </head>
 
-<body>
 
-    <nav class="navbar navbar-expand-lg fixed-top">
+<body>
+    <%- include("svgs") %>
+    <header class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand me-auto no-background" href="#"> <img src="/public/sharelooplogo.png"
                     height="40">shareLoop</a>
-            <a href="./index.html" class="login-button">Log Out</a>
+
+                    <a class="text-body-secondary" href="#"><svg class="bi" width="30" height="30">
+                        <use xlink:href="#logout"></use>
+                      </svg></a>
         </div>
-    </nav>
+    </header>
+    
+    <div class="container">
