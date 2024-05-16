@@ -49,7 +49,7 @@ function sessionValidation(req, res, next) {
         next();
     }
     else {
-        res.redirect('/');
+        res.redirect('/login');
     }
 }
 
@@ -67,9 +67,7 @@ app.use(session({
 ));
 
 
-
-app.get('/', (req, res) => {
-    var user = isValidSession(req);
+app.get('/', sessionValidation, (req, res) => {
     res.render('index');
 });
 
@@ -79,9 +77,13 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-app.get('/collection', (req,res)=>{
-    res.render('collection');
-  });
+app.get('/collections', (req,res) => {
+    res.render('items');
+})
+
+app.get('/requests', (req,res) => {
+    res.render('requests');
+})
 
 app.get('/login', (req, res) => {
     res.render("login");
@@ -139,41 +141,42 @@ app.post('/resetPassword', async (req, res) => {
 });
 
 app.get('/editItem', (req, res) => {
+app.get('/editItem', sessionValidation, (req, res) => {
     res.render('editItem');
 });
 
-app.get('/editRequest', (req, res) => {
+app.get('/editRequest', sessionValidation, (req, res) => {
     res.render('editRequest');
 });
 
 //Post page
-app.get('/post', (req,res)=>{
+app.get('/post', sessionValidation, (req,res)=>{
     res.render('post');
   });
 
 //Group page
-app.get('/groups', (req,res)=>{
+app.get('/groups', sessionValidation, (req,res)=>{
     res.render('groups');
   });
 
 //Profile page
-app.get('/profile', (req,res)=>{
+app.get('/profile', sessionValidation, (req,res)=>{
     res.render('profile');
   });
   
-app.get('/postItem', (req, res) => {
+app.get('/postItem', sessionValidation, (req, res) => {
     res.render('postItem');
 });
 
-app.get('/postRequest', (req, res) => {
+app.get('/postRequest', sessionValidation, (req, res) => {
     res.render('postRequest');
 });
 
-app.get('/editItem', (req, res) => {
+app.get('/editItem', sessionValidation, (req, res) => {
     res.render('editItem');
 });
 
-app.get('/editRequest', (req, res) => {
+app.get('/editRequest', sessionValidation, (req, res) => {
     res.render('editRequest');
 });
 
@@ -225,12 +228,17 @@ app.post('/signupSubmit', async (req,res) => {
 });
 
 //Discover Groups page
-app.get('/discoverGroups', (req,res)=>{
+app.get('/discoverGroups', sessionValidation, (req,res)=>{
     res.render('discoverGroups');
+  });
+
+app.get('/peopleInterested', (req,res)=>{
+    res.render('peopleInterested');
   });
 
 
 app.post('/loggingin', async (req, res) => {
+    console.log("logging in");
     var email = req.body.email;
     var password = req.body.password;
 
@@ -259,7 +267,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = email;
         req.session.name = user.name; // Store user's name in the session
         req.session.cookie.maxAge = expireTime;
-        return res.redirect('/members');
+        return res.redirect('/');
     } else {
         // Incorrect password
         return res.send(`
