@@ -100,7 +100,7 @@ app.get('/resetPassword', (req, res) => {
 
 app.post('/resetPassword', async (req, res) => {
     var email = req.body.email;
-    var birthdate = req.body.date; // perhaps try dob if this doesn't work
+    var birthdate = req.body.date;
     var newPassword = req.body.newPassword;
 
     const schema = Joi.object(
@@ -125,7 +125,7 @@ app.post('/resetPassword', async (req, res) => {
         const user = await userCollection.findOne({ email: email, birthdate: birthdate });
         if (!user) {
             console.log("User not found");
-            return res.redirect("/reset-password");
+            return res.render("userNotFound");
         }
 
         // Hash the new password and update it in the database
@@ -136,11 +136,10 @@ app.post('/resetPassword', async (req, res) => {
         );
         console.log("Password updated");
 
-        return res.redirect('/login');
+        return res.render('resetSuccess');
     }
 });
 
-app.get('/editItem', (req, res) => {
 app.get('/editItem', sessionValidation, (req, res) => {
     res.render('editItem');
 });
