@@ -172,7 +172,10 @@ app.post('/signupSubmit', async (req,res) => {
     }
 });
 
-
+//Discover Groups page
+app.get('/discoverGroups', (req,res)=>{
+    res.render('discoverGroups');
+  });
 
 
 app.post('/loggingin', async (req, res) => {
