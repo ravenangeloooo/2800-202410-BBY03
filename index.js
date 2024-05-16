@@ -181,6 +181,10 @@ app.get('/peopleInterested', (req,res)=>{
     res.render('peopleInterested');
   });
 
+app.get('/peopleOffering', (req,res)=>{
+    res.render('peopleOffering');
+  });
+
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
