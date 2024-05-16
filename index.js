@@ -273,10 +273,7 @@ app.post('/loggingin', async (req, res) => {
         return res.redirect('/');
     } else {
         // Incorrect password
-        return res.send(`
-            <h1>Incorrect password</h1>
-            <a href="/login">Try again</a>
-        `);
+        return res.render("loginError");
     }
 });
 
