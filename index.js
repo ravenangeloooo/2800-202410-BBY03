@@ -277,6 +277,16 @@ app.post('/loggingin', async (req, res) => {
     }
 });
 
+app.get('/itemDetail', (req, res) => {
+    const item = {
+        itemName: 'Name',
+        userName: 'User 2',
+        itemDescription: 'Brief description',
+        itemCategory: 'Category'
+    };
+    res.render('itemDetail', item);
+});
+
 app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req, res) => {
