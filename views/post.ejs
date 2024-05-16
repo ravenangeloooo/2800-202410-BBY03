@@ -1,0 +1,23 @@
+<%- include('templates/header') %>
+
+	<div class="modal shadow modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" style="height: 90vh;"
+		tabindex="-1" role="dialog" id="modalSheet">
+		<div class="modal-dialog modal-dialog-centered modal-sm modal-md modal-lg modal-xl modal-xxl" role="document">
+			<div class="modal-content rounded-4 shadow p-5">
+				<div class="d-flex justify-content-end">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+						fdprocessedid="bcfp"></button>
+				</div>
+				<div class="modal-header border-bottom-0">
+					<h1 class="modal-title fs-5 text-center p-3">What are you going to post?</h1>
+				</div>
+
+				<div class="modal-footer flex-column align-items-stretch w-100 gap-4 pb-3 border-top-0">
+					<a href="/postItem" class="btn btn-lg btn-primary" fdprocessedid="3vz6qk">Item</a>
+					<a href="/postRequest" class="btn btn-lg btn-secondary" fdprocessedid="lcym9c">Request</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<%- include('templates/footer') %>
