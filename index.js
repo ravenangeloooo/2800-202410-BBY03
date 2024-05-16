@@ -86,6 +86,12 @@ app.get('/collection', (req,res)=>{
 app.get('/login', (req, res) => {
     res.render("login");
 });
+
+app.get('/logout', (req,res) => {
+    req.session.destroy();
+    res.redirect('/');
+})
+
 app.get('/editItem', (req, res) => {
     res.render('editItem');
 });
