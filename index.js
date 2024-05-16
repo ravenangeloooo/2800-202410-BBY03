@@ -86,6 +86,12 @@ app.get('/collection', (req,res)=>{
 app.get('/login', (req, res) => {
     res.render("login");
 });
+
+// reset password
+app.get('/resetPassword', (req, res) => {
+    res.render('resetPassword');
+});
+
 app.get('/editItem', (req, res) => {
     res.render('editItem');
 });
