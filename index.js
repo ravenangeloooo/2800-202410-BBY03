@@ -164,6 +164,10 @@ app.get('/postItem', (req, res) => {
     res.render('postItem');
 });
 
+app.get('/postRequest', (req, res) => {
+    res.render('postRequest');
+});
+
 app.get('/editItem', (req, res) => {
     res.render('editItem');
 });
