@@ -1,0 +1,30 @@
+<%- include("templates/header") %>
+
+    <section class="jumbotron text-left mt-3">
+        <div class="container">
+            <h1 class="text-center mt-5 mb-3">People Interested</h1>
+            <!--Temporary image card-->
+            <div class="container d-flex justify-content-center">
+                <img id="uploadedimg" src="https://dummyimage.com/400x300/000/fff&amp;text=Item"
+                    style="max-width: 350px; max-height: 250px; border-radius: 10%;" height="250px">
+            </div>
+            <!--End of temporary image card-->
+            <h2 class="text-center mt-2">Item Name</h2>
+        </div>
+    </section>
+    <hr>
+    <div class="album py-2 bg-light">
+        <div class="container">
+            <div class="row pb-5">
+                <div class="container">
+
+                    <% for (let i=0; i < 6; i++) { %>
+                        <%- include('templates/peopleInterestedCard') %>
+                            <% } %>
+
+                </div>
+            </div>
+        </div>
+        </main>
+
+        <%- include("templates/footer") %>

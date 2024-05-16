@@ -189,6 +189,10 @@ app.get('/discoverGroups', sessionValidation, (req,res)=>{
     res.render('discoverGroups');
   });
 
+app.get('/peopleInterested', (req,res)=>{
+    res.render('peopleInterested');
+  });
+
 
 app.post('/loggingin', async (req, res) => {
     console.log("logging in");
