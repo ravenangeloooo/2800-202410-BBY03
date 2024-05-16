@@ -177,6 +177,10 @@ app.get('/discoverGroups', (req,res)=>{
     res.render('discoverGroups');
   });
 
+app.get('/peopleInterested', (req,res)=>{
+    res.render('peopleInterested');
+  });
+
 
 app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
