@@ -79,9 +79,13 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-app.get('/collection', (req,res)=>{
-    res.render('collection');
-  });
+app.get('/collections', (req,res) => {
+    res.render('items');
+})
+
+app.get('/requests', (req,res) => {
+    res.render('requests');
+})
 
 app.get('/login', (req, res) => {
     res.render("login");
