@@ -91,6 +91,10 @@ app.get('/logout', (req,res) => {
     req.session.destroy();
     res.redirect('/');
 })
+// reset password
+app.get('/resetPassword', (req, res) => {
+    res.render('resetPassword');
+});
 
 app.get('/editItem', (req, res) => {
     res.render('editItem');
