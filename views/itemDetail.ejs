@@ -1,0 +1,109 @@
+<%- include("templates/header") %>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-button {
+        margin-bottom: 10px;
+    }
+
+.containers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 375px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+    
+
+.header, .navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ccc;
+}
+
+.header button, .navigation button {
+    background: none;
+    border: none;
+    font-size: 18px;
+}
+
+.item-details {
+    padding: 15px;
+}
+
+.item-details h2 {
+    margin: 0 0 10px 0;
+}
+
+.item-image {
+    width: 100%;
+    height: 200px;
+    background-color: #eaeaea;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.interested-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.interested-button:hover {
+    background-color: #0056b3;
+}
+
+
+</style>
+
+<body>
+    <br>
+    <br>
+
+    <div class="containers">
+    
+
+            
+        <div class="item-details">
+            <div class="back-button">
+                <a href="/"><img src="/backarrow.png" alt="Back" width="30px"></a>
+          
+            </div>
+            <h2>ITEM: <%= itemName %></h2>
+            <p>From <%= userName %></p>
+            <div class="item-image">
+                <!-- Image Placeholder -->
+            </div>
+            <p><%= itemDescription %></p>
+            <p><%= itemCategory %></p>
+            <button class="interested-button">INTERESTED</button>
+        </div>
+       
+    </div>
+</body>
+
+<%- include("templates/footer") %>

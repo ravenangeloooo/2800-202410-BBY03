@@ -255,7 +255,7 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = email;
         req.session.name = user.name; // Store user's name in the session
         req.session.cookie.maxAge = expireTime;
-        return res.redirect('/members');
+        return res.redirect('/');
     } else {
         // Incorrect password
         return res.send(`
@@ -263,6 +263,16 @@ app.post('/loggingin', async (req, res) => {
             <a href="/login">Try again</a>
         `);
     }
+});
+
+app.get('/itemDetail', (req, res) => {
+    const item = {
+        itemName: 'Name',
+        userName: 'User 2',
+        itemDescription: 'Brief description',
+        itemCategory: 'Category'
+    };
+    res.render('itemDetail', item);
 });
 
 app.use(express.static(__dirname + "/public"));
