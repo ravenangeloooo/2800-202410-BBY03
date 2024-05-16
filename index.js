@@ -109,57 +109,6 @@ app.get('/profile', (req,res)=>{
     res.render('profile');
   });
 
-
-
-//Signup form posts the form fields and validates all inputs 
-app.post('/signupSubmit', async (req,res) => {
-    var username = req.body.username;
-    var email = req.body.email;
-    var password = req.body.password;
-    var birthdate = req.body.date;
-
-    const schema = Joi.object(
-        {
-            username: Joi.string().alphanum().max(20).required(),
-            email: Joi.string().email().required(),
-            password: Joi.string().max(20).required(),
-            birthdate: Joi.date().iso().required()
-        }
-    );
-
-    const validationResult = schema.validate({username, email, password, birthdate});
-
-	if (validationResult.error != null) {
-
-        //Sends an error message saying which field was missing
-	   console.log(validationResult.error);
-
-	   var error = validationResult.error.details[0].context.label;
-       var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
-
-       res.render("submitError", {errormessage: errormessage});
-    
-    } else {
-
-        //If the 3 fields are non-empty, adds the user to MongoDB database.
-        var hashedPassword = await bcrypt.hash(password, saltRounds);
-        console.log("hashedPassword:" + hashedPassword);
-
-        await userCollection.insertOne({username: username, email: email, password: hashedPassword, user_type: "user", birthdate: birthdate});
-        console.log("User Created:" + username);
-
-        //Creates session and redirects the user to the /members page
-        req.session.authenticated = true;
-		req.session.username = username;
-		req.session.cookie.maxAge = expireTime;
-
-        res.redirect('/');
-        return;
-    }
-});
-
-
-
 app.get('/postItem', (req, res) => {
     res.render('postItem');
 });
