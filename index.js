@@ -257,10 +257,7 @@ app.get("/postRequest", sessionValidation,(req, res) => {
   res.render("postRequest");
 });
 
-app.post("/submitRequest", sessionValidation,async(req,res) => {
-  const bodyParser = require('body-parser');
-  app.use(bodyParser.urlencoded({ extended: true }));
-
+app.post("/submitRequest", sessionValidation, async(req,res) => {  
   const title = req.body.title;
   const description = req.body.description;
   const visibility = req.body.visibility;
@@ -270,8 +267,7 @@ app.post("/submitRequest", sessionValidation,async(req,res) => {
   //   title: Joi.string().max(50).required(),
   //   description: Joi.string().max(500).required(),
   // });
-  
-  console.log(title);
+
 
   const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility});
   console.log("request create: " + title);
