@@ -71,11 +71,11 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.get("/collections", (req, res) => {
+app.get("/collections", sessionValidation, (req, res) => {
   res.render("items");
 });
 
-app.get("/requests", (req, res) => {
+app.get("/requests", sessionValidation, (req, res) => {
   res.render("requests");
 });
 
