@@ -89,6 +89,53 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/resetPassword", (req, res) => {
+  res.render("resetPassword");
+});
+
+app.post("/resetPassword", async (req, res) => {
+  var email = req.body.email;
+  var birthdate = req.body.date;
+  var newPassword = req.body.newPassword;
+
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    birthdate: Joi.date().iso().required(),
+    newPassword: Joi.string().max(20).required(),
+  });
+
+  const validationResult = schema.validate({ email, birthdate, newPassword });
+
+  if (validationResult.error != null) {
+    console.log(validationResult.error);
+
+    var error = validationResult.error.details[0].context.label;
+    var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
+
+    res.render("resetError", { errormessage: errormessage });
+  } else {
+    // Find user by email and birthdate in the database
+    const user = await userCollection.findOne({
+      email: email,
+      birthdate: birthdate,
+    });
+    if (!user) {
+      console.log("User not found");
+      return res.render("userNotFound");
+    }
+
+    // Hash the new password and update it in the database
+    var hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    await userCollection.updateOne(
+      { email: email, birthdate: birthdate },
+      { $set: { password: hashedPassword } }
+    );
+    console.log("Password updated");
+
+    return res.render("resetSuccess");
+  }
+});
+
 app.get("/editItem", (req, res) => {
   res.render("editItem");
 });
@@ -320,10 +367,7 @@ app.post("/loggingin", async (req, res) => {
     return res.redirect("/");
   } else {
     // Incorrect password
-    return res.send(`
-            <h1>Incorrect password</h1>
-            <a href="/login">Try again</a>
-        `);
+    return res.render("loginError");
   }
 });
 
