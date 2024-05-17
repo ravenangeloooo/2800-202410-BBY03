@@ -155,8 +155,18 @@ app.get('/post', sessionValidation, (req,res)=>{
   });
 
 //Group page
-app.get('/groups', sessionValidation, (req,res)=>{
-    res.render('groups');
+app.get('/groups', sessionValidation, async (req,res)=>{
+    const userId = req.session.userId;
+
+    const result = await groupCollection.find({ members: { $in: [userId] } }).project({groupname: 1, _id: 1}).toArray();
+    console.log(result);
+
+    //Capitalizes the first letter of each username
+    result.forEach(group => {
+        group.groupname = group.groupname.charAt(0).toUpperCase() + group.groupname.slice(1);
+    });
+ 
+    res.render("groups", {groups: result});
   });
 
 //Profile page
@@ -228,8 +238,19 @@ app.post('/signupSubmit', async (req,res) => {
 });
 
 //Discover Groups page
-app.get('/discoverGroups', sessionValidation, (req,res)=>{
-    res.render('discoverGroups');
+app.get('/discoverGroups', sessionValidation, async (req,res)=>{
+
+
+    const result = await groupCollection.find().project({groupname: 1, _id: 1}).toArray();
+    console.log(result);
+
+    //Capitalizes the first letter of each username
+    result.forEach(group => {
+        group.groupname = group.groupname.charAt(0).toUpperCase() + group.groupname.slice(1);
+    });
+ 
+    res.render("discoverGroups", {groups: result});
+
   });
 
 app.get('/peopleInterested', (req,res)=>{
