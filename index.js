@@ -96,8 +96,13 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-app.get("/collections", sessionValidation, (req, res) => {
-  res.render("items");
+app.get("/collections", sessionValidation, async (req, res) => {
+    let user_id = req.session.userId;
+    let items = await itemCollection.find({user_id: user_id}).toArray();
+    console.log(items);
+    res.render("items", {items: items});
+    
+
 });
 
 app.get("/requests", sessionValidation, (req, res) => {
@@ -221,7 +226,7 @@ app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req
     let buf64 = req.file.buffer.toString('base64');
     stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
     
-        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: user_id, visibility: visibility});
+        const success = await itemCollection.insertOne({ title: title, description: description, image_id: image_uuid, user_id: user_id, visibility: visibility});
         console.log("Item Created:" + title);   
     },
         { public_id: image_uuid }
