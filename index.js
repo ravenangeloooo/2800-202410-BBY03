@@ -160,11 +160,11 @@ app.post("/resetPassword", async (req, res) => {
   }
 });
 
-app.get("/editItem", (req, res) => {
+app.get("/editItem", sessionValidation, (req, res) => {
   res.render("editItem");
 });
 
-app.get("/editRequest", (req, res) => {
+app.get("/editRequest", sessionValidation, (req, res) => {
   res.render("editRequest");
 });
 
@@ -193,7 +193,7 @@ app.get("/groups", sessionValidation, async (req, res) => {
 });
 
 //Profile page
-app.get("/profile", (req, res) => {
+app.get("/profile", sessionValidation, (req, res) => {
   res.render("profile", {
     user: {
       name: req.session.name,
@@ -204,11 +204,11 @@ app.get("/profile", (req, res) => {
 });
 
 
-app.get("/postItem", (req, res) => {
+app.get("/postItem", sessionValidation, (req, res) => {
   res.render("postItem");
 });
 
-app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
+app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req, res, next) {
     let image_uuid = uuid();
     let title = req.body.title;
     let description = req.body.description;
@@ -232,15 +232,15 @@ app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
 
 
 
-app.get("/postRequest", (req, res) => {
+app.get("/postRequest", sessionValidation, (req, res) => {
   res.render("postRequest");
 });
 
-app.get("/editItem", (req, res) => {
+app.get("/editItem", sessionValidation, (req, res) => {
   res.render("editItem");
 });
 
-app.get("/editRequest", (req, res) => {
+app.get("/editRequest", sessionValidation, (req, res) => {
   res.render("editRequest");
 });
 
@@ -367,7 +367,7 @@ app.post("/loggingin", async (req, res) => {
   }
 });
 
-app.get("/itemDetail", (req, res) => {
+app.get("/itemDetail", sessionValidation, (req, res) => {
   const item = {
     itemName: "Name",
     userName: "User 2",
