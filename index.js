@@ -117,7 +117,7 @@ app.get("/login", (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.clearCookie("connect.sid");
-  res.redirect("/");
+  res.render("logout");
 });
 
 app.get("/resetPassword", (req, res) => {
