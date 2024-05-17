@@ -6,6 +6,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
 const { v4: uuid } = require('uuid');
+const mongodb = require('mongodb')
 
 const saltRounds = 12;
 
@@ -436,6 +437,40 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
     }
   }
 });
+
+// Group Profile page
+app.get('/groupProfile/:groupId', sessionValidation, async (req, res) => {
+    const groupId = req.params.groupId; // Get the group ID from the route parameter
+
+    console.log(groupId);
+
+    const groups = await groupCollection.findOne({ _id: new mongodb.ObjectId(groupId) });
+
+    groups.groupname = groups.groupname.charAt(0).toUpperCase() + groups.groupname.slice(1);
+
+    if (!groups) {
+        // If no group was found, send a 404 error
+        return res.status(404).send({ message: 'Group not found' });
+    }
+
+    // Render the groupProfile page with the group data
+    res.render('groupProfile', { groups: groups, isMember: groups.members.includes(req.session.userId) });
+});
+
+app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
+    const groupId = req.params.groupId; // Get the group ID from the route parameter
+    const userId = req.session.userId; // Get the user ID from the session
+
+    // Add the user to the group
+    await groupCollection.updateOne(
+        { _id: new mongodb.ObjectId(groupId) },
+        { $addToSet: { members: userId } }
+    );
+
+    // Redirect the user back to the group profile page
+    res.redirect('/groupProfile/' + groupId);
+});
+
 
 app.use(express.static(__dirname + "/public"));
 

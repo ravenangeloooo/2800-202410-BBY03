@@ -1,0 +1,46 @@
+<%- include("templates/header") %>
+<main class="mb-5">
+    <section class="jumbotron text-left mt-3">
+        <div class="row container">
+            <div class="col-auto p-1">
+                <a href="/groups"><img src="/backarrow.png" alt="Back" width="30px"></a>
+            </div>
+            <div class="col-auto">
+                <h1 class="jumbotron-heading"><%= groups.groupname %></h1>
+            </div>
+            
+        </div>
+    </section>
+
+    <div class="row g-0 p-2">
+        <div class="col-auto p-2">
+            <img src="https://dummyimage.com/450x390/000/fff&amp;text=Profile+pics"
+                class="img-fluid" alt="..." style="width: 100px; height: 100px; border-radius: 50%;"/>
+        </div>
+        <div class="col-auto pt-4">
+                    <p class="card-title"><%= groups.groupdescription %></p>
+                    <p class="card-title"><%= groups.grouplocation %></p>
+        </div>
+    </div>
+    <% if (!isMember) { %>
+        <form action="/groupProfile/<%= groups._id %>/join" method="post">
+            <button type="submit" class="btn btn-primary w-100">Join</button>
+        </form>
+    <% } %>
+    <% if (isMember) { %>
+    <div class="album pt-1 pb-5 bg-light">
+        <div class="container text-center">
+            <p>
+                <a href="#" class="btn btn-primary my-2">Item</a>
+                <a href="#" class="btn btn-secondary my-2">Request</a>
+            </p>
+            <div class="row">
+                <% for (let i=0; i < 6; i++) { %>
+                    <%- include('templates/homepageCard.ejs') %>
+                <% } %>
+            </div>
+        </div>
+        </div>
+        <% } %> 
+</main>
+<%- include("templates/footer") %>
