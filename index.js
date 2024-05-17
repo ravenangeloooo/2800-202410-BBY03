@@ -28,6 +28,7 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
+const groupCollection = database.db(mongodb_database).collection('groups');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -228,6 +229,8 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = email;
         req.session.name = user.name; // Store user's name in the session
         req.session.cookie.maxAge = expireTime;
+        req.session.userId = user._id;
+        console.log("User ID: " + req.session.userId);
         return res.redirect('/');
     } else {
         // Incorrect password
@@ -235,6 +238,63 @@ app.post('/loggingin', async (req, res) => {
             <h1>Incorrect password</h1>
             <a href="/login">Try again</a>
         `);
+    }
+});
+
+
+//Create Groups page
+app.get('/createAGroup', sessionValidation, (req,res)=>{
+    res.render('createAGroup');
+  });
+
+//Signup form posts the form fields and validates all inputs 
+app.post('/createAGroupSubmit', sessionValidation, async (req,res) => {
+
+    var groupname = req.body.groupname;
+    var groupdescription = req.body.groupdescription;
+    var grouplocation = req.body.grouplocation;
+    var userIdAdmin = req.session.userId;
+
+
+    const schema = Joi.object(
+        {
+            groupname: Joi.string().max(50).required(),
+            groupdescription: Joi.string().max(500).required(),
+            grouplocation: Joi.string().max(100).required(),
+        }
+    );
+
+    const validationResult = schema.validate({groupname, groupdescription, grouplocation});
+
+	if (validationResult.error != null) {
+
+        //Sends an error message saying which field was missing
+	   console.log(validationResult.error);
+
+	   var error = validationResult.error.details[0].context.label;
+       var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
+
+       res.render("submitErrorGroup", {errormessage: errormessage});
+    
+    } else {
+        try {
+            const newGroup = {
+                groupname: groupname,
+                groupdescription: groupdescription,
+                grouplocation: grouplocation,
+                createdBy: userIdAdmin,
+                members: [userIdAdmin],
+            };
+
+            await groupCollection.insertOne(newGroup);
+            
+            console.log("Group Created:" + groupname);
+
+            res.redirect('/groups');
+        } catch (err) {
+            console.error(err); // Log the error
+            res.status(500).send({ message: 'Server error' }); // Send an error response
+        }
     }
 });
 
