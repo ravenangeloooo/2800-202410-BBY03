@@ -1,0 +1,74 @@
+<style>
+    .cover {
+        object-fit: cover;
+    }
+</style>
+<%- include("templates/header") %>
+<main class="mb-5">
+    <section class="jumbotron text-left mt-3">
+        <div class="row container">
+            <div class="col-auto p-1">
+                <a href="/groups"><img src="/backarrow.png" alt="Back" width="30px"></a>
+            </div>
+            <div class="col-auto">
+                <h1 class="jumbotron-heading">Create a group</h1>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <div class="album py-1 bg-light">
+        <div class="card p-3">
+            <form action="/createAGroupSubmit" method="post">
+                <div class="form-group p-2">
+                    <h5><label for="photo">Add a Group Photo</label></h5>
+                    <input class="mb-2" type="file" id="photo" name="photo" onchange="readURL(this);"/>
+                    <div class="d-flex justify-content-center mb-2">
+                    <img class="cover" id="imagePreview" src="/insertphotohere.png" alt="Image" width="300px" height="225px">
+                    </div>
+                </div>
+
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <h5><label class="form-label" for="form3Example4cg">Group Name</label></h5>
+                    <input type='text' name='groupname' placeholder='Name'
+                        id="form3Example4cg" class="form-control" />
+                    
+                </div>
+
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <h5><label class="form-label" for="form3Example4cg">Group Description</label></h5>
+                    <textarea type='text' name='groupdescription' placeholder='Description'
+                        id="form3Example4cg" class="form-control"></textarea>
+                    
+                </div>
+
+
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <h5><label class="form-label" for="form3Example4cg">Location</label></h5>
+                    <input type='text' name='grouplocation' placeholder='Location'
+                        id="form3Example4cg" class="form-control" />
+                    
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type='submit' data-mdb-button-init data-mdb-ripple-init
+                        class="mt-3 btn btn-primary btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<%- include("templates/footer") %>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').src = e.target.result;
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

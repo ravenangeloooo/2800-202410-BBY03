@@ -1,0 +1,42 @@
+<div class="card mb-3" style="max-width: 100%; ">
+  <div class="row g-0">
+    <div class="col-auto" style="margin-left: 15px">
+      <img
+        src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/<%= item.image_id %>"
+        class="img-fluid rounded-start; ms-1; mt-3"
+        alt="..."
+        style="width: auto; height: 60%;"
+      />
+    </div>
+    <div class="col-auto me-auto">
+      <div class="card-body">
+        <div>
+          <h5 class="card-title"><%= item.title %></h5>
+
+          <small class="text-body-secondary">Available</small>
+          <br />
+          <small class="text-body-secondary">Visible to: <%= item.visibility %></small>
+        </div>
+
+        <a href="/peopleInterested" class="btn btn-info" role="button"
+          >3 people are interested</a
+        >
+      </div>
+    </div>
+
+    <div class="col-auto ms-auto pt-2 pr-5 mr-5">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="30"
+        height="30"
+        fill="currentColor"
+        class="bi bi-three-dots-vertical"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+        />
+      </svg>
+    </div>
+  </div>
+</div>

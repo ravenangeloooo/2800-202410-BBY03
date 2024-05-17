@@ -1,0 +1,62 @@
+<%- include("templates/header") %>
+
+    <div class="container card-body p-5">
+        <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+            <div class="container h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="card" style="border-radius: 15px;">
+                            <div class="card-body p-5">
+                                <h2 class="text-uppercase text-center mb-3">Create User</h2>
+
+                                <form action='/signupSubmit' method='post'>
+                                    <div data-mdb-input-init class="form-outline mb-2">
+                                        <label class="form-label" for="form3Example1cg">Username</label>
+                                        <input type='text' name='username' placeholder='username' id="form3Example1cg"
+                                            class="form-control" />
+                                        
+                                    </div>
+
+                                    <div data-mdb-input-init class="form-outline mb-2">
+                                        <label class="form-label" for="form3Example1cg">Full Name</label>
+                                        <input type='text' name='displayname' placeholder='display name' id="form3Example1cg"
+                                            class="form-control" />
+                                    </div>
+
+                                    <div data-mdb-input-init class="form-outline mb-2">
+                                        <label class="form-label" for="form3Example3cg">Email</label>
+                                        <input type='email' name='email' placeholder='email' id="form3Example3cg"
+                                            class="form-control" />
+                                        
+                                    </div>
+
+                                    <div data-mdb-input-init class="form-outline mb-2">
+                                        <label class="form-label" for="form3Example3cg">Date of Birth</label>
+                                        <input type='date' name='date' placeholder='birthdate' id="form3Example3cg"
+                                            class="form-control" />
+                                        
+                                    </div>
+
+                                    <div data-mdb-input-init class="form-outline mb-2">
+                                        <label class="form-label" for="form3Example4cg">Password</label>
+                                        <input type='password' name='password' placeholder='password'
+                                            id="form3Example4cg" class="form-control" />
+                                        
+                                    </div>
+
+                                    <div class="d-flex justify-content-center">
+                                        <button type='submit' data-mdb-button-init data-mdb-ripple-init
+                                            class="btn btn-primary btn-success">Submit</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("templates/footer") %>

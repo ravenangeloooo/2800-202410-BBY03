@@ -1,0 +1,45 @@
+<%- include("templates/header") %>
+
+<div class="container">
+    <h1 class="mt-4">PROFILE</h1>
+    <img id="uploadedimg" src="https://dummyimage.com/450x390/000/fff&amp;text=Profile+pics" style="max-width: 400px; max-height: 400px;" height="300px">
+
+    <h1 class="mt-4">ABOUT ME</h1>
+    
+
+    <div class="list-group">
+        <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+          <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+              <h4 class="mb-0">Name</h4>
+              <p class="mb-0 opacity-75"><%= user.name %></p>
+            </div>
+          </div>
+        </div>
+
+
+        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+          <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h4 class="mb-0">Email</h4>
+                <p class="mb-0 opacity-75"><%= user.email %></p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+          <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h4 class="mb-0">Date of Birth</h4>
+              <p class="mb-0 opacity-75"><%= user.birthdate %></p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+
+
+
+
+
+
+<%- include("templates/footer") %>
