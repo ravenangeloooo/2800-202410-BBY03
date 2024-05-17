@@ -17,9 +17,9 @@
         </section>
         <div class="container">
             <div class="row">
-                <% for (let i=0; i < 6; i++) { %>
-                    <%- include('templates/groupPageCard.ejs') %>
-                <% } %>
+                <% for(let i=0; i < groups.length; i++) { %>
+                    <%- include('templates/groupPageCard', {groups: groups[i]}) %>
+                        <% } %>
             </div>
         </div>
         </div>
