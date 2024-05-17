@@ -1,0 +1,13 @@
+<%- include("templates/header") %>
+
+  <div class="container">
+    <%- include("templates/collection") %>
+
+      <% requests.forEach(function(request){ %>
+        <%- include("templates/requestcard", {request: request}) %>
+          <% }) %>
+
+
+  </div>
+
+  <%- include("templates/footer") %>

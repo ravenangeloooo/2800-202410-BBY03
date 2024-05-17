@@ -113,8 +113,12 @@ app.get("/collections", sessionValidation, async (req, res) => {
 
 });
 
-app.get("/requests", sessionValidation, (req, res) => {
-  res.render("requests");
+app.get("/myRequests", sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+  let requests = await requestCollection.find({user_id: user_id}).toArray();
+    console.log(requests);
+  
+  res.render("myRequests", {requests: requests}); 
 });
 
 app.get("/login", (req, res) => {
