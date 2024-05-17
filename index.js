@@ -213,14 +213,14 @@ app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
     let title = req.body.title;
     let description = req.body.description;
     let visibility = req.body.visibility;
-    let user_id = req.session.user;
+    let user_id = req.session.userId;
 
     // let pet_id = req.body.pet_id;
     // let user_id = req.body.user_id;
     let buf64 = req.file.buffer.toString('base64');
     stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
     
-        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: req.session.user_id });
+        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: user_id, visibility: visibility});
         console.log("Item Created:" + title);   
     },
         { public_id: image_uuid }
@@ -395,60 +395,6 @@ app.get("/itemDetail", (req, res) => {
     itemCategory: "Category",
   };
   res.render("itemDetail", item);
-});
-
-//Create Groups page
-app.get("/createAGroup", sessionValidation, (req, res) => {
-  res.render("createAGroup");
-});
-
-//Signup form posts the form fields and validates all inputs
-app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
-  var groupname = req.body.groupname;
-  var groupdescription = req.body.groupdescription;
-  var grouplocation = req.body.grouplocation;
-  var userIdAdmin = req.session.userId;
-
-  const schema = Joi.object({
-    groupname: Joi.string().max(50).required(),
-    groupdescription: Joi.string().max(500).required(),
-    grouplocation: Joi.string().max(100).required(),
-  });
-
-  const validationResult = schema.validate({
-    groupname,
-    groupdescription,
-    grouplocation,
-  });
-
-  if (validationResult.error != null) {
-    //Sends an error message saying which field was missing
-    console.log(validationResult.error);
-
-    var error = validationResult.error.details[0].context.label;
-    var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
-
-    res.render("submitErrorGroup", { errormessage: errormessage });
-  } else {
-    try {
-      const newGroup = {
-        groupname: groupname,
-        groupdescription: groupdescription,
-        grouplocation: grouplocation,
-        createdBy: userIdAdmin,
-        members: [userIdAdmin],
-      };
-
-      await groupCollection.insertOne(newGroup);
-
-      console.log("Group Created:" + groupname);
-
-      res.redirect("/groups");
-    } catch (err) {
-      console.error(err); // Log the error
-      res.status(500).send({ message: "Server error" }); // Send an error response
-    }
-  }
 });
 
 //Create Groups page
