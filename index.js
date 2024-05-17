@@ -5,6 +5,8 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcrypt");
+const { v4: uuid } = require('uuid');
+
 const saltRounds = 12;
 
 const port = process.env.PORT || 3000;
@@ -23,12 +25,34 @@ const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
+
+const cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
+
 /* END secret section */
+
+
+/* Image database connection */
+const cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_CLOUD_KEY,
+    api_secret: process.env.CLOUDINARY_CLOUD_SECRET
+});
+
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
+
+
+
 
 var { database } = include("databaseConnection");
 
+/* Database collection */
 const userCollection = database.db(mongodb_database).collection("users");
 const groupCollection = database.db(mongodb_database).collection("groups");
+const itemCollection = database.db(mongodb_database).collection('items');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -145,8 +169,8 @@ app.get("/editRequest", (req, res) => {
 });
 
 //Post page
-app.get("/post", (req, res) => {
-  res.render("post");
+app.get('/post', sessionValidation, (req, res) => {
+    res.render('post');
 });
 
 //Group page
@@ -182,6 +206,50 @@ app.get("/profile", (req, res) => {
 
 app.get("/postItem", (req, res) => {
   res.render("postItem");
+});
+
+app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
+    let image_uuid = uuid();
+    let title = req.body.title;
+    let description = req.body.description;
+    let visibility = req.body.visibility;
+    let user_id = req.session.user;
+
+    // let pet_id = req.body.pet_id;
+    // let user_id = req.body.user_id;
+    let buf64 = req.file.buffer.toString('base64');
+    stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+    
+        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: req.session.user_id });
+        console.log("Item Created:" + title);   
+    },
+        { public_id: image_uuid }
+    );
+    console.log(req.body);
+    console.log(req.file);
+    res.redirect('/collections');
+});
+
+app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
+    let image_uuid = uuid();
+    let title = req.body.title;
+    let description = req.body.description;
+    let visibility = req.body.visibility;
+    let user_id = req.session.user;
+
+    // let pet_id = req.body.pet_id;
+    // let user_id = req.body.user_id;
+    let buf64 = req.file.buffer.toString('base64');
+    stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+    
+        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: req.session.user_id });
+        console.log("Item Created:" + title);   
+    },
+        { public_id: image_uuid }
+    );
+    console.log(req.body);
+    console.log(req.file);
+    res.redirect('/collections');
 });
 
 app.get("/postRequest", (req, res) => {
