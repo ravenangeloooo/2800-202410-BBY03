@@ -87,9 +87,15 @@ app.use(
   })
 );
 
-app.get("/", sessionValidation, (req, res) => {
+app.get("/", sessionValidation, async (req, res) => {
   var user = isValidSession(req);
-  res.render("index");
+  let user_id = req.session.userId;
+
+  // let items = await itemCollection.find({user_id: user_id}).toArray();
+
+  let items = await itemCollection.find({ user_id: { $ne: user_id } }).toArray();
+  console.log(items);
+  res.render("index", { items: items });
 });
 
 //Sign up for a new account
