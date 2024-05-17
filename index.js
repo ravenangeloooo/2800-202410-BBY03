@@ -110,6 +110,7 @@ app.get("/login", (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
+  res.clearCookie("connect.sid");
   res.redirect("/");
 });
 
@@ -193,7 +194,7 @@ app.get("/groups", sessionValidation, async (req, res) => {
 });
 
 //Profile page
-app.get("/profile", (req, res) => {
+app.get("/profile", sessionValidation, (req, res) => {
   res.render("profile", {
     user: {
       name: req.session.name,
@@ -274,7 +275,7 @@ app.post("/signupSubmit", async (req, res) => {
 
   const schema = Joi.object({
     username: Joi.string().alphanum().max(20).required(),
-    displayname: Joi.string().alphanum().max(20).required(),
+    displayname: Joi.string().max(20).required(),
     email: Joi.string().email().required(),
     password: Joi.string().max(20).required(),
     birthdate: Joi.date().iso().required(),
@@ -350,21 +351,21 @@ app.get("/peopleOffering", (req, res) => {
 });
 
 app.post("/loggingin", async (req, res) => {
-  var email = req.body.email;
+  var username = req.body.username;
   var password = req.body.password;
 
-  const emailSchema = Joi.string().email().required();
-  const { error: emailError } = emailSchema.validate(email);
-  if (emailError) {
-    console.log(emailError);
+  const usernameSchema = Joi.string().alphanum().required();
+  const { error: usernameError } = usernameSchema.validate(username);
+  if (usernameError) {
+    console.log(usernameError);
     return res.redirect("/login");
   }
 
-  // Find user by email in the database
-  const user = await userCollection.findOne({ email: email });
+  // Find user by username in the database
+  const user = await userCollection.findOne({ username: username });
   if (!user) {
     console.log("User not found");
-    return res.redirect("/login");
+    return res.render("loginError");
   }
 
   // Compare passwords
@@ -374,7 +375,7 @@ app.post("/loggingin", async (req, res) => {
     // Store user information in session
     req.session.authenticated = true;
     req.session.user_type = user.user_type;
-    req.session.email = email;
+    req.session.email = user.email;
     req.session.name = user.username; // Store user's name in the session
     req.session.birthdate = user.birthdate;
     req.session.cookie.maxAge = expireTime;
