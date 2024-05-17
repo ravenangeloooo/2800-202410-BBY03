@@ -315,6 +315,9 @@ app.post("/signupSubmit", async (req, res) => {
       user_type: "user",
       birthdate: birthdate,
     });
+
+    var user = await userCollection.findOne({ email: email, username: username, birthdate: birthdate})
+
     console.log("User Created:" + username);
 
     //Creates session and redirects the user to the /members page
@@ -324,6 +327,7 @@ app.post("/signupSubmit", async (req, res) => {
     req.session.name = username; // Store user's name in the session
     req.session.birthdate = birthdate;
     req.session.cookie.maxAge = expireTime;
+    req.session.userId = user._id;
 
     res.redirect("/");
     return;
