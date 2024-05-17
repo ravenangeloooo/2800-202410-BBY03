@@ -99,6 +99,20 @@ app.get("/", sessionValidation, async (req, res) => {
   res.render("index", { items: items });
 });
 
+app.get('/itemDetail', sessionValidation, async (req, res) => {
+    let item_id = req.query.id;
+    console.log(item_id);
+    let item = await itemCollection.findOne({ _id: item_id });
+    let owner_id = item.user_id;
+    let owner = await userCollection.findOne({ _id: owner_id });
+    let owner_name = owner.displayname; 
+
+    item['owner_name'] = owner_name;
+    console.log(item);
+    res.render('itemDetail', { item: item });
+})
+
+
 //Sign up for a new account
 app.get("/signup", (req, res) => {
   res.render("signup");

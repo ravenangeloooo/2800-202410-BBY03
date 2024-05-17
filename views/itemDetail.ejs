@@ -90,16 +90,16 @@ body {
             
         <div class="item-details">
             <div class="back-button">
-                <a href="/"><img src="/backarrow.png" alt="Back" width="30px"></a>
+                <a href="/"><img src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_90,h_90/<%= item.image_id %>" alt="Back" width="30px"></a>
           
             </div>
-            <h2>ITEM: <%= itemName %></h2>
-            <p>From <%= userName %></p>
+            <h2>ITEM: <%= item.title %></h2>
+            <p>From <%= item.owner_name %></p>
             <div class="item-image">
                 <!-- Image Placeholder -->
             </div>
-            <p><%= itemDescription %></p>
-            <p><%= itemCategory %></p>
+            <p><%= item.description %></p>
+            <!-- <p><%= itemCategory %></p> -->
             <button class="interested-button">INTERESTED</button>
         </div>
        
