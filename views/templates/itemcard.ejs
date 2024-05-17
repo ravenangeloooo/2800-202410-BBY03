@@ -1,20 +1,21 @@
-<div class="card mb-3" style="max-width: 450px; max-height: 150px">
+<div class="card mb-3" style="max-width: 90%; ">
   <div class="row g-0">
     <div class="col-auto" style="margin-left: 15px">
       <img
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABLCAYAAAA4TnrqAAAAAXNSR0IArs4c6QAABRJJREFUeF7tmgVvJD0MhrNllZmZq4IK//8flJmrqszMdHojzSjxZSZjfd+euq0trXS9cdLJkze2421qcnLyS4klIpASWIk4aSeBlZyVwGKwElgCi0OA4SsxS2AxCDBcRVkCi0GA4SrKElgMAgxXUZbAYhBguIqyBBaDAMNVlCWwGAQYrqIsgcUgwHANlVVYWKiys7P10K+vL3V/f8+Y5ne4hrAmJiasFa+urqqHh4ffQSHhKlmw8vLyVHFxcTj14+Ojen5+TvirMt+NBauzs1NVVFSEq4byoMDfYgKLsdMhrKqqKpWTkxMOPT091YHeNFEW4xtpgSWwEh9E6xgGdRZGn52d6WOYn5+vamtr9YTl5eUKGTGw9/d3dXl5qX/Ev4+OjiJ/cSqVUmVlZaq0tFQVFRXpeWGfn5/q5eVF4dhfXV15X7yyslKPDwzjMB7zNzQ06ASUm5urf/74+FCvr6/q8PBQ3d7eWnMXFBRo/5KSkrC+xDyoL29ubvSHmjfAA1RLS4t3EXCYmppy+mFxvb29KisrK3YegNvd3Q03wOU8NDQUgsbz/f19DQshAoCi7O7uTq2vr+vHHR0dCtDjDHA3NjYsl7TDamxs1DvIsevra7W1teUcQmEBAtSRxE5OTrQqzVoxbhyUvr29Hbp4YVVXV6u2tjbvu0AVMzMzll97e7tClnUZ/KGEKDWcn59rlVGjsFxzI3zEqcy7GMNhZ2cnVLoXljkxJxsiJmFh1LC7BwcHYVmC2FFfX++EOjc3p2OhaVGwAAixCTEMG4G41dfXZx1Z+i7Hx8cKH8Q2xGOEHKpSxLC1tTU9NG2wBgYGFC7ngWExqPZxRXKZ67hi4Xt7e15YgLO4uKje3t7sGJNKqdHRUWeshD9iHTX63gA5OzubPljIeD09PdZ7YNfjsiWcu7u7dcYMzHzR4P9cykKQh2JdBnXRGAVfjHEZVN7U1GRt8vT0dPpgdXV1aVkHhqOEI+UzHMnBwUHLbWVlxVIjheUCak7gynxRWRvjXBsd+KflGGLBWHhgZtr2ARsbG7OODVUNhfX09KSWl5cjp21tbVU1NTXhc1ciMgcjZqHMMS2tsBAnzAIXL5i0lWPGObwwzYoUForHzc3NxLAQ1+bn5yP9/zks2kj0qSnuOW4ISN9RMcuVBMz5qLIQ1BHco+yfwkLKHhkZ+S98rLG0QKXK8iWObw0LxeD4+Li1YBxDmtaT0oRy8IlSVkbDwqIAy6ygUfihEP0/7EcpC0CGh4et7oQvCJsQ6WUbqjTtx8GihaCvFgpgoP0D0KYtLS1ZmfTHwXJdXXBtMWOP60hSyK6aKGNg0Wo4rjJ31Vq4G6KIdJmrb0ZbJBiXMbCam5tVXV2dtVYsCOkd2Q6VemDoWKJLQQ2B/uLiIsyOKELRXKT3N1y8FxYW/sqiGQML3UWoK8ronYve4M1xvp4Tmn/YBGoZAwsvTu9u5mIoLJQP6CTgcsqxuFLjW8CitREup674ghYKugquTmTUbR6KRNfU171ErwsXZ/M4U8j0kh7XnsFYGjpwR0WGjTK0nfv7+63Hf12kOTsPX0ALOgsoDbBAVzMtmBf1ExQWfLuDMgHjEOuwAPS68E3Mdzb5YzbG7ggsgcUgwHAVZQksBgGGqyhLYDEIMFxFWQKLQYDhKsoSWAwCDFdRlsBiEGC4irIEFoMAw1WUJbAYBBiuoiyBxSDAcBVlCSwGAYarKEtgMQgwXEVZDFh/ALBtsomIAAnHAAAAAElFTkSuQmCC"
+        src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/<%= item.image_id %>"
         class="img-fluid rounded-start; ms-1; mt-3"
         alt="..."
+        style="width: auto; height: 60%;"
       />
     </div>
     <div class="col-auto me-auto">
       <div class="card-body">
         <div>
-          <h5 class="card-title">Laptop</h5>
+          <h5 class="card-title"><%= item.title %></h5>
 
           <small class="text-body-secondary">Available</small>
           <br />
-          <small class="text-body-secondary">Visible to: Global</small>
+          <small class="text-body-secondary">Visible to: <%= item.visibility %></small>
         </div>
 
         <a href="/peopleInterested" class="btn btn-info" role="button"

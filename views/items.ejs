@@ -3,10 +3,10 @@
 <div class="container">
   <%- include("templates/collection") %>
   
-  <%- include("templates/itemcard") %>
-  <%- include("templates/itemcard") %>
-  <%- include("templates/itemcard") %>
-
+  
+  <% items.forEach(function(item){ %>
+    <%- include("templates/itemcard", {item: item}) %>
+  <% }) %>
 
 </div>
 
