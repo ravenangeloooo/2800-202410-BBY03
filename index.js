@@ -4,7 +4,11 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+var ObjectId = require('mongodb').ObjectId;
+
 const bcrypt = require('bcrypt');
+const { v4: uuid } = require('uuid');
+
 const saltRounds = 12;
 
 const port = process.env.PORT || 3000;
@@ -23,11 +27,33 @@ const mongodb_database = process.env.MONGODB_DATABASE;
 const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 
 const node_session_secret = process.env.NODE_SESSION_SECRET;
-/* END secret section */    
+
+const cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
+
+/* END secret section */
+
+
+/* Image database connection */
+const cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_CLOUD_KEY,
+    api_secret: process.env.CLOUDINARY_CLOUD_SECRET
+});
+
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
+
+
+
 
 var { database } = include('databaseConnection');
 
+/* Database collection */
 const userCollection = database.db(mongodb_database).collection('users');
+const itemCollection = database.db(mongodb_database).collection('items');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -77,11 +103,11 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-app.get('/collections', (req,res) => {
+app.get('/collections', (req, res) => {
     res.render('items');
 })
 
-app.get('/requests', (req,res) => {
+app.get('/requests', (req, res) => {
     res.render('requests');
 })
 
@@ -89,7 +115,7 @@ app.get('/login', (req, res) => {
     res.render("login");
 });
 
-app.get('/logout', (req,res) => {
+app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 })
@@ -111,7 +137,7 @@ app.post('/resetPassword', async (req, res) => {
         }
     );
 
-    const validationResult = schema.validate({email, birthdate, newPassword});
+    const validationResult = schema.validate({ email, birthdate, newPassword });
 
     if (validationResult.error != null) {
         console.log(validationResult.error);
@@ -119,7 +145,7 @@ app.post('/resetPassword', async (req, res) => {
         var error = validationResult.error.details[0].context.label;
         var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
 
-        res.render("resetError", {errormessage: errormessage});
+        res.render("resetError", { errormessage: errormessage });
     } else {
         // Find user by email and birthdate in the database
         const user = await userCollection.findOne({ email: email, birthdate: birthdate });
@@ -149,22 +175,44 @@ app.get('/editRequest', sessionValidation, (req, res) => {
 });
 
 //Post page
-app.get('/post', sessionValidation, (req,res)=>{
+app.get('/post', sessionValidation, (req, res) => {
     res.render('post');
-  });
+});
 
 //Group page
-app.get('/groups', sessionValidation, (req,res)=>{
+app.get('/groups', sessionValidation, (req, res) => {
     res.render('groups');
-  });
+});
 
 //Profile page
-app.get('/profile', sessionValidation, (req,res)=>{
+app.get('/profile', sessionValidation, (req, res) => {
     res.render('profile');
-  });
-  
+});
+
 app.get('/postItem', sessionValidation, (req, res) => {
     res.render('postItem');
+});
+
+app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
+    let image_uuid = uuid();
+    let title = req.body.title;
+    let description = req.body.description;
+    let visibility = req.body.visibility;
+    let user_id = req.session.user;
+
+    // let pet_id = req.body.pet_id;
+    // let user_id = req.body.user_id;
+    let buf64 = req.file.buffer.toString('base64');
+    stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+    
+        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: req.session.user_id });
+        console.log("Item Created:" + title);   
+    },
+        { public_id: image_uuid }
+    );
+    console.log(req.body);
+    console.log(req.file);
+    res.redirect('/collections');
 });
 
 app.get('/postRequest', sessionValidation, (req, res) => {
@@ -180,7 +228,7 @@ app.get('/editRequest', sessionValidation, (req, res) => {
 });
 
 //Signup form posts the form fields and validates all inputs 
-app.post('/signupSubmit', async (req,res) => {
+app.post('/signupSubmit', async (req, res) => {
     var username = req.body.username;
     var email = req.body.email;
     var password = req.body.password;
@@ -195,31 +243,31 @@ app.post('/signupSubmit', async (req,res) => {
         }
     );
 
-    const validationResult = schema.validate({username, email, password, birthdate});
+    const validationResult = schema.validate({ username, email, password, birthdate });
 
-	if (validationResult.error != null) {
+    if (validationResult.error != null) {
 
         //Sends an error message saying which field was missing
-	   console.log(validationResult.error);
+        console.log(validationResult.error);
 
-	   var error = validationResult.error.details[0].context.label;
-       var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
+        var error = validationResult.error.details[0].context.label;
+        var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
 
-       res.render("submitError", {errormessage: errormessage});
-    
+        res.render("submitError", { errormessage: errormessage });
+
     } else {
 
         //If the 3 fields are non-empty, adds the user to MongoDB database.
         var hashedPassword = await bcrypt.hash(password, saltRounds);
         console.log("hashedPassword:" + hashedPassword);
 
-        await userCollection.insertOne({username: username, email: email, password: hashedPassword, user_type: "user", birthdate: birthdate});
+        await userCollection.insertOne({ username: username, email: email, password: hashedPassword, user_type: "user", birthdate: birthdate });
         console.log("User Created:" + username);
 
         //Creates session and redirects the user to the /members page
         req.session.authenticated = true;
-		req.session.username = username;
-		req.session.cookie.maxAge = expireTime;
+        req.session.username = username;
+        req.session.cookie.maxAge = expireTime;
 
         res.redirect('/');
         return;
@@ -227,17 +275,17 @@ app.post('/signupSubmit', async (req,res) => {
 });
 
 //Discover Groups page
-app.get('/discoverGroups', sessionValidation, (req,res)=>{
+app.get('/discoverGroups', sessionValidation, (req, res) => {
     res.render('discoverGroups');
-  });
+});
 
-app.get('/peopleInterested', (req,res)=>{
+app.get('/peopleInterested', (req, res) => {
     res.render('peopleInterested');
-  });
+});
 
-app.get('/peopleOffering', (req,res)=>{
+app.get('/peopleOffering', (req, res) => {
     res.render('peopleOffering');
-  });
+});
 
 
 app.post('/loggingin', async (req, res) => {
@@ -245,7 +293,7 @@ app.post('/loggingin', async (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
 
-    
+
     const emailSchema = Joi.string().email().required();
     const { error: emailError } = emailSchema.validate(email);
     if (emailError) {
@@ -266,10 +314,11 @@ app.post('/loggingin', async (req, res) => {
         console.log("Correct password");
         // Store user information in session
         req.session.authenticated = true;
-        req.session.user_type =user.user_type;
+        req.session.user_type = user.user_type;
         req.session.email = email;
         req.session.name = user.name; // Store user's name in the session
         req.session.cookie.maxAge = expireTime;
+        req.session.user_id = user._id;
         return res.redirect('/');
     } else {
         // Incorrect password
