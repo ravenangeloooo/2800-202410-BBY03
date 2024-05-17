@@ -54,6 +54,7 @@ var { database } = include("databaseConnection");
 const userCollection = database.db(mongodb_database).collection("users");
 const groupCollection = database.db(mongodb_database).collection("groups");
 const itemCollection = database.db(mongodb_database).collection('items');
+const requestCollection = database.db(mongodb_database).collection('myrequests');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -239,11 +240,29 @@ app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req
 
 
 
-app.get("/postRequest", sessionValidation, (req, res) => {
+app.get("/postRequest", sessionValidation,(req, res) => {
   res.render("postRequest");
 });
 
-app.get("/editItem", sessionValidation, (req, res) => {
+app.post("/submitRequest", sessionValidation, async(req,res) => {  
+  const title = req.body.title;
+  const description = req.body.description;
+  const visibility = req.body.visibility;
+  const user_id = req.session.userId;
+
+  // const schema = Joi.object({
+  //   title: Joi.string().max(50).required(),
+  //   description: Joi.string().max(500).required(),
+  // });
+
+
+  const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility});
+  console.log("request create: " + title);
+  res.redirect('/collections');
+})
+
+
+app.get("/editItem", (req, res) => {
   res.render("editItem");
 });
 
