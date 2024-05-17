@@ -230,27 +230,7 @@ app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
     res.redirect('/collections');
 });
 
-app.post('/itemSubmit', upload.single('image'), function (req, res, next) {
-    let image_uuid = uuid();
-    let title = req.body.title;
-    let description = req.body.description;
-    let visibility = req.body.visibility;
-    let user_id = req.session.user;
 
-    // let pet_id = req.body.pet_id;
-    // let user_id = req.body.user_id;
-    let buf64 = req.file.buffer.toString('base64');
-    stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
-    
-        const success = await itemCollection.insertOne({ title: title, description: description, image: result.url, user_id: req.session.user_id });
-        console.log("Item Created:" + title);   
-    },
-        { public_id: image_uuid }
-    );
-    console.log(req.body);
-    console.log(req.file);
-    res.redirect('/collections');
-});
 
 app.get("/postRequest", (req, res) => {
   res.render("postRequest");
