@@ -159,10 +159,13 @@ nav ul li a img {
 
                     <div class="form-group">
                         <label for="visibility">Visibility</label>
-                        <select id="visibility" name="visibility">
+                        <select class="form-control" id="visibility" name="visibility">
                             <option value="global" selected>Global (default)</option>
-                            <option value="Group 1">Group 1</option>
-                            <option value="Group 2">Group 2</option>
+                            
+                            <% for (let group of groups) { %>
+                                <option value="<%= group.groupname %>"> <%= group.groupname %> </option>
+                            <% } %>
+                            
                         </select>
                     </div>
 
