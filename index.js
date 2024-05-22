@@ -111,7 +111,12 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
 
     item['owner_name'] = owner_name;
     console.log(item);
-    res.render('itemDetail', { item: item });
+
+    // Get the referer URL
+    const backUrl = req.headers.referer || '/';
+    console.log(backUrl);
+
+    res.render('itemDetail', { item: item, backUrl: backUrl });
 })
 
 
@@ -238,8 +243,20 @@ app.get("/profile", sessionValidation, (req, res) => {
 });
 
 
-app.get("/postItem", sessionValidation, (req, res) => {
-  res.render("postItem");
+app.get("/postItem", sessionValidation, async (req, res) => {
+    // Get the user ID from the session
+    const userId = req.session.userId;
+
+    // Fetch the groups the user is a member of from the database
+    const groups = await groupCollection
+    .find({ members: { $in: [userId] } })
+    .project({ groupname: 1, _id: 1 })
+    .toArray();
+
+    console.log(groups);
+
+    // Render the createItem page with the groups
+  res.render("postItem", { groups: groups });
 });
 
 app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req, res, next) {
@@ -266,8 +283,20 @@ app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req
 
 
 
-app.get("/postRequest", sessionValidation,(req, res) => {
-  res.render("postRequest");
+app.get("/postRequest", sessionValidation, async(req, res) => {
+  // Get the user ID from the session
+  const userId = req.session.userId;
+
+  // Fetch the groups the user is a member of from the database
+  const groups = await groupCollection
+  .find({ members: { $in: [userId] } })
+  .project({ groupname: 1, _id: 1 })
+  .toArray();
+
+  console.log(groups);
+
+  // Render the createItem page with the groups
+  res.render("postRequest", { groups: groups });
 });
 
 app.post("/submitRequest", sessionValidation, async(req,res) => {  
@@ -423,6 +452,7 @@ app.post("/loggingin", async (req, res) => {
   }
 });
 
+//DELETE LATER
 app.get("/itemDetail", sessionValidation, (req, res) => {
   const item = {
     itemName: "Name",
@@ -495,15 +525,50 @@ app.get('/groupProfile/:groupId', sessionValidation, async (req, res) => {
 
     const groups = await groupCollection.findOne({ _id: new mongodb.ObjectId(groupId) });
 
-    groups.groupname = groups.groupname.charAt(0).toUpperCase() + groups.groupname.slice(1);
+    groupname = groups.groupname.charAt(0).toUpperCase() + groups.groupname.slice(1);
+
+    let user_id = req.session.userId;
+
+    let items = await itemCollection.find({ user_id: { $ne: user_id }, visibility: groupname  }).toArray();
+    console.log(items);
 
     if (!groups) {
         // If no group was found, send a 404 error
         return res.status(404).send({ message: 'Group not found' });
     }
 
+    // Get the referer URL
+    const backUrl = req.headers.referer || '/';
+
     // Render the groupProfile page with the group data
-    res.render('groupProfile', { groups: groups, isMember: groups.members.includes(req.session.userId) });
+    res.render('groupProfile', { groups: groups, isMember: groups.members.includes(req.session.userId), items: items, backUrl: backUrl});
+});
+
+// Group Profile page for requests
+app.get('/groupProfile/:groupId/requests', sessionValidation, async (req, res) => {
+  const groupId = req.params.groupId; // Get the group ID from the route parameter
+
+  console.log(groupId);
+
+  const groups = await groupCollection.findOne({ _id: new mongodb.ObjectId(groupId) });
+
+  groupname = groups.groupname.charAt(0).toUpperCase() + groups.groupname.slice(1);
+
+  let user_id = req.session.userId;
+
+  let requests = await requestCollection.find({ user_id: { $ne: user_id }, visibility: groupname  }).toArray();
+  console.log(requests);
+
+  if (!groups) {
+      // If no group was found, send a 404 error
+      return res.status(404).send({ message: 'Group not found' });
+  }
+
+  // Get the referer URL
+  const backUrl = req.headers.referer || '/';
+
+  // Render the groupProfile page with the group data
+  res.render('groupProfileRequests', { groups: groups, isMember: groups.members.includes(req.session.userId), requests: requests, backUrl: backUrl});
 });
 
 app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
