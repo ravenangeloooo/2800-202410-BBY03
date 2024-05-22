@@ -55,6 +55,7 @@ const userCollection = database.db(mongodb_database).collection("users");
 const groupCollection = database.db(mongodb_database).collection("groups");
 const itemCollection = database.db(mongodb_database).collection('items');
 const requestCollection = database.db(mongodb_database).collection('myrequests');
+const ratingCollection = database.db(mongodb_database).collection('ratings');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -690,6 +691,110 @@ app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
     // Redirect the user back to the group profile page
     res.redirect('/groupProfile/' + groupId);
 });
+
+
+//Other User Profile page
+app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
+  const userProfileId = req.params.userProfileId; // Get the group ID from the route parameter
+
+  console.log(userProfileId);
+
+  const users = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+
+  // let user_id = req.session.userId;
+
+  if (!users) {
+    // If no group was found, send a 404 error
+    return res.status(404).send({ message: 'Group not found' });
+  }
+
+  let ratings = await ratingCollection.find({ userProfileId: new mongodb.ObjectId(userProfileId) }).toArray();
+  console.log(ratings);
+
+  // Calculate the average rating to display on the user's profile
+  let averageRating = 0;
+
+  if (ratings.length > 0) {
+    let sum = 0;
+
+    for (let rating of ratings) {
+      sum += Number(rating.value);
+    }
+
+  console.log(sum);
+  averageRating = sum / ratings.length;
+  }
+  
+  // Get the referer URL
+  const backUrl = req.headers.referer || '/';
+  console.log(backUrl);
+
+  // Render the groupProfile page with the group data
+  res.render('userProfile', { users: users, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
+});
+
+
+// Rate User page
+app.get('/userProfile/:userProfileId/rateUser', sessionValidation, async (req, res) => {
+  const userProfileId = req.params.userProfileId; // Get the group ID from the route parameter
+  const userId = req.session.userId; // Get the current user's ID from the session
+
+  console.log(userProfileId);
+  console.log(userId);
+
+  if (userProfileId === userId) {
+    // If the user is trying to rate themselves, send an error message
+    return res.status(400).send({ message: 'You cannot rate yourself' });
+  }
+
+  const users = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+
+  if (!users) {
+      // If no group was found, send a 404 error
+      return res.status(404).send({ message: 'Group not found' });
+  }
+
+  // Get the referer URL
+  const backUrl = req.headers.referer || '/';
+  console.log(backUrl);
+
+  // Render the groupProfile page with the group data
+  res.render('userRating', { users: users, backUrl: backUrl});
+});
+
+
+// Submit user rating
+app.post('/userProfile/:userProfileId/submitRating', sessionValidation, async (req, res) => {
+    const userProfileId = req.params.userProfileId; // Get the user ID from the route parameter
+    const userId = req.session.userId; // Get the current user's ID from the session
+    const ratingValue = req.body.rating; // Get the rating from the request body
+    const ratingEmoji = req.body.emoji; // Get the emoji from the request body
+
+    // Fetch the user from your database
+    const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
+
+    
+    if (!user) {
+      // If no user was found, send a 404 error
+      return res.status(404).send({ message: 'User not found' });
+  }
+
+    // Create a new rating document
+    const newRating = {
+    userProfileId: new mongodb.ObjectId(userProfileId),
+    ratedBy: new mongodb.ObjectId(userId),
+    value: ratingValue,
+    emoji: ratingEmoji
+    
+  };
+
+    // Insert the new rating into the ratingCollection
+    await ratingCollection.insertOne(newRating);
+
+    // Redirect to the user's profile
+    res.redirect(`/userProfile/${userProfileId}`);
+});
+
 
 
 app.use(express.static(__dirname + "/public"));
