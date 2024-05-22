@@ -1,36 +1,36 @@
 <%- include("templates/header") %>
+<form action="/updateItem" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="item_id" value="<%= item._id %>">
     <div class="container p-0" style="height: 110vh; overflow-y: auto;">
         <div class="p-4 mt-2">
             <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-light fs-6">Cancel</button>
+                <a href = "/collections"><button type="button" class="btn btn-light fs-6">Cancel</button></a>
                 <h3>Edit Item</h3>
-                <button type="button" class="btn btn-light fs-6">Update</button>
+                <button type="submit" class="btn btn-light fs-6">Update</button>
             </div>
             <div class="d-flex justify-content-center my-3">
-                <img id="uploadedimg" src="https://dummyimage.com/285x390/000/fff&text=Item+photo"
+                <img id = "imagePreview" src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/<%= item.image_id %>"
                     style="max-width: 400px; max-height: 400px;" height="300px" />
             </div>
 
             <div class="d-flex justify-content-center py-1">
-                <button class="btn bg-secondary-subtle">
-                    <input type="file" id="mypic-input" accept="image/*" />
-                </button>
+                <input type="file" id="mypic-input" name="image" accept="image/*" /> <!--Change Image Functionality needs update -->
             </div>
         </div>
         <div class="container">
             <div class="form-floating py-3">
-                <input name="title" type="title" class="form-control" placeholder="title">
+                <input name="title" type="title" class="form-control" placeholder="title" value="<%= item.title %>">
                 <label for="floatingInput">Title</label>
             </div>
 
             <div class="form-floating py-3">
-                <input name="description" type="description" class="form-control" placeholder="description">
+                <input name="description" type="description" class="form-control" placeholder="description" value="<%= item.description %>">
                 <label for="floatingInput">Description</label>
             </div>
 
             <div class="form-floating py-3">
-                <select class="form-select" id="visibility" required="">
-                    <option selected>Global</option>
+                <select class="form-select" id="visibility" name="visibility" required="">
+                    <option selected><%= item.visibility %></option>
                     <option>Group 1</option>
                     <option>Group 2</option> 
                     <!--Create a function that includes all the groups that user is in-->
@@ -61,5 +61,22 @@
                 </div>
             </div>
         </div>
+    </div>
+</form>
+<script>
+    const imageUpload = document.getElementById('mypic-input');
+    const imagePreview = document.getElementById('imagePreview');
 
+    imageUpload.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+</script>
 <%- include("templates/footer") %>

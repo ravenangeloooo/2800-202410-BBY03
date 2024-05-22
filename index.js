@@ -217,14 +217,90 @@ app.post("/resetPassword", async (req, res) => {
   }
 });
 
-app.get("/editItem", sessionValidation, (req, res) => {
-  res.render("editItem");
+app.get("/editItem", sessionValidation, async (req, res) => {
+  console.log("Query parameters: ", req.query);
+
+  let item_id = req.query.id;
+  console.log("Item ID: ", item_id);
+
+  let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
+  console.log("Fetched item: ", item);
+  
+  res.render("editItem", { item: item });
 });
 
-app.get("/editRequest", sessionValidation, (req, res) => {
-  res.render("editRequest");
+app.get("/editRequest", sessionValidation, async (req, res) => {
+  console.log("Query parameters: ", req.query);
+
+  let request_id = req.query.id;
+  console.log("Item ID: ", request_id);
+
+  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
+  console.log("Fetched Request: ", request);
+  
+  res.render("editRequest", { request: request });
 });
 
+app.post("/updateItem", sessionValidation, upload.single('image'), async (req, res) => {
+  console.log("Request body: ", req.body);
+
+  let item_id = req.body.item_id;
+  let title = req.body.title;
+  let description = req.body.description;
+  let visibility = req.body.visibility;
+
+  let updateData = { title: title, description: description, visibility: visibility };
+
+  if (req.file) {
+    let image_uuid = uuid(); // Generate a new UUID for the new image
+
+    // Convert the image buffer to base64
+    let buf64 = req.file.buffer.toString('base64');
+
+    // Upload the new image to Cloudinary
+    cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+      // Update the image_id in the updateData object
+      updateData.image_id = image_uuid;
+
+      // Update the item in the database with the new data
+      await itemCollection.updateOne(
+        { _id: new mongodb.ObjectId(item_id) },
+        { $set: updateData }
+      );
+
+      console.log("Item Updated:" + title);
+      res.redirect("/collections"); // maybe include a modal?
+    }, { public_id: image_uuid });
+  } else {
+    // If no new image is uploaded, just update the item with the new data
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(item_id) },
+      { $set: updateData }
+    );
+
+    console.log("Item Updated:" + title);
+    res.redirect("/collections"); // maybe include a modal?
+  }
+});
+
+app.post("/updateRequest", sessionValidation, async (req, res) => {
+  console.log("Request body: ", req.body);
+
+  let request_id = req.body.request_id;
+  let title = req.body.title;
+  let description = req.body.description;
+  let visibility = req.body.visibility;
+
+  // Update the request in the database with the new data
+  let updateData = { title: title, description: description, visibility: visibility };
+  await requestCollection.updateOne(
+    { _id: new mongodb.ObjectId(request_id) },
+    { $set: updateData }
+  );
+
+  console.log("Request Updated:" + title);
+  res.redirect("/myRequests"); // maybe include a modal?
+});
 //Post page
 app.get('/post', sessionValidation, (req, res) => {
     res.render('post');
@@ -333,15 +409,6 @@ app.post("/submitRequest", sessionValidation, async(req,res) => {
   console.log("request create: " + title);
   res.redirect('/collections');
 })
-
-
-app.get("/editItem", (req, res) => {
-  res.render("editItem");
-});
-
-app.get("/editRequest", sessionValidation, (req, res) => {
-  res.render("editRequest");
-});
 
 //Signup form posts the form fields and validates all inputs
 app.post("/signupSubmit", async (req, res) => {
