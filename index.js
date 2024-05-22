@@ -16,7 +16,7 @@ const app = express();
 
 const Joi = require("joi");
 
-const expireTime = 1 * 60 * 60 * 1000; //expires after 1 hour  (hour * minutes * seconds * millis)
+const expireTime = 168 * 60 * 60 * 1000; //expires after 1 hour  (hour * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -98,6 +98,22 @@ app.get("/", sessionValidation, async (req, res) => {
   console.log(items);
   res.render("index", { items: items });
 });
+
+app.get('/itemDetail', sessionValidation, async (req, res) => {
+    let item_id = req.query.id;
+    console.log(item_id);
+    let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
+    console.log(item);
+    let owner_id = item.user_id;
+    console.log(owner_id);
+    let owner = await userCollection.findOne({ _id: new mongodb.ObjectId(owner_id) });
+    let owner_name = owner.displayname; 
+
+    item['owner_name'] = owner_name;
+    console.log(item);
+    res.render('itemDetail', { item: item });
+})
+
 
 //Sign up for a new account
 app.get("/signup", (req, res) => {
