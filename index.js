@@ -235,47 +235,30 @@ app.post("/updateItem", sessionValidation, upload.single('image'), async (req, r
     let buf64 = req.file.buffer.toString('base64');
 
     // Upload the new image to Cloudinary
-    await cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, { public_id: image_uuid });
+    cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+      // Update the image_id in the updateData object
+      updateData.image_id = image_uuid;
 
-    // Update the image_id in the updateData object
-    updateData.image_id = image_uuid;
+      // Update the item in the database with the new data
+      await itemCollection.updateOne(
+        { _id: new mongodb.ObjectId(item_id) },
+        { $set: updateData }
+      );
+
+      console.log("Item Updated:" + title);
+      res.redirect("/collections"); // maybe include a modal?
+    }, { public_id: image_uuid });
+  } else {
+    // If no new image is uploaded, just update the item with the new data
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(item_id) },
+      { $set: updateData }
+    );
+
+    console.log("Item Updated:" + title);
+    res.redirect("/collections"); // maybe include a modal?
   }
-
-  // Update the item in the database with the new data
-  await itemCollection.updateOne(
-    { _id: new mongodb.ObjectId(item_id) },
-    { $set: updateData }
-  );
-
-  console.log("Item Updated:" + title);
-  res.redirect("/collections"); // maybe include a modal?
 });
-
-// app.post("/updateItem", sessionValidation, upload.single('image'), async (req, res) => {
-//   console.log("Request body: ", req.body);
-
-//   let item_id = req.body.item_id;
-//   let title = req.body.title;
-//   let description = req.body.description;
-//   let visibility = req.body.visibility;
-//   let image_uuid = uuid(); // Generate a new UUID for the new image
-
-//   // Convert the image buffer to base64
-//   let buf64 = req.file.buffer.toString('base64');
-
-//   // Upload the new image to Cloudinary
-//   cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
-//     // Update the item in the database with the new data and new image_id
-//     let updateData = { title: title, description: description, visibility: visibility, image_id: image_uuid };
-//     await itemCollection.updateOne(
-//       { _id: new mongodb.ObjectId(item_id) },
-//       { $set: updateData }
-//     );
-
-//     console.log("Item Updated:" + title);
-//     res.redirect("/collections"); // maybe include a modal?
-//   }, { public_id: image_uuid });
-// });
 
 app.post("/updateRequest", sessionValidation, async (req, res) => {
   console.log("Request body: ", req.body);
