@@ -301,6 +301,27 @@ app.post("/updateRequest", sessionValidation, async (req, res) => {
   console.log("Request Updated:" + title);
   res.redirect("/myRequests"); // maybe include a modal?
 });
+
+app.post("/items/:id/delete", async (req, res) => {
+  let itemId = req.params.id;
+
+  // Delete the item from the database
+  await itemCollection.deleteOne({ _id: new mongodb.ObjectId(itemId) });
+
+  console.log("Item Deleted:" + itemId);
+  res.redirect("/collections");
+});
+
+app.post("/requests/:id/delete", async (req, res) => {
+  let requestId = req.params.id;
+
+  // Delete the request from the database
+  await requestCollection.deleteOne({ _id: new mongodb.ObjectId(requestId) });
+
+  console.log("Request Deleted:" + requestId);
+  res.redirect("/myRequests");
+});
+
 //Post page
 app.get('/post', sessionValidation, (req, res) => {
     res.render('post');

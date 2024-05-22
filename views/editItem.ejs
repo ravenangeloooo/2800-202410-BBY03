@@ -1,7 +1,7 @@
 <%- include("templates/header") %>
 <form action="/updateItem" method="post" enctype="multipart/form-data">
     <input type="hidden" name="item_id" value="<%= item._id %>">
-    <div class="container p-0" style="height: 110vh; overflow-y: auto;">
+    <div class="container p-0" style="height: 90vh; overflow-y: auto;">
         <div class="p-4 mt-2">
             <div class="d-flex justify-content-between">
                 <a href = "/collections"><button type="button" class="btn btn-light fs-6">Cancel</button></a>
@@ -52,13 +52,16 @@
                     Please select a valid status. 
                 </div>
             </div>
+        </div>
+    </div>
+</form>
 
-            <div class="btn-lg">
-                <div class="row mx-auto mt-3">
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-danger">Delete</button>
-                    </div>
-                </div>
+<!-- New form for the delete button -->
+<form action="/items/<%= item._id %>/delete" method="POST" style="margin-bottom: 100px;">
+    <div class="btn-lg">
+        <div class="row mx-auto">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-danger" type="submit">Delete</button>
             </div>
         </div>
     </div>

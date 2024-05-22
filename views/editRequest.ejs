@@ -1,7 +1,7 @@
 <%- include("templates/header") %>
 <form action="/updateRequest" method="post">
     <input type="hidden" name="request_id" value="<%= request._id %>">
-    <div class="container p-0" style="height: 110vh; overflow-y: auto;">
+    <div class="container p-0" style="height: 50vh; overflow-y: auto;">
         <div class="p-4 mt-2">
             <div class="d-flex justify-content-between">
                 <a href="/myRequests"><button type="button" class="btn btn-light fs-6">Cancel</button></a>
@@ -43,12 +43,15 @@
                 Please select a valid status.
             </div>
         </div>
+    </div>
+</form>
 
-        <div class="btn-lg">
-            <div class="row mx-auto mt-3">
-                <div class="d-flex justify-content-center">
-                    <button class="btn btn-danger">Delete</button>
-                </div>
+<!-- New form for the delete button -->
+<form action="/requests/<%= request._id %>/delete" method="POST" style="margin-bottom: 100px;">
+    <div class="btn-lg">
+        <div class="row mx-auto">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-danger" type="submit">Delete</button>
             </div>
         </div>
     </div>
