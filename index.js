@@ -92,12 +92,30 @@ app.get("/", sessionValidation, async (req, res) => {
   var user = isValidSession(req);
   let user_id = req.session.userId;
 
-  // let items = await itemCollection.find({user_id: user_id}).toArray();
+  let items = await itemCollection
+  .find({ user_id: { $ne: user_id } })
+  .toArray();
 
-  let items = await itemCollection.find({ user_id: { $ne: user_id } }).toArray();
-  console.log(items);
   res.render("index", { items: items });
 });
+
+app.get("/requests", sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+
+  let requests = await requestCollection
+    .find({ user_id: { $ne: user_id } })
+    .toArray();
+
+  res.render("requests", { requests: requests });
+  
+
+});
+
+
+
+
+
+
 
 app.get('/itemDetail', sessionValidation, async (req, res) => {
     let item_id = req.query.id;
