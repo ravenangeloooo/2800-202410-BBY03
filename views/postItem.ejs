@@ -183,8 +183,10 @@ nav ul li a img {
                             <option value="Group 2">Group 2</option>
                         </select>
                     </div>
+                    <!-- Add a timestamp input -->
+                    <input type="hidden" id="timestamp" name="timestamp" value="">
 
-                    <button type="submit">Submit</button>
+                    <button type="submit" onclick="document.getElementById('timestamp').value = new Date().toISOString();">Submit</button>
                     <br>
                     <br>
                     <br>
