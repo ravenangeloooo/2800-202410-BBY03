@@ -17,12 +17,12 @@
 
     <div class="row g-0 p-2">
         <div class="d-flex flex-column align-items-center text-center p-2">
-            <img src="https://dummyimage.com/450x390/000/fff&amp;text=Profile+pics"
+            <img src="<%= users.image_url ? users.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture"
                 class="img-fluid" alt="..." style="width: 200px; height: 200px; border-radius: 50%;"/>
         </div>
         <div class="d-flex flex-column align-items-center text-center">
-                    <h5 class="card-title"><i><%= users.displayname %></i></h5>
-                    <!-- <p class="card-title"><%= users.description %></p> -->
+                    <h5 class="card-title"><%= users.displayname %></h5>
+                    <p class="card-title"><%= users.description %></p>
         </div>
     </div>
     <div class="container">
