@@ -334,9 +334,17 @@ app.get("/groups", sessionValidation, async (req, res) => {
 
   const result = await groupCollection
     .find({ members: { $in: [userId] } })
-    .project({ groupname: 1, _id: 1, image_id: 1})
+    .project({ groupname: 1, _id: 1, image_id: 1, createdBy: 1})
     .toArray();
   console.log(result);
+
+  // Field to each group indicating whether the user in session is the creator of the group
+  result.forEach((group) => {
+    group.isCreatedByUser = group.createdBy.toString() === userId.toString();
+  });
+
+  // Sort the groups based on whether the user in session is the creator of the group
+  result.sort((a, b) => b.isCreatedByUser - a.isCreatedByUser);
 
   //Capitalizes the first letter of each username
   result.forEach((group) => {
