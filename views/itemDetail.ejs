@@ -101,7 +101,10 @@ body {
                 <img src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_200,h_200/<%= item.image_id %>" alt="Back" width="200px">
             </div>
             <p><%= item.description %></p>
-            <button class="interested-button">INTERESTED</button>
+            <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
+                <h4>INTERESTED</h4></a
+              >
+            <!-- <button a="/interested" class="interested-button">INTERESTED</button> -->
         </div>
        
     </div>
