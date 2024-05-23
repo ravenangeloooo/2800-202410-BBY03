@@ -646,6 +646,22 @@ app.get("/discoverGroups", sessionValidation, async (req, res) => {
   res.render("discoverGroups", { groups: result });
 });
 
+app.get("/discoverGroups/search", async (req, res) => {
+  let searchTerm = req.query.search;
+  console.log("Search term: ", searchTerm);
+
+  // Query the database with the search term
+  let groups = await groupCollection.find({ groupname: new RegExp(searchTerm, 'i') }).toArray();
+
+  if (groups.length > 0) {
+    // If there are groups that match the search term, render the items page with the search results
+    res.render("discoverGroups", { groups: groups });
+  } else {
+    // If no match, redirect to collections page
+    res.redirect("/discoverGroups");
+  }
+});
+
 app.get("/peopleInterested", (req, res) => {
   res.render("peopleInterested");
 });
