@@ -135,8 +135,31 @@ app.get("/haveOne/:id", sessionValidation, async (req, res) => {
         peopleHave: [...oldPeopleHave, req.session.userId]
       }
     });
-  res.redirect("/");
 
+
+  //For notification
+
+  //user who has the item
+  const userHave = await userCollection.findOne({ _id: new mongodb.ObjectId(req.session.userId) });
+
+  //request owner
+  const requestOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
+
+  //Create a notification
+  const notification = {
+    message: `${userHave.username} has an item for your request ${request.title}`,
+    date: new Date()
+  };
+
+  // Add the notification to the request owner's notifications array
+  requestOwner.notifications.push(notification);
+
+  // Update the request owner document in the database
+  await userCollection.updateOne({ _id: requestOwner._id }, { $set: { notifications: requestOwner.notifications } });
+
+
+  res.redirect("/");
+  
 })
 
 app.get("/interested/:id", sessionValidation, async (req, res) => {
@@ -152,6 +175,29 @@ app.get("/interested/:id", sessionValidation, async (req, res) => {
         peopleinterested: [...oldPeopleInterested, req.session.userId]
       }
     });
+
+  
+  //For notification
+
+  //user who is interested
+  const interestedUser = await userCollection.findOne({ _id: new mongodb.ObjectId(req.session.userId) });
+
+  //item owner
+  const itemOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(item.user_id) });
+
+  //Create a notification
+  const notification = {
+    message: `${interestedUser.username} is interested in your item ${item.title}`,
+    date: new Date()
+  };
+
+  // Add the notification to the item owner's notifications array
+  itemOwner.notifications.push(notification);
+
+  // Update the item owner document in the database
+  await userCollection.updateOne({ _id: itemOwner._id }, { $set: { notifications: itemOwner.notifications } });
+
+
   res.redirect("/");
 
 })
