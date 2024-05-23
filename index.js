@@ -430,7 +430,10 @@ app.get('/profile', sessionValidation, async (req, res) => {
   console.log('User:', user);
   console.log('User description:', user.description);
 
-  res.render('profile', { user: user });
+  // Check if the user has a notifications property
+  const notifications = user.notifications ? user.notifications : [];
+
+  res.render('profile', { user: user, notifications: notifications});
 });
 
 

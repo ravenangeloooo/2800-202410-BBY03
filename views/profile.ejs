@@ -79,12 +79,61 @@
                     </div>
                 </div>
             </div>
+            <div class="mt-4">
+                <h4>Notifications</h4>
+                <% if (notifications.length > 0) { %>
+                    <% notifications.forEach(function(notification) { %>
+                        <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                      <p><%= notification.message %></p>
+                                      <p class="timeDifference" data-timestamp="<%= notification.date %>" ></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                        <div class="d-flex gap-2 w-100 justify-content-between">
+                            <div>
+                                <p>You have no notifications.</p>
+                            </div>
+                        </div>
+                    </div>
+                            <% } %>
+                       
+    
+                    
+                 
+            </div>
           </div>
       </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+    for (var i = 0; i < timeDifferenceElements.length; i++) {
+        var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+  
+        var now = new Date();
+        var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+  
+        var timeDifferenceText;
+        if (diffInMinutes >= 1440) { // 1440 minutes in a day
+            var diffInDays = Math.round(diffInMinutes / 1440);
+            timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+        } else if (diffInMinutes >= 60) {
+            var diffInHours = Math.round(diffInMinutes / 60);
+            timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+        } else {
+            timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+        }
+  
+        timeDifferenceElements[i].textContent = timeDifferenceText;
+    }
+  </script>
 </body>
 
 
