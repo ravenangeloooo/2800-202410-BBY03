@@ -84,28 +84,45 @@ body {
     <br>
     <br>
 
-    <div class="containers">
+    <div class="containers my-5 py-4">
     
 
             
         <div class="row container item-details">
             <div class="col-auto p-1 back-button">
                 <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
+            </div>
+
+            <div class="col-auto">
                 <h2><%= item.title %></h2>
             </div>
-            
-            <p>From <%= item.owner_name %></p>
-            <p class="timeDifference" data-timestamp="<%= item.timestamp %>" ></p>
+
+            </div>
+
+            <div class="item-details">
+                             
             <div class="item-image">
                 <!-- Image Placeholder -->
 
                 <img src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_200,h_200/<%= item.image_id %>" alt="Back" width="200px">
             </div>
-            <p><%= item.description %></p>
+            
+            
+            <!-- <button a="/interested" class="interested-button">INTERESTED</button> -->
+
+            </div>
+
+            <div class="container item-details">
+            <p class="timeDifference" data-timestamp="<%= item.timestamp %>" ></p>
+            <p>Owner: <%= item.owner_name %></p>
+            <p>Description: <%= item.description %></p>
+            
+            
+            <!-- <button class="interested-button mt-4">INTERESTED</button> -->
             <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
                 <h4>INTERESTED</h4></a
               >
->>>>>>> Aira_Bassig_fixContainers
+
         </div>
        
     </div>
