@@ -168,8 +168,10 @@ nav ul li a img {
                             
                         </select>
                     </div>
+                    <!-- Add a timestamp input -->
+                    <input type="hidden" id="timestamp" name="timestamp" value="">
 
-                    <button type="submit">Submit</button>
+                    <button type="submit" onclick="document.getElementById('timestamp').value = new Date().toISOString();">Submit</button>
                 </form>
             </main>
 
