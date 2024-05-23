@@ -534,6 +534,7 @@ app.post("/signupSubmit", async (req, res) => {
     email,
     password,
     birthdate,
+    notifications: []
   });
 
   if (validationResult.error != null) {
