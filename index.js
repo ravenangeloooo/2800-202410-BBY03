@@ -149,6 +149,26 @@ app.get("/collections", sessionValidation, async (req, res) => {
 
 });
 
+app.get("/collections/search", async (req, res) => {
+  let searchTerm = req.query.search;
+  console.log("Search term: ", searchTerm);
+
+  // Query the database with the search term
+  let items = await itemCollection.find({ title: new RegExp(searchTerm, 'i') }).toArray();
+  let requests = await requestCollection.find({ title: new RegExp(searchTerm, 'i') }).toArray();
+
+  if (items.length > 0) {
+    // If there are items that match the search term, render the items page with the search results
+    res.render("items", { items: items });
+  } else if (requests.length > 0) {
+    // If there are requests that match the search term, render the requests page with the search results
+    res.render("myRequests", { requests: requests });
+  } else {
+    // If no match, redirect to collections page
+    res.redirect("/collections");
+  }
+});
+
 app.get("/myRequests", sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
   let requests = await requestCollection.find({user_id: user_id}).toArray();
