@@ -267,7 +267,7 @@ app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req
     let visibility = req.body.visibility;
     let user_id = req.session.userId;
     let timestamp = req.body.timestamp;
-    let status = "available";
+    let status = "Available";
 
     // let pet_id = req.body.pet_id;
     // let user_id = req.body.user_id;
@@ -296,7 +296,7 @@ app.post("/submitRequest", sessionValidation, async(req,res) => {
   const visibility = req.body.visibility;
   const user_id = req.session.userId;
   let timestamp = req.body.timestamp;
-  let status = "active";
+  let status = "Active";
 
 
   // const schema = Joi.object({
