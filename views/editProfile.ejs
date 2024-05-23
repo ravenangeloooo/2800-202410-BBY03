@@ -1,0 +1,90 @@
+<%- include("templates/header") %>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container-custom {
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .profile-img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+        }
+        .form-control {
+            margin-bottom: 20px;
+        }
+        .form-floating > label {
+            top: -5px;
+            left: 0.75rem;
+            padding: 0 0.25rem;
+            pointer-events: none;
+            transition: all 0.1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <form action="/updateProfile" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="user_id" value="<%= user._id %>">
+        <div class="container-custom p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="/profile" class="btn btn-secondary">Cancel</a>
+                <h5>Edit</h5>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+            <div class="text-center mb-4">
+                <img id="imagePreview" src="<%= user.image_id ? 'https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/' + user.image_id : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture">
+                <input type="file" id="mypic-input" name="image" accept="image/*" class="form-control mt-3" style="display: none;">
+                <button type="button" class="btn btn-outline-primary mt-2" onclick="document.getElementById('mypic-input').click();">Change Profile Picture</button>
+            </div>
+            <div class="form-group">
+                <label for="displayname">Display Name</label>
+                <input type="text" name="displayname" class="form-control" id="displayname" placeholder="Enter display name" value="<%= user.displayname %>">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" value="<%= user.email %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="birthdate">Date of Birth</label>
+                <input type="date" name="birthdate" class="form-control" id="birthdate" value="<%= user.birthdate %>">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" class="form-control" id="description" placeholder="Enter description"><%= user.description %></textarea>
+            </div>
+        </div>
+    </form>
+    
+    <script>
+        document.getElementById('mypic-input').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+
+<br>
+<br>
+<br>
+<br>
+
+<%- include("templates/footer") %>

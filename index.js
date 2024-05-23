@@ -249,15 +249,25 @@ app.get("/groups", sessionValidation, async (req, res) => {
   res.render("groups", { groups: result });
 });
 
-//Profile page
-app.get("/profile", sessionValidation, (req, res) => {
-  res.render("profile", {
-    user: {
-      name: req.session.name,
-      email: req.session.email,
-      birthdate: req.session.birthdate,
-    },
-  });
+
+app.get('/profile', sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+
+  if (!user_id) {
+    return res.status(400).send('User ID is required');
+  }
+
+  let user = await userCollection.findOne({ _id: new mongodb.ObjectId(user_id) });
+  console.log(user.image_id);
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  console.log('User:', user);
+  console.log('User description:', user.description);
+
+  res.render('profile', { user: user });
 });
 
 
@@ -603,6 +613,82 @@ app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
     res.redirect('/groupProfile/' + groupId);
 });
 
+
+app.get('/editProfile', sessionValidation, async (req, res) => {
+  console.log("Query parameters: ", req.query);
+
+  // let user_id = req.query.id;
+  let user_id = req.session.userId;
+  console.log("User ID: ", user_id);
+
+  if (!user_id) {
+    return res.status(400).send('User ID is required');
+  }
+
+  let user = await userCollection.findOne({ _id: new mongodb.ObjectId(user_id) });
+  console.log("Fetched user: ", user);
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  res.render("editProfile", { user: user });
+});
+
+
+app.post("/updateProfile", sessionValidation, upload.single('image'), async (req, res) => {
+  console.log("Request body: ", req.body);
+  
+  let user_id = req.body.user_id;
+  let displayname = req.body.displayname;
+  
+  let description = req.body.description;
+  let birthdate = req.body.birthdate;
+
+  let updateData = { displayname: displayname, description: description, birthdate: birthdate };
+  // let updateData = { title: title, description: description, visibility: visibility };
+
+  if (req.file) {
+    let image_uuid = uuid(); // Generate a new UUID for the new image
+
+    // Convert the image buffer to base64
+    let buf64 = req.file.buffer.toString('base64');
+
+    // Upload the new image to Cloudinary
+    cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (error, result) {
+      if (error) {
+        // Handle the error
+        console.error('Upload to Cloudinary failed:', error);
+        return res.status(500).send('Upload to Cloudinary failed');
+      }
+    
+      // Update the image_id in the updateData object
+      updateData.image_id = image_uuid;
+    
+      // Update the user in the database with the new data
+      await userCollection.updateOne(
+        { _id: new mongodb.ObjectId(user_id) },
+        { $set: updateData }
+      );
+    
+      console.log("UserProfile Updated:" + displayname);
+      res.redirect("/profile"); // maybe include a modal?
+    }, { public_id: image_uuid });
+  } else {
+    // If no new image is uploaded, just update the item with the new data
+    await userCollection.updateOne(
+      { _id: new mongodb.ObjectId(user_id) },
+      { $set: updateData }
+    );
+    // await itemCollection.updateOne(
+    //   { _id: new mongodb.ObjectId(item_id) },
+    //   { $set: updateData }
+    // );
+
+    console.log("Profile Updated:" + displayname);
+    res.redirect("/profile"); // maybe include a modal?
+  }
+});
 
 app.use(express.static(__dirname + "/public"));
 
