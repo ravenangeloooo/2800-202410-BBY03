@@ -112,7 +112,49 @@ app.get("/requests", sessionValidation, async (req, res) => {
 
 });
 
+app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
+  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(req.params.id) });
+  let user = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
 
+  console.log('request', request)
+  console.log('user', user.displayname)
+
+  res.render("templates/reqDetails", { request: request, user: user.displayname});  
+})
+
+app.get("/haveOne/:id", sessionValidation, async (req, res) => {
+  const requestId = new mongodb.ObjectId(req.params.id)
+  let request = await requestCollection.findOne({ _id: requestId });
+  // create empty array to prevent error if null
+  const oldPeopleHave = request.peopleHave || [];
+
+  requestCollection.updateOne(
+    { _id: requestId },
+    { $set: {
+        //spread out to prevent array in array
+        peopleHave: [...oldPeopleHave, req.session.userId]
+      }
+    });
+  res.redirect("/");
+
+})
+
+app.get("/interested/:id", sessionValidation, async (req, res) => {
+  const itemId = new mongodb.ObjectId(req.params.id)
+  let item = await itemCollection.findOne({ _id: itemId });
+  // create empty array to prevent error if null
+  const oldPeopleInterested = item.peopleinterested || [];
+
+  itemCollection.updateOne(
+    { _id: itemId },
+    { $set: {
+        //spread out to prevent array in array
+        peopleinterested: [...oldPeopleInterested, req.session.userId]
+      }
+    });
+  res.redirect("/");
+
+})
 
 app.get('/itemDetail', sessionValidation, async (req, res) => {
     let item_id = req.query.id;
