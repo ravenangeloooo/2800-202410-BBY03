@@ -95,6 +95,7 @@ body {
             </div>
             
             <p>From <%= item.owner_name %></p>
+            <p class="timeDifference" data-timestamp="<%= item.timestamp %>" ></p>
             <div class="item-image">
                 <!-- Image Placeholder -->
 
@@ -106,5 +107,28 @@ body {
        
     </div>
 </body>
+
+<script>
+    var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+    for (var i = 0; i < timeDifferenceElements.length; i++) {
+        var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+  
+        var now = new Date();
+        var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+  
+        var timeDifferenceText;
+        if (diffInMinutes >= 1440) { // 1440 minutes in a day
+            var diffInDays = Math.round(diffInMinutes / 1440);
+            timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+        } else if (diffInMinutes >= 60) {
+            var diffInHours = Math.round(diffInMinutes / 60);
+            timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+        } else {
+            timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+        }
+  
+        timeDifferenceElements[i].textContent = timeDifferenceText;
+    }
+  </script>
 
 <%- include("templates/footer") %>
