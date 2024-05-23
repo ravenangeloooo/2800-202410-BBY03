@@ -119,7 +119,11 @@ app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
   console.log('request', request)
   console.log('user', user.displayname)
 
-  res.render("templates/reqDetails", { request: request, user: user.displayname});  
+  // Get the referer URL
+  const backUrl = req.headers.referer || '/';
+  console.log(backUrl);
+
+  res.render("templates/reqDetails", { request: request, user: user.displayname, backUrl: backUrl });  
 })
 
 app.get("/haveOne/:id", sessionValidation, async (req, res) => {
