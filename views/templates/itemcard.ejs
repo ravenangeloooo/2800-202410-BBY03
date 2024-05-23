@@ -1,12 +1,15 @@
 <div class="card mb-3" style="max-width: 100%; ">
   <div class="row g-0">
     <div class="col-auto" style="margin-left: 15px">
+      <a href="/itemDetail?id=<%= item._id %>">
       <img
         src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/<%= item.image_id %>"
         class="img-fluid rounded-start; ms-1; mt-3"
         alt="..."
         style="width: auto; height: 60%;"
       />
+    </a>
+
     </div>
     <div class="col-auto me-auto">
       <div class="card-body">
