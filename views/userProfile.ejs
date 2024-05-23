@@ -1,0 +1,96 @@
+<%- include("templates/header") %>
+
+
+
+<main class="mb-5">
+    <section class="jumbotron text-left mt-3">
+        <div class="row container">
+            <div class="col-auto p-1">
+                <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
+            </div>
+            <div class="col-auto">
+                <h1 class="jumbotron-heading"><%= users.username %></h1>
+            </div>
+            
+        </div>
+    </section>
+
+    <div class="row g-0 p-2">
+        <div class="d-flex flex-column align-items-center text-center p-2">
+            <img src="https://dummyimage.com/450x390/000/fff&amp;text=Profile+pics"
+                class="img-fluid" alt="..." style="width: 200px; height: 200px; border-radius: 50%;"/>
+        </div>
+        <div class="d-flex flex-column align-items-center text-center">
+                    <h5 class="card-title"><i><%= users.displayname %></i></h5>
+                    <!-- <p class="card-title"><%= users.description %></p> -->
+        </div>
+    </div>
+    <div class="container">
+        <a href="/userProfile/<%= users._id %>/rateUser" class="btn btn-primary w-100 d-block mt-4">
+        <p class="py-0 my-0">RATE THIS USER</p>
+        </a>
+        </div>
+    <div class="container mt-5 bg-body-secondary py-4 px-1 w-100 d-block">
+        <!-- <h4 class="text-center">Rating</h4> -->
+
+        <!-- Display the average rating -->
+        <h4 class="text-center">Average Rating: <%= averageRating.toFixed(2) %></h4>
+
+        <% 
+            let countAwful = 0, countBad = 0, countOkay = 0, countGood = 0, countGreat = 0;
+            for(let rating of ratings) {
+                if(rating.emoji === 'Awful') countAwful++;
+                else if(rating.emoji === 'Bad') countBad++;
+                else if(rating.emoji === 'Okay') countOkay++;
+                else if(rating.emoji === 'Good') countGood++;
+                else if(rating.emoji === 'Great') countGreat++;
+            }
+        %>
+    
+    <div class="row p-0 m-0">
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Falling_in_love.svg" alt="Falling in love" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countGreat++ %></small>
+        </div>
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Smile.svg" alt="Smile" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countGood++ %></small>
+        </div>
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Expressionless.svg" alt="Expressionless" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countOkay++ %></small>
+        </div>
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Sad.svg" alt="Sad" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countBad++ %></small>
+        </div>
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Disappointed.svg" alt="Disappointed" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countAwful++ %></small>
+        </div>
+    </div>
+        
+    </div>
+      
+        
+
+
+
+
+</main>
+<%- include("templates/footer") %>
+
+
+      
+
+ 
+
+      
+
+
+
+
+
+
+
+<%- include("templates/footer") %>

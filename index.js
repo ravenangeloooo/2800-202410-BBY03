@@ -55,6 +55,7 @@ const userCollection = database.db(mongodb_database).collection("users");
 const groupCollection = database.db(mongodb_database).collection("groups");
 const itemCollection = database.db(mongodb_database).collection('items');
 const requestCollection = database.db(mongodb_database).collection('myrequests');
+const ratingCollection = database.db(mongodb_database).collection('ratings');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -217,12 +218,109 @@ app.post("/resetPassword", async (req, res) => {
   }
 });
 
-app.get("/editItem", sessionValidation, (req, res) => {
-  res.render("editItem");
+app.get("/editItem", sessionValidation, async (req, res) => {
+  console.log("Query parameters: ", req.query);
+
+  let item_id = req.query.id;
+  console.log("Item ID: ", item_id);
+
+  let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
+  console.log("Fetched item: ", item);
+  
+  res.render("editItem", { item: item });
 });
 
-app.get("/editRequest", sessionValidation, (req, res) => {
-  res.render("editRequest");
+app.get("/editRequest", sessionValidation, async (req, res) => {
+  console.log("Query parameters: ", req.query);
+
+  let request_id = req.query.id;
+  console.log("Item ID: ", request_id);
+
+  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
+  console.log("Fetched Request: ", request);
+  
+  res.render("editRequest", { request: request });
+});
+
+app.post("/updateItem", sessionValidation, upload.single('image'), async (req, res) => {
+  console.log("Request body: ", req.body);
+
+  let item_id = req.body.item_id;
+  let title = req.body.title;
+  let description = req.body.description;
+  let visibility = req.body.visibility;
+
+  let updateData = { title: title, description: description, visibility: visibility };
+
+  if (req.file) {
+    let image_uuid = uuid(); // Generate a new UUID for the new image
+
+    // Convert the image buffer to base64
+    let buf64 = req.file.buffer.toString('base64');
+
+    // Upload the new image to Cloudinary
+    cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+      // Update the image_id in the updateData object
+      updateData.image_id = image_uuid;
+
+      // Update the item in the database with the new data
+      await itemCollection.updateOne(
+        { _id: new mongodb.ObjectId(item_id) },
+        { $set: updateData }
+      );
+
+      console.log("Item Updated:" + title);
+      res.redirect("/collections"); // maybe include a modal?
+    }, { public_id: image_uuid });
+  } else {
+    // If no new image is uploaded, just update the item with the new data
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(item_id) },
+      { $set: updateData }
+    );
+
+    console.log("Item Updated:" + title);
+    res.redirect("/collections"); // maybe include a modal?
+  }
+});
+
+app.post("/updateRequest", sessionValidation, async (req, res) => {
+  console.log("Request body: ", req.body);
+
+  let request_id = req.body.request_id;
+  let title = req.body.title;
+  let description = req.body.description;
+  let visibility = req.body.visibility;
+
+  // Update the request in the database with the new data
+  let updateData = { title: title, description: description, visibility: visibility };
+  await requestCollection.updateOne(
+    { _id: new mongodb.ObjectId(request_id) },
+    { $set: updateData }
+  );
+
+  console.log("Request Updated:" + title);
+  res.redirect("/myRequests"); // maybe include a modal?
+});
+
+app.post("/items/:id/delete", async (req, res) => {
+  let itemId = req.params.id;
+
+  // Delete the item from the database
+  await itemCollection.deleteOne({ _id: new mongodb.ObjectId(itemId) });
+
+  console.log("Item Deleted:" + itemId);
+  res.redirect("/collections");
+});
+
+app.post("/requests/:id/delete", async (req, res) => {
+  let requestId = req.params.id;
+
+  // Delete the request from the database
+  await requestCollection.deleteOne({ _id: new mongodb.ObjectId(requestId) });
+
+  console.log("Request Deleted:" + requestId);
+  res.redirect("/myRequests");
 });
 
 //Post page
@@ -236,7 +334,7 @@ app.get("/groups", sessionValidation, async (req, res) => {
 
   const result = await groupCollection
     .find({ members: { $in: [userId] } })
-    .project({ groupname: 1, _id: 1 })
+    .project({ groupname: 1, _id: 1, image_id: 1})
     .toArray();
   console.log(result);
 
@@ -344,15 +442,6 @@ app.post("/submitRequest", sessionValidation, async(req,res) => {
   res.redirect('/collections');
 })
 
-
-app.get("/editItem", (req, res) => {
-  res.render("editItem");
-});
-
-app.get("/editRequest", sessionValidation, (req, res) => {
-  res.render("editRequest");
-});
-
 //Signup form posts the form fields and validates all inputs
 app.post("/signupSubmit", async (req, res) => {
   var username = req.body.username;
@@ -419,9 +508,12 @@ app.post("/signupSubmit", async (req, res) => {
 
 //Discover Groups page
 app.get("/discoverGroups", sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+
+  // Find groups that the user is not a member of
   const result = await groupCollection
-    .find()
-    .project({ groupname: 1, _id: 1 })
+    .find({ members: { $ne: user_id } })
+    .project({ groupname: 1, _id: 1, image_id: 1 })
     .toArray();
   console.log(result);
 
@@ -496,14 +588,20 @@ app.get("/createAGroup", sessionValidation, (req, res) => {
   res.render("createAGroup");
 });
 
-//Signup form posts the form fields and validates all inputs
-app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
-  var groupname = req.body.groupname;
-  var groupdescription = req.body.groupdescription;
-  var grouplocation = req.body.grouplocation;
-  var userIdAdmin = req.session.userId;
 
-  const schema = Joi.object({
+//Signup form posts the form fields and validates all inputs with images
+app.post('/createAGroupSubmit', sessionValidation, upload.single('image'), function (req, res, next) {
+  let image_uuid = uuid();
+  let groupname = req.body.groupname;
+  let groupdescription = req.body.groupdescription;
+  let grouplocation = req.body.grouplocation;
+  let userIdAdmin = req.session.userId;
+
+  // let pet_id = req.body.pet_id;
+  // let user_id = req.body.user_id;
+  let buf64 = req.file.buffer.toString('base64');
+
+    const schema = Joi.object({
     groupname: Joi.string().max(50).required(),
     groupdescription: Joi.string().max(500).required(),
     grouplocation: Joi.string().max(100).required(),
@@ -525,7 +623,10 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
     res.render("submitErrorGroup", { errormessage: errormessage });
   } else {
     try {
+      stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+
       const newGroup = {
+        image_id: image_uuid,
         groupname: groupname,
         groupdescription: groupdescription,
         grouplocation: grouplocation,
@@ -536,6 +637,8 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
       await groupCollection.insertOne(newGroup);
 
       console.log("Group Created:" + groupname);
+    },
+    { public_id: image_uuid } );
 
       res.redirect("/groups");
     } catch (err) {
@@ -544,6 +647,7 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
     }
   }
 });
+
 
 // Group Profile page
 app.get('/groupProfile/:groupId', sessionValidation, async (req, res) => {
@@ -612,6 +716,110 @@ app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
     // Redirect the user back to the group profile page
     res.redirect('/groupProfile/' + groupId);
 });
+
+
+//Other User Profile page
+app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
+  const userProfileId = req.params.userProfileId; // Get the group ID from the route parameter
+
+  console.log(userProfileId);
+
+  const users = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+
+  // let user_id = req.session.userId;
+
+  if (!users) {
+    // If no group was found, send a 404 error
+    return res.status(404).send({ message: 'Group not found' });
+  }
+
+  let ratings = await ratingCollection.find({ userProfileId: new mongodb.ObjectId(userProfileId) }).toArray();
+  console.log(ratings);
+
+  // Calculate the average rating to display on the user's profile
+  let averageRating = 0;
+
+  if (ratings.length > 0) {
+    let sum = 0;
+
+    for (let rating of ratings) {
+      sum += Number(rating.value);
+    }
+
+  console.log(sum);
+  averageRating = sum / ratings.length;
+  }
+  
+  // Get the referer URL
+  const backUrl = req.headers.referer || '/';
+  console.log(backUrl);
+
+  // Render the groupProfile page with the group data
+  res.render('userProfile', { users: users, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
+});
+
+
+// Rate User page
+app.get('/userProfile/:userProfileId/rateUser', sessionValidation, async (req, res) => {
+  const userProfileId = req.params.userProfileId; // Get the group ID from the route parameter
+  const userId = req.session.userId; // Get the current user's ID from the session
+
+  console.log(userProfileId);
+  console.log(userId);
+
+  if (userProfileId === userId) {
+    // If the user is trying to rate themselves, send an error message
+    return res.status(400).send({ message: 'You cannot rate yourself' });
+  }
+
+  const users = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+
+  if (!users) {
+      // If no group was found, send a 404 error
+      return res.status(404).send({ message: 'Group not found' });
+  }
+
+  // Get the referer URL
+  const backUrl = req.headers.referer || '/';
+  console.log(backUrl);
+
+  // Render the groupProfile page with the group data
+  res.render('userRating', { users: users, backUrl: backUrl});
+});
+
+
+// Submit user rating
+app.post('/userProfile/:userProfileId/submitRating', sessionValidation, async (req, res) => {
+    const userProfileId = req.params.userProfileId; // Get the user ID from the route parameter
+    const userId = req.session.userId; // Get the current user's ID from the session
+    const ratingValue = req.body.rating; // Get the rating from the request body
+    const ratingEmoji = req.body.emoji; // Get the emoji from the request body
+
+    // Fetch the user from your database
+    const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
+
+    
+    if (!user) {
+      // If no user was found, send a 404 error
+      return res.status(404).send({ message: 'User not found' });
+  }
+
+    // Create a new rating document
+    const newRating = {
+    userProfileId: new mongodb.ObjectId(userProfileId),
+    ratedBy: new mongodb.ObjectId(userId),
+    value: ratingValue,
+    emoji: ratingEmoji
+    
+  };
+
+    // Insert the new rating into the ratingCollection
+    await ratingCollection.insertOne(newRating);
+
+    // Redirect to the user's profile
+    res.redirect(`/userProfile/${userProfileId}`);
+});
+
 
 
 app.get('/editProfile', sessionValidation, async (req, res) => {
