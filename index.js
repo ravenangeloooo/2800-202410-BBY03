@@ -958,6 +958,30 @@ app.post("/updateProfile", sessionValidation, upload.single('image'), async (req
   }
 });
 
+app.post("/deleteNotification", sessionValidation, async (req, res) => {
+  // Get the user's ID from the session
+  const userId = req.session.userId;
+
+  // Get the index of the notification from the request body
+  const index = Number(req.body.index);
+
+  // Get the user document from the database
+  const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
+
+  // Check if the user and the notification exist
+  if (user && index < user.notifications.length) {
+    // Remove the notification from the user's notifications array
+    user.notifications.splice(index, 1);
+
+  // Update the user document in the database
+  await userCollection.updateOne({ _id: user._id }, { $set: { notifications: user.notifications } });
+
+  }
+  
+  // Redirect to the profile page
+  res.redirect("/profile");
+});
+
 
 app.use(express.static(__dirname + "/public"));
 

@@ -82,10 +82,17 @@
             <div class="mt-4">
                 <h4>Notifications</h4>
                 <% if (notifications.length > 0) { %>
-                    <% notifications.forEach(function(notification) { %>
+                    <% notifications.forEach(function(notification, index) { %>
                         <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
                             <div class="d-flex gap-2 w-100 justify-content-between">
                                 <div>
+                                    <form action="/deleteNotification" method="POST">
+                                        <input type="hidden" name="index" value="<%= index %>">
+                                        <div class="d-flex justify-content-end ">
+                                            <button type="submit" class="btn-close" aria-label="Close"></button>
+                                        </div>
+                                      </form>
+                                    
                                       <p><%= notification.message %></p>
                                       <p class="timeDifference" data-timestamp="<%= notification.date %>" ></p>
                                 </div>
