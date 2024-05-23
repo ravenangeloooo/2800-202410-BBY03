@@ -237,6 +237,36 @@ app.get("/collections", sessionValidation, async (req, res) => {
 
 });
 
+
+//For easter egg function to check if the user's birthday is today
+
+function isUserBirthday(birthday) {
+  // Convert birthday to a Date object
+  const birthDate = new Date(birthday);
+
+  const today = new Date();
+  return birthDate.getUTCDate() === today.getUTCDate() &&
+    birthDate.getUTCMonth() === today.getUTCMonth();
+}
+
+//End of easter egg function
+
+//For easteregg page
+
+app.get("/easterEgg", sessionValidation, async (req, res) => {
+  // Get the user's ID from the session
+  const userId = req.session.userId;
+
+  // Get the user document from the database
+  const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
+  const username = user.username;
+  console.log(user.username);
+
+  res.render("easterEgg", {username: username});
+});
+
+//End of easter egg page
+
 app.get("/collections/search", async (req, res) => {
   let searchTerm = req.query.search;
   console.log("Search term: ", searchTerm);
@@ -245,7 +275,25 @@ app.get("/collections/search", async (req, res) => {
   let items = await itemCollection.find({ title: new RegExp(searchTerm, 'i') }).toArray();
   let requests = await requestCollection.find({ title: new RegExp(searchTerm, 'i') }).toArray();
 
-  if (items.length > 0) {
+  //For easter egg
+
+    // Get the user's ID from the session
+    const userId = req.session.userId;
+
+    // Get the user document from the database
+    const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
+
+    console.log('Is user birthday:', isUserBirthday(user.birthdate));
+
+    // Check if the search query is "birthday" and if the current date matches the user's birthday
+    if (searchTerm === "shareloop" && isUserBirthday(user.birthdate)) {
+    // Redirect to the birthday page
+    res.redirect("/easterEgg");
+
+  //End of easter egg
+  
+  }else {
+    if (items.length > 0) {
     // If there are items that match the search term, render the items page with the search results
     res.render("items", { items: items });
   } else if (requests.length > 0) {
@@ -255,6 +303,7 @@ app.get("/collections/search", async (req, res) => {
     // If no match, redirect to collections page
     res.redirect("/collections");
   }
+}
 });
 
 app.get("/myRequests", sessionValidation, async (req, res) => {
