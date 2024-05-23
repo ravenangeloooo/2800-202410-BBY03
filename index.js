@@ -104,7 +104,7 @@ app.get("/requests", sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
 
   let requests = await requestCollection
-    .find({ user_id: { $ne: user_id } })
+    .find({ user_id: { $ne: user_id }, visibility: "global" })
     .toArray();
 
   res.render("requests", { requests: requests });
