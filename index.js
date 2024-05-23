@@ -267,13 +267,14 @@ app.post('/itemSubmit', sessionValidation, upload.single('image'), function (req
     let visibility = req.body.visibility;
     let user_id = req.session.userId;
     let timestamp = req.body.timestamp;
+    let status = "available";
 
     // let pet_id = req.body.pet_id;
     // let user_id = req.body.user_id;
     let buf64 = req.file.buffer.toString('base64');
     stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
     
-        const success = await itemCollection.insertOne({ title: title, description: description, image_id: image_uuid, user_id: user_id, visibility: visibility, timestamp: timestamp});
+        const success = await itemCollection.insertOne({ title: title, description: description, image_id: image_uuid, user_id: user_id, visibility: visibility, status: status, timestamp: timestamp});
         console.log("Item Created:" + title);   
     },
         { public_id: image_uuid }
@@ -295,6 +296,7 @@ app.post("/submitRequest", sessionValidation, async(req,res) => {
   const visibility = req.body.visibility;
   const user_id = req.session.userId;
   let timestamp = req.body.timestamp;
+  let status = "active";
 
 
   // const schema = Joi.object({
@@ -303,7 +305,7 @@ app.post("/submitRequest", sessionValidation, async(req,res) => {
   // });
 
 
-  const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility, timestamp: timestamp});
+  const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility, status: status, timestamp: timestamp});
   console.log("request create: " + title);
   res.redirect('/collections');
 })
