@@ -94,7 +94,7 @@ app.get("/", sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
 
   let items = await itemCollection
-  .find({ user_id: { $ne: user_id } })
+  .find({ user_id: { $ne: user_id }, visibility: "global" })
   .toArray();
 
   res.render("index", { items: items });
@@ -111,10 +111,6 @@ app.get("/requests", sessionValidation, async (req, res) => {
   
 
 });
-
-
-
-
 
 
 
