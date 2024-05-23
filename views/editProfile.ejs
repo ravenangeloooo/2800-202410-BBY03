@@ -1,4 +1,5 @@
 <%- include("templates/header") %>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,7 +44,7 @@
                 <button type="submit" class="btn btn-primary">Update</button>
             </div>
             <div class="text-center mb-4">
-                <img id="imagePreview" src="<%= user.image_id ? 'https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/' + user.image_id : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture">
+                <img id="imagePreview" src="<%= user.image_url ? user.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture">
                 <input type="file" id="mypic-input" name="image" accept="image/*" class="form-control mt-3" style="display: none;">
                 <button type="button" class="btn btn-outline-primary mt-2" onclick="document.getElementById('mypic-input').click();">Change Profile Picture</button>
             </div>

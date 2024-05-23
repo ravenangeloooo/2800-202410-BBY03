@@ -351,7 +351,6 @@ app.get("/groups", sessionValidation, async (req, res) => {
   res.render("groups", { groups: result });
 });
 
-
 app.get('/profile', sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
 
@@ -852,60 +851,47 @@ app.get('/editProfile', sessionValidation, async (req, res) => {
   res.render("editProfile", { user: user });
 });
 
-
 app.post("/updateProfile", sessionValidation, upload.single('image'), async (req, res) => {
-  console.log("Request body: ", req.body);
-  
-  let user_id = req.body.user_id;
-  let displayname = req.body.displayname;
-  
-  let description = req.body.description;
-  let birthdate = req.body.birthdate;
-
-  let updateData = { displayname: displayname, description: description, birthdate: birthdate };
-  // let updateData = { title: title, description: description, visibility: visibility };
-
-  if (req.file) {
-    let image_uuid = uuid(); // Generate a new UUID for the new image
-
-    // Convert the image buffer to base64
-    let buf64 = req.file.buffer.toString('base64');
-
-    // Upload the new image to Cloudinary
-    cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (error, result) {
-      if (error) {
-        // Handle the error
-        console.error('Upload to Cloudinary failed:', error);
-        return res.status(500).send('Upload to Cloudinary failed');
-      }
+  try {
+    console.log("Request body:", req.body);
     
-      // Update the image_id in the updateData object
-      updateData.image_id = image_uuid;
-    
-      // Update the user in the database with the new data
-      await userCollection.updateOne(
-        { _id: new mongodb.ObjectId(user_id) },
-        { $set: updateData }
-      );
-    
-      console.log("UserProfile Updated:" + displayname);
-      res.redirect("/profile"); // maybe include a modal?
-    }, { public_id: image_uuid });
-  } else {
-    // If no new image is uploaded, just update the item with the new data
-    await userCollection.updateOne(
+    const user_id = req.body.user_id;
+    const displayname = req.body.displayname;
+    const description = req.body.description;
+    const birthdate = req.body.birthdate;
+
+    const updateData = { displayname, description, birthdate };
+
+    if (req.file) {
+      const image_uuid = uuid(); // Generate a new UUID for the new image
+      const buf64 = req.file.buffer.toString('base64');
+
+      // Upload the new image to Cloudinary
+      const result = await cloudinary.uploader.upload(`data:image/octet-stream;base64,${buf64}`, { public_id: image_uuid });
+
+      console.log('Upload to Cloudinary succeeded:', result);
+      updateData.image_url = result.secure_url;  // Store the image URL
+    }
+
+    // Update the user in the database with the new data
+    const updateResult = await userCollection.updateOne(
       { _id: new mongodb.ObjectId(user_id) },
       { $set: updateData }
     );
-    // await itemCollection.updateOne(
-    //   { _id: new mongodb.ObjectId(item_id) },
-    //   { $set: updateData }
-    // );
 
-    console.log("Profile Updated:" + displayname);
-    res.redirect("/profile"); // maybe include a modal?
+    if (updateResult.modifiedCount > 0) {
+      console.log("Profile Updated:", displayname);
+      res.redirect("/profile");
+    } else {
+      console.log("No changes made to the profile.");
+      res.status(304).send('No changes made to the profile.');
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).send('An error occurred while updating the profile.');
   }
 });
+
 
 app.use(express.static(__dirname + "/public"));
 
