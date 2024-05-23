@@ -334,7 +334,7 @@ app.get("/groups", sessionValidation, async (req, res) => {
 
   const result = await groupCollection
     .find({ members: { $in: [userId] } })
-    .project({ groupname: 1, _id: 1 })
+    .project({ groupname: 1, _id: 1, image_id: 1})
     .toArray();
   console.log(result);
 
@@ -498,9 +498,12 @@ app.post("/signupSubmit", async (req, res) => {
 
 //Discover Groups page
 app.get("/discoverGroups", sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+
+  // Find groups that the user is not a member of
   const result = await groupCollection
-    .find()
-    .project({ groupname: 1, _id: 1 })
+    .find({ members: { $ne: user_id } })
+    .project({ groupname: 1, _id: 1, image_id: 1 })
     .toArray();
   console.log(result);
 
@@ -575,14 +578,20 @@ app.get("/createAGroup", sessionValidation, (req, res) => {
   res.render("createAGroup");
 });
 
-//Signup form posts the form fields and validates all inputs
-app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
-  var groupname = req.body.groupname;
-  var groupdescription = req.body.groupdescription;
-  var grouplocation = req.body.grouplocation;
-  var userIdAdmin = req.session.userId;
 
-  const schema = Joi.object({
+//Signup form posts the form fields and validates all inputs with images
+app.post('/createAGroupSubmit', sessionValidation, upload.single('image'), function (req, res, next) {
+  let image_uuid = uuid();
+  let groupname = req.body.groupname;
+  let groupdescription = req.body.groupdescription;
+  let grouplocation = req.body.grouplocation;
+  let userIdAdmin = req.session.userId;
+
+  // let pet_id = req.body.pet_id;
+  // let user_id = req.body.user_id;
+  let buf64 = req.file.buffer.toString('base64');
+
+    const schema = Joi.object({
     groupname: Joi.string().max(50).required(),
     groupdescription: Joi.string().max(500).required(),
     grouplocation: Joi.string().max(100).required(),
@@ -604,7 +613,10 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
     res.render("submitErrorGroup", { errormessage: errormessage });
   } else {
     try {
+      stream = cloudinary.uploader.upload("data:image/octet-stream;base64," + buf64, async function (result) {
+
       const newGroup = {
+        image_id: image_uuid,
         groupname: groupname,
         groupdescription: groupdescription,
         grouplocation: grouplocation,
@@ -615,6 +627,8 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
       await groupCollection.insertOne(newGroup);
 
       console.log("Group Created:" + groupname);
+    },
+    { public_id: image_uuid } );
 
       res.redirect("/groups");
     } catch (err) {
@@ -623,6 +637,7 @@ app.post("/createAGroupSubmit", sessionValidation, async (req, res) => {
     }
   }
 });
+
 
 // Group Profile page
 app.get('/groupProfile/:groupId', sessionValidation, async (req, res) => {
