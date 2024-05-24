@@ -114,20 +114,44 @@ app.get("/requests", sessionValidation, async (req, res) => {
 
 });
 
-app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
-  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(req.params.id) });
-  let user = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
-  let currentUserId = req.session.userId;
+app.get("/requestDetails", sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+  let request_id = req.query.id;
 
-  console.log('request', request)
-  console.log('user', user.displayname)
+  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
+  let owner_id = request.user_id;
+  let owner = await userCollection.findOne({ _id: new mongodb.ObjectId(owner_id) });
+  let owner_name = owner.displayname; 
+
+  request['owner_name'] = owner_name;
+  console.log(request);
+
+  // Fetch comments associated with the request
+  let comments = await commentCollection.find({ requestId: request_id }).toArray();
+  console.log(comments);
 
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
   console.log(backUrl);
 
-  res.render("templates/reqDetails", { request: request, user: user.displayname, backUrl: backUrl, currentUserId: currentUserId });  
+  res.render("templates/reqDetails", { request: request, user_id: user_id, backUrl: backUrl, comments: comments });  
 })
+
+app.post('/submitCommentReq', sessionValidation, async (req, res) => {
+  let request_id = req.query.id;
+  console.log("Request ID: " + request_id);
+  let timestamp = new Date().toISOString();
+  const comment = {
+      text: req.body.text,
+      displayName: req.session.displayname, // Replace with actual user ID
+      userId: req.session.userId,
+      requestId: request_id,
+      timestamp: timestamp
+  };
+  console.log(comment);
+  await commentCollection.insertOne(comment);
+  res.redirect('/requestDetails?id=' + request_id);
+});
 
 app.get("/haveOne/:id", sessionValidation, async (req, res) => {
   const requestId = new mongodb.ObjectId(req.params.id)

@@ -75,25 +75,37 @@
             cursor: pointer;
         }
 
-.interested-button:hover {
-    background-color: #0056b3;
-}
+        .interested-button:hover {
+            background-color: #0056b3;
+        }
 
-.modal-body {
-  max-height: 100vh; /* Adjust this value as needed */
-  background-color: darkgray;
-  overflow-y: auto;
-}
+        .modal-dialog-custom {
+            width: 90%; /* Adjust as needed */
+            max-width: none;
+            height: 90%; /* Adjust as needed */
+            margin: 30px auto;
+          }
+          
+          .modal-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .modal-body {
+            overflow-y: auto;
+            flex-grow: 1;
+          }
+          
+          .sticky-comment-form {
+            position: sticky;
+            bottom: 0;
+            background: #f1f1f1; /* Add a background color to cover the comments behind */
+          }
 
-.sticky-comment-form {
-  position: sticky;
-  bottom: 0;
-  background: color; /* Add a background color to cover the comments behind */
-}
-
-#openCommentsModal {
-    padding-left: 35%;
-}
+        #openCommentsModal {
+            padding-left: 35%;
+        }
 
 </style>
 
@@ -107,7 +119,7 @@
 
             <div class="row container item-details">
                 <div class="col-auto p-1 back-button">
-                    <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
+                    <a href="/"><img src="/backarrow.png" alt="Back" width="30px"></a>
                 </div>
 
                 <div class="col-auto">
@@ -159,7 +171,7 @@
   
 <!-- Modal -->
 <div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-custom">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="commentsModalLabel">Comments</h5>
