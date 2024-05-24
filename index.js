@@ -1243,6 +1243,7 @@ app.post("/deleteNotification", sessionValidation, async (req, res) => {
 });
 
 
+
 app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req, res) => {
