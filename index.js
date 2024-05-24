@@ -208,6 +208,7 @@ app.get("/interested/:id", sessionValidation, async (req, res) => {
 })
 
 app.get('/itemDetail', sessionValidation, async (req, res) => {
+    let user_id = req.session.userId;
     let item_id = req.query.id;
     console.log(item_id);
     let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
@@ -224,7 +225,7 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
     const backUrl = req.headers.referer || '/';
     console.log(backUrl);
 
-    res.render('itemDetail', { item: item, backUrl: backUrl });
+    res.render('itemDetail', { item: item, backUrl: backUrl, user_id: user_id});
 })
 
 
@@ -904,17 +905,6 @@ app.post("/loggingin", async (req, res) => {
     // Incorrect password
     return res.render("loginError");
   }
-});
-
-//DELETE LATER
-app.get("/itemDetail", sessionValidation, (req, res) => {
-  const item = {
-    itemName: "Name",
-    userName: "User 2",
-    itemDescription: "Brief description",
-    itemCategory: "Category",
-  };
-  res.render("itemDetail", item);
 });
 
 //Create Groups page
