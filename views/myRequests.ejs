@@ -1,12 +1,24 @@
 <%- include("templates/header") %>
 
+  <style>
+    .scrollable-div {
+      height: 600px;
+      /* Set a specific height */
+      overflow-y: auto;
+      /* Add vertical scrollbar */
+    }
+  </style>
+
+
   <div class="container">
     <%- include("templates/collection") %>
 
-      <% requests.forEach(function(request){ %>
-        <%- include("templates/requestcard", {request: request}) %>
-          <% }) %>
+      <div class="scrollable-div pt-2">
 
+        <% requests.forEach(function(request){ %>
+          <%- include("templates/requestcard", {request: request}) %>
+            <% }) %>
+      </div>
 
   </div>
 
