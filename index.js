@@ -1116,6 +1116,33 @@ app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
         { $addToSet: { members: userId } }
     );
 
+
+
+    // For notification
+    // Find the group in the database
+    let group = await groupCollection.findOne({ _id: new mongodb.ObjectId(groupId) });
+
+    // Find the group creator in the database
+    let groupCreator = await userCollection.findOne({ _id: new mongodb.ObjectId(group.createdBy) });
+
+    // Find the new member in the database
+    let newMember = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
+
+    // Create a new notification
+    let notification = {
+        message: `${newMember.username} has joined your group ${group.groupname}.`,
+        date: new Date()
+    };
+
+    // Add the notification to the group creator's notifications array
+    groupCreator.notifications.push(notification);
+
+    // Update the group creator document in the database
+    await userCollection.updateOne({ _id: groupCreator._id }, 
+      { $set: { notifications: groupCreator.notifications } });
+
+
+
     // Redirect the user back to the group profile page
     res.redirect('/groupProfile/' + groupId);
 });
