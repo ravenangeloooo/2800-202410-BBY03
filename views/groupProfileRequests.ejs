@@ -14,7 +14,7 @@
 
     <div class="row g-0 p-2">
         <div class="col-auto p-2">
-            <img src="https://dummyimage.com/450x390/000/fff&amp;text=Profile+pics"
+            <img src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_90,h_90/<%= groups.image_id %>"
                 class="img-fluid" alt="..." style="width: 100px; height: 100px; border-radius: 50%;"/>
         </div>
         <div class="col-auto pt-4">
@@ -31,8 +31,8 @@
     <div class="album pt-1 pb-5 bg-light">
         <div class="container text-center">
             <p>
-                <a href="/groupProfile/<%= groups._id %>/" class="btn btn-primary my-2">Item</a>
-                <a href="/groupProfile/<%= groups._id %>/requests" class="btn btn-secondary my-2">Request</a>
+                <a href="/groupProfile/<%= groups._id %>/" class="btn btn-secondary my-2">Item</a>
+                <a href="/groupProfile/<%= groups._id %>/requests" class="btn btn-primary my-2">Request</a>
             </p>
             <div class="row">
 
