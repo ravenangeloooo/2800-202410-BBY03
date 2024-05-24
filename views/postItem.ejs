@@ -100,6 +100,10 @@ nav ul li a img {
     width: 30px;
 }
 
+#visibility {
+    color: black;
+}
+
 @media (max-width: 600px) {
     .containers {
         max-width: 100%;
@@ -177,14 +181,19 @@ nav ul li a img {
 
                     <div class="form-group">
                         <label for="visibility">Visibility</label>
-                        <select id="visibility" name="visibility">
-                            <option value="global" selected>Global (default)</option>
-                            <option value="Group 1">Group 1</option>
-                            <option value="Group 2">Group 2</option>
+                        <select class="form-control" id="visibility" name="visibility">
+                            <option value="global">Global (default)</option>
+                            
+                            <% for (let group of groups) { %>
+                                <option value="<%= group.groupname %>"> <%= group.groupname %> </option>
+                            <% } %>
+                            
                         </select>
                     </div>
+                    <!-- Add a timestamp input -->
+                    <input type="hidden" id="timestamp" name="timestamp" value="">
 
-                    <button type="submit">Submit</button>
+                    <button type="submit" onclick="document.getElementById('timestamp').value = new Date().toISOString();">Submit</button>
                     <br>
                     <br>
                     <br>

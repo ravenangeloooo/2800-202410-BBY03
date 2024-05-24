@@ -1,45 +1,149 @@
 <%- include("templates/header") %>
+  <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+  <style>
+      .profile-container {
+          max-width: 600px;
+          margin: 50px auto;
+          padding: 30px;
+          background: white;
+          border-radius: 10px;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+      .profile-img {
+          border-radius: 50%;
+          width: 150px;
+          height: 150px;
+      }
+      .edit-btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+      }
+      .profile-info h4 {
+          font-weight: bold;
+          margin-bottom: 0.5rem;
+      }
+      .profile-info p {
+          margin-bottom: 0;
+          color: #6c757d;
+      }
+  </style>
 
-<div class="container">
-    <h1 class="mt-4">PROFILE</h1>
-    <img id="uploadedimg" src="https://dummyimage.com/450x390/000/fff&amp;text=Profile+pics" style="max-width: 400px; max-height: 400px;" height="300px">
-
-    <h1 class="mt-4">ABOUT ME</h1>
-    
-
-    <div class="list-group">
-        <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <div class="d-flex gap-2 w-100 justify-content-between">
-            <div>
-              <h4 class="mb-0">Name</h4>
-              <p class="mb-0 opacity-75"><%= user.name %></p>
-            </div>
-          </div>
-        </div>
-
-
-        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <div class="d-flex gap-2 w-100 justify-content-between">
-            <div>
-                <h4 class="mb-0">Email</h4>
-                <p class="mb-0 opacity-75"><%= user.email %></p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-          <div class="d-flex gap-2 w-100 justify-content-between">
-            <div>
-                <h4 class="mb-0">Date of Birth</h4>
-              <p class="mb-0 opacity-75"><%= user.birthdate %></p>
-            </div>
-          </div>
-        </a>
+  <div class="container profile-container position-relative">
+      <div class="text-center mt-4">
+          <h1>MY PROFILE</h1>
+          <a href="/editProfile" class="btn btn-primary edit-btn">Edit Profile</a>
       </div>
+      
+      <div class="text-center my-4">
+          <img src="<%= user.image_url ? user.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture">
+      </div>
+      
+      <div class="mt-5">
+          <h3>ABOUT ME</h3>
+          <div class="list-group mt-3">
+              <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                  <div class="d-flex gap-2 w-100 justify-content-between">
+                      <div>
+                          <h4 class="mb-0">Name</h4>
+                          <p class="mb-0"><%= user.displayname %></p>
+                      </div>
+                  </div>
+              </div>
+              <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                  <div class="d-flex gap-2 w-100 justify-content-between">
+                      <div>
+                          <h4 class="mb-0">Email</h4>
+                          <p class="mb-0"><%= user.email %></p>
+                      </div>
+                  </div>
+              </div>
+              <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                  <div class="d-flex gap-2 w-100 justify-content-between">
+                      <div>
+                          <h4 class="mb-0">Date of Birth</h4>
+                          <p class="mb-0"><%= user.birthdate %></p>
+                      </div>
+                  </div>
+              </div>
+              <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div>
+                        <h4 class="mb-0">Description</h4>
+                        <p class="mb-0"><%= user.description %></p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h4>Notifications</h4>
+                <% if (notifications.length > 0) { %>
+                    <% notifications.forEach(function(notification, index) { %>
+                        <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <form action="/deleteNotification" method="POST">
+                                        <input type="hidden" name="index" value="<%= index %>">
+                                        <div class="d-flex justify-content-end ">
+                                            <button type="submit" class="btn-close" aria-label="Close"></button>
+                                        </div>
+                                      </form>
+                                    
+                                      <p><%= notification.message %></p>
+                                      <p class="timeDifference" data-timestamp="<%= notification.date %>" ></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="list-group-item list-group-item-action d-flex gap-3 py-3 profile-info">
+                        <div class="d-flex gap-2 w-100 justify-content-between">
+                            <div>
+                                <p>You have no notifications.</p>
+                            </div>
+                        </div>
+                    </div>
+                            <% } %>
+                       
+    
+                    
+                 
+            </div>
+          </div>
+      </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+    for (var i = 0; i < timeDifferenceElements.length; i++) {
+        var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+  
+        var now = new Date();
+        var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+  
+        var timeDifferenceText;
+        if (diffInMinutes >= 1440) { // 1440 minutes in a day
+            var diffInDays = Math.round(diffInMinutes / 1440);
+            timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+        } else if (diffInMinutes >= 60) {
+            var diffInHours = Math.round(diffInMinutes / 60);
+            timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+        } else {
+            timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+        }
+  
+        timeDifferenceElements[i].textContent = timeDifferenceText;
+    }
+  </script>
 
 
 
 
-
+<br>
+<br>
+<br>
+<br>
 
 
 <%- include("templates/footer") %>

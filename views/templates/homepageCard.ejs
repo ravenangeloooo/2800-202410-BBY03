@@ -1,15 +1,46 @@
 <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-    <div class="card mb-4 box-shadow">
-      <img class="card-img-top" src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_90,h_90/<%= item.image_id %>" alt="Some Image In Here">
-      <div class="card-body">
-        <p class="card-text"><%= item.title %></p>
-        <div class="d-flex justify-content-between align-items-center">
-          <!-- <div class="btn-group">
+  <div class="card mb-4 box-shadow">
+    <a href="/itemDetail?id=<%= item._id %>">
+
+      <img class="card-img-top"
+        src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_90,h_90/<%= item.image_id %>"
+        alt="Some Image In Here">
+    </a>
+
+    <div class="card-body">
+      <h4 class="card-text">
+        <%= item.title %>
+      </h4>
+      <div class="d-flex justify-content-between align-items-center">
+        <!-- <div class="btn-group">
             <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
             <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
           </div> -->
-          <small class="text-muted">9 mins</small>
-        </div>
+        <small class="timeDifference" data-timestamp="<%= item.timestamp %>" class="text-muted"></small>
       </div>
     </div>
+  </div>
 </div>
+
+<script>
+  var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+  for (var i = 0; i < timeDifferenceElements.length; i++) {
+      var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+
+      var now = new Date();
+      var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+
+      var timeDifferenceText;
+      if (diffInMinutes >= 1440) { // 1440 minutes in a day
+          var diffInDays = Math.round(diffInMinutes / 1440);
+          timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+      } else if (diffInMinutes >= 60) {
+          var diffInHours = Math.round(diffInMinutes / 60);
+          timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+      } else {
+          timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+      }
+
+      timeDifferenceElements[i].textContent = timeDifferenceText;
+  }
+</script>

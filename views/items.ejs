@@ -1,13 +1,23 @@
 <%- include("templates/header") %>
 
-<div class="container">
-  <%- include("templates/collection") %>
-  
-  
-  <% items.forEach(function(item){ %>
-    <%- include("templates/itemcard", {item: item}) %>
-  <% }) %>
+  <style>
+    .scrollable-div {
+      height: 600px;
+      /* Set a specific height */
+      overflow-y: auto;
+      /* Add vertical scrollbar */
+    }
+  </style>
 
-</div>
+  <div class="container">
+    <%- include("templates/collection") %>
 
-<%- include("templates/footer") %>
+      <div class="scrollable-div pt-2">
+        <% items.forEach(function(item){ %>
+          <%- include("templates/itemcard", {item: item}) %>
+            <% }) %>
+      </div>
+
+  </div>
+
+  <%- include("templates/footer") %>

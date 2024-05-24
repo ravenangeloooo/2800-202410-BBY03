@@ -2,7 +2,7 @@
 <section class="jumbotron text-left mt-3">
     <div class="row container">
         <div class="col-auto p-1">
-            <a href="/requests"><img src="/backarrow.png" alt="Back" width="30px"></a>
+            <a href="/myRequests"><img src="/backarrow.png" alt="Back" width="30px"></a>
         </div>
         <div class="col-auto">
             <h1 class="jumbotron-heading">People Offering</h1>
@@ -14,11 +14,10 @@
     <section class="jumbotron text-left mt-3">
         <div class="container">
             <!--Temporary image card-->
-            <div class="container d-flex justify-content-center">
+            <div class="container  width-100">
                 <div class="card p-4 bg-body-secondary" style="border-radius: 15px;">
-                    <h2>Item Name</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Curabitur euismod vulputate vehicula. Nunc in ligula tortor.</p>
+                    <h2><%= request.title %></h2>
+                    <p><%= request.description %></p>
                 </div>
                 
             </div>
@@ -32,9 +31,9 @@
             <div class="row pb-5">
                 <div class="container">
 
-                    <% for (let i=0; i < 6; i++) { %>
-                        <%- include('templates/peopleInterestedCard') %>
-                            <% } %>
+                    <% users.forEach(function(user) { %>
+                        <%-  include("templates/peopleOfferingCard", {user: user}) %>
+                        <% }) %>
 
                 </div>
             </div>

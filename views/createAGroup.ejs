@@ -6,7 +6,7 @@
 <%- include("templates/header") %>
 <main class="mb-5">
     <section class="jumbotron text-left mt-3">
-        <div class="row container">
+        <div class="row container m-0">
             <div class="col-auto p-1">
                 <a href="/groups"><img src="/backarrow.png" alt="Back" width="30px"></a>
             </div>
@@ -18,12 +18,12 @@
     <hr>
     <div class="album py-1 bg-light">
         <div class="card p-3">
-            <form action="/createAGroupSubmit" method="post">
+            <form action="/createAGroupSubmit" method="post" enctype="multipart/form-data">
                 <div class="form-group p-2">
                     <h5><label for="photo">Add a Group Photo</label></h5>
-                    <input class="mb-2" type="file" id="photo" name="photo" onchange="readURL(this);"/>
+                    <input class="mb-2" type="file" id="imageUpload" accept="image/*" name="image">
                     <div class="d-flex justify-content-center mb-2">
-                    <img class="cover" id="imagePreview" src="/insertphotohere.png" alt="Image" width="300px" height="225px">
+                    <img class="cover" id="imagePreview" src="" alt="Image" width="300px" height="225px" style="display:none;">
                     </div>
                 </div>
 
@@ -60,15 +60,40 @@
 <%- include("templates/footer") %>
 
 <script>
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+    // function readURL(input) {
+    //     if (input.files && input.files[0]) {
+    //         var reader = new FileReader();
             
-            reader.onload = function(e) {
-                document.getElementById('imagePreview').src = e.target.result;
-            }
+    //         reader.onload = function(e) {
+    //             document.getElementById('imagePreview').src = e.target.result;
+    //         }
             
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
+    //         reader.readAsDataURL(input.files[0]);
+    //     }
+    // }
+
+            // Select the file input and image preview elements
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+    
+            // Add an event listener to the file input
+            imageUpload.addEventListener('change', function() {
+                // Check if a file is selected
+                if (this.files && this.files[0]) {
+                    // Create a FileReader object
+                    const reader = new FileReader();
+    
+                    // Define the onload event for the FileReader
+                    reader.onload = function(e) {
+                        // Set the src of the image preview to the result of the FileReader
+                        imagePreview.src = e.target.result;
+                        // Make the image visible
+                        imagePreview.style.display = 'block';
+                    };
+    
+                    // Read the selected file as a Data URL
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+ 
 </script>

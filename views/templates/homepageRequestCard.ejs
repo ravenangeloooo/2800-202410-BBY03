@@ -1,0 +1,50 @@
+<div class="col-6 col-sm-6 col-md-6 col-lg-6">
+  <div class="card mb-4 box-shadow">
+    <a
+      href="/requestDetails/?id=<%= request._id %>"
+      style="color: inherit; text-decoration: inherit"
+    >
+      <div class="card-body">
+        <h3 class="card-text"><%= request.title %></h3>
+        <p class="card-text"><%= request.description %></p>
+        <div class="d-flex justify-content-between align-items-center">
+          <small
+            class="timeDifference"
+            data-timestamp="<%= request.timestamp %>"
+            class="text-muted"
+          ></small>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<script>
+  var timeDifferenceElements =
+    document.getElementsByClassName("timeDifference");
+  for (var i = 0; i < timeDifferenceElements.length; i++) {
+    var timestampFromDatabase = new Date(
+      timeDifferenceElements[i].dataset.timestamp
+    );
+
+    var now = new Date();
+    var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+
+    var timeDifferenceText;
+    if (diffInMinutes >= 1440) {
+      // 1440 minutes in a day
+      var diffInDays = Math.round(diffInMinutes / 1440);
+      timeDifferenceText =
+        diffInDays + (diffInDays === 1 ? " day ago" : " days ago");
+    } else if (diffInMinutes >= 60) {
+      var diffInHours = Math.round(diffInMinutes / 60);
+      timeDifferenceText =
+        diffInHours + (diffInHours === 1 ? " hour ago" : " hours ago");
+    } else {
+      timeDifferenceText =
+        diffInMinutes + (diffInMinutes === 1 ? " min ago" : " mins ago");
+    }
+
+    timeDifferenceElements[i].textContent = timeDifferenceText;
+  }
+</script>
