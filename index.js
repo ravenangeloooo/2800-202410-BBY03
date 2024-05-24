@@ -40,7 +40,8 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_CLOUD_SECRET
 });
 
-const multer = require('multer')
+const multer = require('multer');
+const { message } = require("statuses");
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
@@ -241,12 +242,18 @@ app.get("/collections", sessionValidation, async (req, res) => {
 //For easter egg function to check if the user's birthday is today
 
 function isUserBirthday(birthday) {
-  // Convert birthday to a Date object
-  const birthDate = new Date(birthday);
-
-  const today = new Date();
-  return birthDate.getUTCDate() === today.getUTCDate() &&
-    birthDate.getUTCMonth() === today.getUTCMonth();
+    // Split the birthday into components
+    const [year, month, day] = birthday.split('-');
+  
+    // Convert birthday to a Date object
+    const birthDate = new Date(year, month - 1, day);
+  
+    const today = new Date();
+  
+    // Create a new Date object for the user's birthday in the current year
+    const thisYearBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+  
+    return thisYearBirthday.getDate() === today.getDate() && thisYearBirthday.getMonth() === today.getMonth();
 }
 
 //End of easter egg function
@@ -262,7 +269,12 @@ app.get("/easterEgg", sessionValidation, async (req, res) => {
   const username = user.username;
   console.log(user.username);
 
-  res.render("easterEgg", {username: username});
+  // Get the message from the session
+  const message = req.session.message;
+
+  // Render the easterEgg page with the message
+
+  res.render("easterEgg", {username: username, message: message});
 });
 
 //End of easter egg page
@@ -284,11 +296,18 @@ app.get("/collections/search", async (req, res) => {
     const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
 
     console.log('Is user birthday:', isUserBirthday(user.birthdate));
+    console.log(user.birthdate + " " + new Date());
 
     // Check if the search query is "birthday" and if the current date matches the user's birthday
-    if (searchTerm === "shareloop" && isUserBirthday(user.birthdate)) {
-    // Redirect to the birthday page
-    res.redirect("/easterEgg");
+    if (searchTerm === "mybirthday" && isUserBirthday(user.birthdate)) {
+        // Store the message in the session
+        req.session.message = "Happy Birthday";
+        // Redirect to the birthday page
+        res.redirect("/easterEgg");
+    } else if (searchTerm === "shareloop") {
+        // Store the message in the session
+        req.session.message = "Welcome to shareLoop";
+        res.redirect("/easterEgg");
 
   //End of easter egg
   
