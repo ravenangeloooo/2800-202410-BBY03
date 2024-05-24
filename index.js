@@ -594,6 +594,30 @@ app.get("/postRequest", sessionValidation, async(req, res) => {
   res.render("postRequest", { groups: groups });
 });
 
+app.post("/submitRequest", sessionValidation, async(req,res) => {  
+  const title = req.body.title;
+  const description = req.body.description;
+  const visibility = req.body.visibility;
+  const user_id = req.session.userId;
+  let timestamp = req.body.timestamp;
+  let status = "Active";
+
+
+  // const schema = Joi.object({
+  //   title: Joi.string().max(50).required(),
+  //   description: Joi.string().max(500).required(),
+  // });
+
+
+  const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility, status: status, timestamp: timestamp});
+  console.log("request create: " + title);
+  res.redirect('/collections');
+})
+
+
+
+
+
 app.post("/signupSubmit", async (req, res) => {
   var username = req.body.username;
   var displayname = req.body.displayname;
