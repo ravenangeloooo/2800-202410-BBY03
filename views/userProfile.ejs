@@ -1,7 +1,6 @@
 <%- include("templates/header") %>
 
 
-
 <main class="mb-5">
     <section class="jumbotron text-left mt-3">
         <div class="row container">
@@ -9,7 +8,7 @@
                 <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
             </div>
             <div class="col-auto">
-                <h1 class="jumbotron-heading"><%= users.username %></h1>
+                <h1 class="jumbotron-heading"><%= user.username %></h1>
             </div>
             
         </div>
@@ -17,16 +16,16 @@
 
     <div class="row g-0 p-2">
         <div class="d-flex flex-column align-items-center text-center p-2">
-            <img src="<%= users.image_url ? users.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture"
+            <img src="<%= user.image_url ? user.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture"
                 class="img-fluid" alt="..." style="width: 200px; height: 200px; border-radius: 50%;"/>
         </div>
         <div class="d-flex flex-column align-items-center text-center">
-                    <h5 class="card-title"><%= users.displayname %></h5>
-                    <p class="card-title"><%= users.description %></p>
+                    <h5 class="card-title"><%= user.displayname %></h5>
+                    <p class="card-title"><%= user.description %></p>
         </div>
     </div>
     <div class="container">
-        <a href="/userProfile/<%= users._id %>/rateUser" class="btn btn-primary w-100 d-block mt-4">
+        <a href="/userProfile/<%= user._id %>/rateUser" class="btn btn-primary w-100 d-block mt-4">
         <p class="py-0 my-0">RATE THIS USER</p>
         </a>
         </div>
@@ -83,19 +82,4 @@
 
 
 </main>
-<%- include("templates/footer") %>
-
-
-      
-
- 
-
-      
-
-
-
-
-
-
-
 <%- include("templates/footer") %>
