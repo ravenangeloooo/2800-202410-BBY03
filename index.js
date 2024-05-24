@@ -117,6 +117,7 @@ app.get("/requests", sessionValidation, async (req, res) => {
 app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
   let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(req.params.id) });
   let user = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
+  let currentUserId = req.session.userId;
 
   console.log('request', request)
   console.log('user', user.displayname)
@@ -125,7 +126,7 @@ app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
   const backUrl = req.headers.referer || '/';
   console.log(backUrl);
 
-  res.render("templates/reqDetails", { request: request, user: user.displayname, backUrl: backUrl });  
+  res.render("templates/reqDetails", { request: request, user: user.displayname, backUrl: backUrl, currentUserId: currentUserId });  
 })
 
 app.get("/haveOne/:id", sessionValidation, async (req, res) => {
@@ -209,12 +210,11 @@ app.get("/interested/:id", sessionValidation, async (req, res) => {
 })
 
 app.get('/itemDetail', sessionValidation, async (req, res) => {
+    let user_id = req.session.userId;
     let item_id = req.query.id;
-    console.log(item_id);
+
     let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
-    console.log(item);
     let owner_id = item.user_id;
-    console.log(owner_id);
     let owner = await userCollection.findOne({ _id: new mongodb.ObjectId(owner_id) });
     let owner_name = owner.displayname; 
 
@@ -229,7 +229,7 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
     const backUrl = req.headers.referer || '/';
     console.log(backUrl);
 
-    res.render('itemDetail', { item: item, backUrl: backUrl, comments: comments });
+    res.render('itemDetail', { item: item, backUrl: backUrl, user_id: user_id, comments: comments });
 })
 
 app.post('/submitComment', sessionValidation, async (req, res) => {
@@ -788,8 +788,13 @@ app.get("/discoverGroups/search", async (req, res) => {
 });
 
 app.get("/peopleInterested/:id", async (req, res) => {
+  // Get the item ID from the URL
   const item_id = new mongodb.ObjectId(req.params.id)
+
+  // Find the item in the database
   let item = await itemCollection.findOne({ _id: item_id });
+  
+  //create empty array to prevent error if null
   let peopleinterested = item.peopleinterested || [];
 
   //from array of peopleinterested, create Arrays of user object ids(user)
@@ -802,6 +807,37 @@ app.get("/peopleInterested/:id", async (req, res) => {
       res.redirect("/collections");
     }
 });
+
+app.get("/acceptPeopleInterested/:userId/:itemId", async (req, res) => {
+  var userId = req.params.userId;
+  var itemId = req.params.itemId;
+  console.log("User ID: ", userId);
+  console.log("Item ID: ", itemId);
+
+  // Find the item in the database
+  let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(itemId) });
+
+
+  if (item.personaccepted == userId) {
+    // If personaccepted is equal to userId, remove it
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(itemId) },
+      { $set: { personaccepted: "", status: "Available" } }
+    );
+  } else {
+    // If personaccepted is not equal to userId, set it
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(itemId) },
+      { $set: { personaccepted: userId, status: "Pending Exchange" } }
+    );
+  }
+
+  // Redirect back to the item page
+  res.redirect("/peopleInterested/" + itemId);
+
+});
+
+
 
 app.get("/peopleOffering/:id", async (req, res) => {
   const request_id = new mongodb.ObjectId(req.params.id)
@@ -819,6 +855,38 @@ app.get("/peopleOffering/:id", async (req, res) => {
       res.redirect("/myRequests");
     }
 });
+
+
+app.get("/acceptPeopleOffering/:userId/:requestId", async (req, res) => {
+  var userId = req.params.userId;
+  var requestId = req.params.requestId;
+  console.log("User ID: ", userId);
+  console.log("Request ID: ", requestId);
+
+  // Find the item in the database
+  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(requestId) });
+
+
+  if (request.personaccepted == userId) {
+    // If personaccepted is equal to userId, remove it
+    await requestCollection.updateOne(
+      { _id: new mongodb.ObjectId(requestId) },
+      { $set: { personaccepted: "", status: "Active" } }
+    );
+  } else {
+    // If personaccepted is not equal to userId, set it
+    await requestCollection.updateOne(
+      { _id: new mongodb.ObjectId(requestId) },
+      { $set: { personaccepted: userId, status: "Pending Exchange" } }
+    );
+  }
+
+  // Redirect back to the item page
+  res.redirect("/peopleOffering/" + requestId);
+
+});
+
+
 
 
 app.post("/loggingin", async (req, res) => {
@@ -858,17 +926,6 @@ app.post("/loggingin", async (req, res) => {
     // Incorrect password
     return res.render("loginError");
   }
-});
-
-//DELETE LATER
-app.get("/itemDetail", sessionValidation, (req, res) => {
-  const item = {
-    itemName: "Name",
-    userName: "User 2",
-    itemDescription: "Brief description",
-    itemCategory: "Category",
-  };
-  res.render("itemDetail", item);
 });
 
 //Create Groups page
@@ -1012,11 +1069,11 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
 
   console.log(userProfileId);
 
-  const users = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+  const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
 
   // let user_id = req.session.userId;
 
-  if (!users) {
+  if (!user) {
     // If no group was found, send a 404 error
     return res.status(404).send({ message: 'Group not found' });
   }
@@ -1043,7 +1100,7 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
   console.log(backUrl);
 
   // Render the groupProfile page with the group data
-  res.render('userProfile', { users: users, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
+  res.render('userProfile', { user: user, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
 });
 
 
@@ -1195,6 +1252,7 @@ app.post("/deleteNotification", sessionValidation, async (req, res) => {
   // Redirect to the profile page
   res.redirect("/profile");
 });
+
 
 
 app.use(express.static(__dirname + "/public"));

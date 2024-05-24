@@ -1,77 +1,79 @@
 <%- include("templates/header") %>
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-.back-button {
-        margin-bottom: 10px;
-    }
+        .back-button {
+            margin-bottom: 10px;
+        }
 
-.containers {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 375px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 0 auto;
-}
-    
+        .containers {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 375px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
 
-.header, .navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-bottom: 1px solid #ccc;
-}
 
-.header button, .navigation button {
-    background: none;
-    border: none;
-    font-size: 18px;
-}
+        .header,
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #ccc;
+        }
 
-.item-details {
-    padding: 15px;
-}
+        .header button,
+        .navigation button {
+            background: none;
+            border: none;
+            font-size: 18px;
+        }
 
-.item-details h2 {
-    margin: 0 0 10px 0;
-}
+        .item-details {
+            padding: 15px;
+        }
 
-.item-image {
-    width: 100%;
-    height: 200px;
-    background-color: #eaeaea;
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
+        .item-details h2 {
+            margin: 0 0 10px 0;
+        }
 
-.interested-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
+        .item-image {
+            width: 100%;
+            height: 200px;
+            background-color: #eaeaea;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .interested-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
 .interested-button:hover {
     background-color: #0056b3;
@@ -95,35 +97,38 @@ body {
 
 </style>
 
-<body>
-    <br>
-    <br>
+    <body>
+        <br>
+        <br>
 
-    <div class="containers my-5 py-4">
-    
+        <div class="containers my-5 py-4">
 
-            
-        <div class="row container item-details">
-            <div class="col-auto p-1 back-button">
-                <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
-            </div>
 
-            <div class="col-auto">
-                <h2><%= item.title %></h2>
-            </div>
+
+            <div class="row container item-details">
+                <div class="col-auto p-1 back-button">
+                    <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
+                </div>
+
+                <div class="col-auto">
+                    <h2>
+                        <%= item.title %>
+                    </h2>
+                </div>
 
             </div>
 
             <div class="item-details">
-                             
-            <div class="item-image">
-                <!-- Image Placeholder -->
 
-                <img src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_200,h_200/<%= item.image_id %>" alt="Back" width="200px">
-            </div>
-            
-            
-            <!-- <button a="/interested" class="interested-button">INTERESTED</button> -->
+                <div class="item-image">
+                    <!-- Image Placeholder -->
+
+                    <img src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_200,h_200/<%= item.image_id %>"
+                        alt="Back" width="200px">
+                </div>
+
+
+                <!-- <button a="/interested" class="interested-button">INTERESTED</button> -->
 
             </div>
 
@@ -135,9 +140,13 @@ body {
             
             <!-- <button class="interested-button mt-4">INTERESTED</button> -->
             <div class="container d-flex">
-                <a href="/interested/<%= item._id %>" class="btn btn-info text-white" role="button">
+                <% if(item.user_id != user_id) { %>
+
+                <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
                     <h4>INTERESTED</h4>
                 </a>
+
+                <% } %>
                 
                 <button type="button" class="btn btn-link" id="openCommentsModal">
                     <img src="comments.png" alt="Open Comments" style="width: 35px; height: 35px;">
@@ -221,4 +230,4 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
   });
   </script>
 
-<%- include("templates/footer") %>
+    <%- include("templates/footer") %>
