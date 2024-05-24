@@ -355,7 +355,7 @@ app.get("/collections/search", async (req, res) => {
         res.redirect("/easterEgg");
     } else if (searchTerm === "shareloop") {
         // Store the message in the session
-        req.session.message = "Welcome to shareLoop";
+        req.session.message = "Thank you sharemaritan";
         res.redirect("/easterEgg");
 
   //End of easter egg
