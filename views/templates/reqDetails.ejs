@@ -1,31 +1,35 @@
 <%- include('header') %>
-<div>
-  <section class="jumbotron text-left mt-5">
-    <div class="row container">
-      <div class="col-auto p-1">
-        <a href="<%= backUrl %>"
-          ><img src="/backarrow.png" alt="Back" width="30px"
-        /></a>
+  <div>
+    <section class="jumbotron text-left mt-5">
+      <div class="row container">
+        <div class="col-auto p-1">
+          <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px" /></a>
+        </div>
+        <div class="col-auto">
+          <h1 class="jumbotron-heading">
+            REQUEST: <%= request.title %><br />
+              By: <%= user %>
+          </h1>
+        </div>
       </div>
-      <div class="col-auto">
-        <h1 class="jumbotron-heading">
-          REQUEST: <%= request.title %><br />
-          By: <%= user %>
-        </h1>
-      </div>
+    </section>
+
+    <div class="row container mt-4 d-flex justify-content-center">
+      <dl class="row">
+        <dt class="col-sm-2">Description:</dt>
+        <dd class="col-sm-9">
+          <%= request.description %>
+        </dd>
+      </dl>
+
+      <% if(request.user_id != currentUserId) { %>
+
+      <a href="/haveOne/<%= request._id %>" class="btn btn-info text-white " role="button">
+        <h4>I HAVE ONE!</h4>
+      </a>
+
+      <% } %>
+
     </div>
-  </section>
-
-  <div class="row container mt-4 d-flex justify-content-center">
-    <dl class="row">
-      <dt class="col-sm-2">Description:</dt>
-      <dd class="col-sm-9"><%= request.description %></dd>
-    </dl>
-
-
-    <a href="/haveOne/<%= request._id %>" class="btn btn-info text-white " role="button">
-      <h4>I HAVE ONE!</h4></a
-    >
   </div>
-</div>
-<%- include('footer') %>
+  <%- include('footer') %>

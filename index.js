@@ -116,6 +116,7 @@ app.get("/requests", sessionValidation, async (req, res) => {
 app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
   let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(req.params.id) });
   let user = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
+  let currentUserId = req.session.userId;
 
   console.log('request', request)
   console.log('user', user.displayname)
@@ -124,7 +125,7 @@ app.get("/requestDetails/:id", sessionValidation, async (req, res) => {
   const backUrl = req.headers.referer || '/';
   console.log(backUrl);
 
-  res.render("templates/reqDetails", { request: request, user: user.displayname, backUrl: backUrl });  
+  res.render("templates/reqDetails", { request: request, user: user.displayname, backUrl: backUrl, currentUserId: currentUserId });  
 })
 
 app.get("/haveOne/:id", sessionValidation, async (req, res) => {
@@ -210,11 +211,9 @@ app.get("/interested/:id", sessionValidation, async (req, res) => {
 app.get('/itemDetail', sessionValidation, async (req, res) => {
     let user_id = req.session.userId;
     let item_id = req.query.id;
-    console.log(item_id);
+
     let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
-    console.log(item);
     let owner_id = item.user_id;
-    console.log(owner_id);
     let owner = await userCollection.findOne({ _id: new mongodb.ObjectId(owner_id) });
     let owner_name = owner.displayname; 
 

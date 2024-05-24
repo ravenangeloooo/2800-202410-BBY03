@@ -2,14 +2,17 @@
   <div class="row g-0">
     <div class="col-auto me-auto">
       <div class="card-body">
+        
         <div>
+          <a href="/requestDetails/<%= request._id %>" style="text-decoration: none;">
           <h5 class="card-title"><%= request.title %></h5>
           <small class="text-body-secondary"><%= request.status %></small>
           <br />
           <small class="text-body-secondary"
-            >Visible to: <%= request.visibility %></small
-          >
-        </div>
+            >Visible to: <%= request.visibility %></small>
+          </a>
+          </div>
+        
 
         <a href="/peopleOffering/<%= request._id %>" class="btn btn-info" role="button"
           ><%= request.peopleHave?.length || 0 %> people are offering</a
