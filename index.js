@@ -13,7 +13,8 @@ const saltRounds = 12;
 const port = process.env.PORT || 3000;
 
 const app = express();
-
+const server = require("http").createServer(app);
+const io = require('socket.io')(server);
 const Joi = require("joi");
 
 const expireTime = 168 * 60 * 60 * 1000; //expires after 1 hour  (hour * minutes * seconds * millis)
@@ -1044,6 +1045,26 @@ app.post("/deleteNotification", sessionValidation, async (req, res) => {
   res.redirect("/profile");
 });
 
+app.get("/chat/:userProfileId", sessionValidation, (req, res) => {
+  const userProfileId = req.params.userProfileId; // Get the user ID from the route parameter
+
+  const otherUserProfile = userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+
+  res.render("chat", { otherUserProfile: otherUserProfile });
+});
+
+// Handle socket connections for chat
+io.on('connection', function(socket) {
+  socket.on("newuser", function(user){
+      socket.broadcast.emit("update", user.username + " has joined the chat.");
+  });
+  socket.on("exituser", function(username){
+      socket.broadcast.emit("update", username + " has left the chat.");
+  });
+  socket.on("chat", function(message){
+      socket.broadcast.emit("chat", message);
+  });
+});
 
 app.use(express.static(__dirname + "/public"));
 
@@ -1052,6 +1073,6 @@ app.get("*", (req, res) => {
   res.render("404");
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Node application listening on port " + port);
 });
