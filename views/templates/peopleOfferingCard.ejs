@@ -1,0 +1,20 @@
+<div class="card mb-3" style="max-width: 450px; max-height: 150px">
+    <div class="row g-0 p-2">
+        <div class="col-auto p-2">
+            <img src="<%= user.image_url ? user.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>"
+                class="img-fluid" alt="..." style="width: 100px; height: 100px; border-radius: 50%;"/>
+        </div>
+        <div class="col-auto pt-4">
+                    <h5 class="card-title"><%= user.displayname%></h5>
+        </div>
+        <div class="col-auto ms-auto pt-5 mt-4">
+            <% if (request.personaccepted == user._id) { %>
+                <a href="/acceptPeopleOffering/<%= user._id %>/<%= request._id %>" class="btn " role="button"  style="background-color: #71d671; color: black;">&#10004;Accepted</a>
+            <% } else { %>
+                <a href="/acceptPeopleOffering/<%= user._id %>/<%= request._id %>" class="btn btn-primary" role="button">Accept</a>
+            <% } %>
+
+
+        </div>
+    </div>
+</div>
