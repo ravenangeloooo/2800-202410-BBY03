@@ -1,5 +1,4 @@
 <%- include("templates/header") %>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,9 +18,9 @@
             background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
-            width: 300px;
+            width: 90%;
+            max-width: 600px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            color: white;
         }
 
         .form-outline {
@@ -81,10 +80,68 @@
         .login-link a:hover {
             text-decoration: underline;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .form-outline {
+                margin-bottom: 15px;
+            }
+            
+            .form-control, .btn-primary {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .toggle-password {
+                right: 5px;
+                font-size: 14px;
+            }
+
+            .login-link {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                width: 100%;
+                max-width: 90%;
+                padding: 20px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            .form-outline {
+                margin-bottom: 10px;
+            }
+
+            .form-control, .btn-primary {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .toggle-password {
+                right: 2px;
+                font-size: 12px;
+            }
+
+            .login-link {
+                font-size: 12px;
+            }
+        }
     </style>
-<br>
-<br>
-<br>
+</head>
+<body>
     <div class="container card-body p-5">
         <div class="mask d-flex align-items-center h-100 gradient-custom-3">
             <div class="container h-100">
@@ -98,28 +155,25 @@
                                     <div data-mdb-input-init class="form-outline mb-2">
                                         <label class="form-label" for="form3Example1cg">Username</label>
                                         <input type='text' name='username' placeholder='username' id="form3Example1cg"
-                                            class="form-control" />
-                                        
+                                            class="form-control" required/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-2">
                                         <label class="form-label" for="form3Example1cg">Full Name</label>
                                         <input type='text' name='displayname' placeholder='display name' id="form3Example1cg"
-                                            class="form-control" />
+                                            class="form-control" required/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-2">
                                         <label class="form-label" for="form3Example3cg">Email</label>
                                         <input type='email' name='email' placeholder='email' id="form3Example3cg"
-                                            class="form-control" />
-                                        
+                                            class="form-control" required/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-2">
                                         <label class="form-label" for="form3Example3cg">Date of Birth</label>
                                         <input type='date' name='date' placeholder='birthdate' id="form3Example3cg"
-                                            class="form-control" />
-                                        
+                                            class="form-control" required/>
                                     </div>
 
                                     <div class="form-outline mb-2">
@@ -137,23 +191,10 @@
                                             <span class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
                                         </div>
                                     </div>
-
-                                    <!-- <div data-mdb-input-init class="form-outline mb-2">
-                                        <label class="form-label" for="form3Example4cg">Password</label>
-                                        <input type='password' name='password' placeholder='password'
-                                            id="form3Example4cg" class="form-control" />
-                                        
-                                    </div> -->
                                     <button type="submit" class="btn btn-primary">SIGN UP</button>
                                     <div class="login-link">
                                         Already have an account? <a href="/login">Log in</a>
                                     </div>
-
-                                    <!-- <div class="d-flex justify-content-center">
-                                        <button type='submit' data-mdb-button-init data-mdb-ripple-init
-                                            class="btn btn-primary btn-success">Submit</button>
-                                    </div> -->
-
                                 </form>
 
                             </div>
@@ -165,19 +206,17 @@
     </div>
 
     <script>
- 
-    document.querySelectorAll('.toggle-password').forEach(item => {
-        item.addEventListener('click', function () {
-            const input = this.previousElementSibling;
-            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-            input.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁️' : '🙈';
+        document.querySelectorAll('.toggle-password').forEach(item => {
+            item.addEventListener('click', function () {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '🙈';
+            });
         });
-    });
-</script>
-
-
-
     </script>
+</body>
+
+
 
     <%- include("templates/footer") %>
