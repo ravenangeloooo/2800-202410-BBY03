@@ -57,6 +57,7 @@ const groupCollection = database.db(mongodb_database).collection("groups");
 const itemCollection = database.db(mongodb_database).collection('items');
 const requestCollection = database.db(mongodb_database).collection('myrequests');
 const ratingCollection = database.db(mongodb_database).collection('ratings');
+const commentCollection = database.db(mongodb_database).collection('comments');
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -519,6 +520,26 @@ app.post("/requests/:id/delete", async (req, res) => {
 
   console.log("Request Deleted:" + requestId);
   res.redirect("/myRequests");
+});
+
+// Create a new comment
+app.post('/items/:itemId/comments', async (req, res) => {
+  const comment = {
+    text: req.body.text,
+    userId: req.session.userId, // Replace with actual user ID
+    itemId: req.params.itemId
+  };
+  await commentCollection.insertOne(comment);
+  res.redirect('/items/' + req.params.itemId);
+});
+
+// Displaying the item detail page with comments
+app.get('/items/:itemId', async (req, res) => {
+  const item = await itemCollection.findOne({ _id: new mongodb.ObjectId(req.params.itemId) });
+  console.log("Item Details: " + item);
+  const comments = await commentCollection.find({ itemId: req.params.itemId }).toArray();
+  console.log("Comments" + comments);
+  res.render('itemDetail', { item: item, comments: comments });
 });
 
 //Post page

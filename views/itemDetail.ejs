@@ -124,6 +124,19 @@ body {
               >
 
         </div>
+        <!-- Form for submitting a new comment -->
+        <form action="/items/<%= item._id %>/comments" method="POST">
+            <textarea name="text" required></textarea>
+            <button type="submit">Submit Comment</button>
+        </form>
+
+        <!-- Display existing comments -->
+        <% comments.forEach(function(comment) { %>
+            <div class="comment">
+            <p><%= comment.text %></p>
+            <p>Posted by: <%= comment.userId %></p> <!-- Replace with user name if available -->
+            </div>
+        <% }) %>
        
     </div>
 </body>
