@@ -613,6 +613,30 @@ app.get("/postRequest", sessionValidation, async(req, res) => {
   res.render("postRequest", { groups: groups });
 });
 
+app.post("/submitRequest", sessionValidation, async(req,res) => {  
+  const title = req.body.title;
+  const description = req.body.description;
+  const visibility = req.body.visibility;
+  const user_id = req.session.userId;
+  let timestamp = req.body.timestamp;
+  let status = "Active";
+
+
+  // const schema = Joi.object({
+  //   title: Joi.string().max(50).required(),
+  //   description: Joi.string().max(500).required(),
+  // });
+
+
+  const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility, status: status, timestamp: timestamp});
+  console.log("request create: " + title);
+  res.redirect('/collections');
+})
+
+
+
+
+
 app.post("/signupSubmit", async (req, res) => {
   var username = req.body.username;
   var displayname = req.body.displayname;
@@ -720,13 +744,39 @@ app.get("/discoverGroups/search", async (req, res) => {
   }
 });
 
-app.get("/peopleInterested", (req, res) => {
-  res.render("peopleInterested");
+app.get("/peopleInterested/:id", async (req, res) => {
+  const item_id = new mongodb.ObjectId(req.params.id)
+  let item = await itemCollection.findOne({ _id: item_id });
+  let peopleinterested = item.peopleinterested || [];
+
+  //from array of peopleinterested, create Arrays of user object ids(user)
+  const userIds = peopleinterested.map((user) => new mongodb.ObjectId(user));
+  const users = await userCollection.find({ _id: { $in: userIds } }).toArray();
+
+  if (users.length != 0) {
+    res.render("peopleInterested",{users: users, item: item});}
+    else{
+      res.redirect("/collections");
+    }
 });
 
-app.get("/peopleOffering", (req, res) => {
-  res.render("peopleOffering");
+app.get("/peopleOffering/:id", async (req, res) => {
+  const request_id = new mongodb.ObjectId(req.params.id)
+  let request = await requestCollection.findOne({ _id: request_id });
+  let peopleHave = request.peopleHave || [];
+
+  //from array of peopleHave, create Arrays of user object ids(user)
+  const userIds = peopleHave.map((user) => new mongodb.ObjectId(user));
+  const users = await userCollection.find({ _id: { $in: userIds } }).toArray();
+
+  console.log("users: ", users);
+  if (users.length != 0) {
+    res.render("peopleOffering",{users: users, request: request});}
+    else{
+      res.redirect("/myRequests");
+    }
 });
+
 
 app.post("/loggingin", async (req, res) => {
   var username = req.body.username;
