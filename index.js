@@ -492,89 +492,152 @@ app.get("/postRequest", sessionValidation, async(req, res) => {
   res.render("postRequest", { groups: groups });
 });
 
-app.post("/submitRequest", sessionValidation, async(req,res) => {  
-  const title = req.body.title;
-  const description = req.body.description;
-  const visibility = req.body.visibility;
-  const user_id = req.session.userId;
-  let timestamp = req.body.timestamp;
-  let status = "Active";
-
-
-  // const schema = Joi.object({
-  //   title: Joi.string().max(50).required(),
-  //   description: Joi.string().max(500).required(),
-  // });
-
-
-  const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility, status: status, timestamp: timestamp});
-  console.log("request create: " + title);
-  res.redirect('/collections');
-})
-
-//Signup form posts the form fields and validates all inputs
 app.post("/signupSubmit", async (req, res) => {
   var username = req.body.username;
   var displayname = req.body.displayname;
   var email = req.body.email;
   var password = req.body.password;
   var birthdate = req.body.date;
+  var confirmPassword = req.body["confirm-password"];
+
+  // Check if password and confirm password match
+  if (password !== confirmPassword) {
+      // Render error message if passwords do not match
+      var errormessage = "Passwords do not match.";
+      res.render("confirmPasswordError", { errormessage: errormessage });
+      return;
+  }
 
   const schema = Joi.object({
-    username: Joi.string().alphanum().max(20).required(),
-    displayname: Joi.string().max(20).required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().max(20).required(),
-    birthdate: Joi.date().iso().required(),
+      username: Joi.string().alphanum().max(20).required(),
+      displayname: Joi.string().max(20).required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().max(20).required(),
+      birthdate: Joi.date().iso().required(),
   });
 
   const validationResult = schema.validate({
-    username,
-    displayname,
-    email,
-    password,
-    birthdate,
+      username,
+      displayname,
+      email,
+      password,
+      birthdate,
   });
 
   if (validationResult.error != null) {
-    //Sends an error message saying which field was missing
-    console.log(validationResult.error);
-
-    var error = validationResult.error.details[0].context.label;
-    var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
-
-    res.render("submitError", { errormessage: errormessage });
+      // Sends an error message saying which field was missing
+      console.log(validationResult.error);
+      var error = validationResult.error.details[0].context.label;
+      var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
+      res.render("submitError", { errormessage: errormessage });
   } else {
-    //If the 3 fields are non-empty, adds the user to MongoDB database.
-    var hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("hashedPassword:" + hashedPassword);
+      // If the fields are valid, proceed with user creation
+      var hashedPassword = await bcrypt.hash(password, saltRounds);
+      console.log("hashedPassword:" + hashedPassword);
 
-    await userCollection.insertOne({
-      username: username,
-      displayname: displayname,
-      email: email,
-      password: hashedPassword,
-      user_type: "user",
-      birthdate: birthdate,
-    });
+      await userCollection.insertOne({
+          username: username,
+          displayname: displayname,
+          email: email,
+          password: hashedPassword,
+          user_type: "user",
+          birthdate: birthdate,
+      });
 
-    var user = await userCollection.findOne({ email: email, username: username, birthdate: birthdate})
+      var user = await userCollection.findOne({ email: email, username: username, birthdate: birthdate})
 
-    console.log("User Created:" + username);
+      console.log("User Created:" + username);
 
-    //Creates session and redirects the user to the /members page
-    req.session.authenticated = true;
-    req.session.user_type = "user";
-    req.session.email = email;
-    req.session.name = username; // Store user's name in the session
-    req.session.birthdate = birthdate;
-    req.session.cookie.maxAge = expireTime;
-    req.session.userId = user._id;
+      //Creates session and redirects the user to the /members page
+      req.session.authenticated = true;
+      req.session.user_type = "user";
+      req.session.email = email;
+      req.session.name = username; // Store user's name in the session
+      req.session.birthdate = birthdate;
+      req.session.cookie.maxAge = expireTime;
+      req.session.userId = user._id;
 
-    res.redirect("/");
-    return;
+      res.redirect("/");
   }
 });
+
+// app.post("/submitRequest", sessionValidation, async(req,res) => {  
+//   const title = req.body.title;
+//   const description = req.body.description;
+//   const visibility = req.body.visibility;
+//   const user_id = req.session.userId;
+//   let timestamp = req.body.timestamp;
+//   let status = "Active";
+
+//   const result = await requestCollection.insertOne({ user_id: user_id, title: title, description: description, visibility: visibility, status: status, timestamp: timestamp});
+//   console.log("request create: " + title);
+//   res.redirect('/collections');
+// })
+
+// //Signup form posts the form fields and validates all inputs
+// app.post("/signupSubmit", async (req, res) => {
+//   var username = req.body.username;
+//   var displayname = req.body.displayname;
+//   var email = req.body.email;
+//   var password = req.body.password;
+//   var birthdate = req.body.date;
+//   var confirmPassword = req.body["confirm-password"];
+
+//   const schema = Joi.object({
+//     username: Joi.string().alphanum().max(20).required(),
+//     displayname: Joi.string().max(20).required(),
+//     email: Joi.string().email().required(),
+//     password: Joi.string().max(20).required(),
+//     birthdate: Joi.date().iso().required(),
+//   });
+
+//   const validationResult = schema.validate({
+//     username,
+//     displayname,
+//     email,
+//     password,
+//     birthdate,
+//   });
+
+//   if (validationResult.error != null) {
+//     //Sends an error message saying which field was missing
+//     console.log(validationResult.error);
+
+//     var error = validationResult.error.details[0].context.label;
+//     var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
+
+//     res.render("submitError", { errormessage: errormessage });
+//   } else {
+//     //If the 3 fields are non-empty, adds the user to MongoDB database.
+//     var hashedPassword = await bcrypt.hash(password, saltRounds);
+//     console.log("hashedPassword:" + hashedPassword);
+
+//     await userCollection.insertOne({
+//       username: username,
+//       displayname: displayname,
+//       email: email,
+//       password: hashedPassword,
+//       user_type: "user",
+//       birthdate: birthdate,
+//     });
+
+//     var user = await userCollection.findOne({ email: email, username: username, birthdate: birthdate})
+
+//     console.log("User Created:" + username);
+
+//     //Creates session and redirects the user to the /members page
+//     req.session.authenticated = true;
+//     req.session.user_type = "user";
+//     req.session.email = email;
+//     req.session.name = username; // Store user's name in the session
+//     req.session.birthdate = birthdate;
+//     req.session.cookie.maxAge = expireTime;
+//     req.session.userId = user._id;
+
+//     res.redirect("/");
+//     return;
+//   }
+// });
 
 //Discover Groups page
 app.get("/discoverGroups", sessionValidation, async (req, res) => {
