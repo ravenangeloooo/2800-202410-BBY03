@@ -77,6 +77,21 @@ body {
     background-color: #0056b3;
 }
 
+.modal-body {
+  max-height: 100vh; /* Adjust this value as needed */
+  background-color: darkgray;
+  overflow-y: auto;
+}
+
+.sticky-comment-form {
+  position: sticky;
+  bottom: 0;
+  background: color; /* Add a background color to cover the comments behind */
+}
+
+#openCommentsModal {
+    padding-left: 35%;
+}
 
 </style>
 
@@ -119,27 +134,64 @@ body {
             
             
             <!-- <button class="interested-button mt-4">INTERESTED</button> -->
-            <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
-                <h4>INTERESTED</h4></a
-              >
+            <div class="container d-flex">
+                <a href="/interested/<%= item._id %>" class="btn btn-info text-white" role="button">
+                    <h4>INTERESTED</h4>
+                </a>
+                
+                <button type="button" class="btn btn-link" id="openCommentsModal">
+                    <img src="comments.png" alt="Open Comments" style="width: 35px; height: 35px;">
+                </button>
+            </div>
+            
 
         </div>
-        <!-- Form for submitting a new comment -->
-        <form action="/items/<%= item._id %>/comments" method="POST">
-            <textarea name="text" required></textarea>
-            <button type="submit">Submit Comment</button>
-        </form>
-
-        <!-- Display existing comments -->
-        <% comments.forEach(function(comment) { %>
-            <div class="comment">
-            <p><%= comment.text %></p>
-            <p>Posted by: <%= comment.userId %></p> <!-- Replace with user name if available -->
-            </div>
-        <% }) %>
-       
     </div>
+  
+<!-- Modal -->
+<div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="commentsModalLabel">Comments</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Display existing comments -->
+          <% comments.forEach(function(comment) { %>
+            <div class="card mb-3">
+              <div class="card-body">
+                <p class="card-text"><%= comment.text %></p>
+                <p class="card-subtitle mb-2 text-muted">Posted by: <%= comment.displayName %></p>
+                <p class="card-subtitle mb-2 text-muted">Posted at: <%= comment.timestamp %></p>
+              </div>
+            </div>
+          <% }) %>
+  
+          <div class="sticky-comment-form">
+            <div class="card bg-light mb-3">
+              <div class="card-body">
+                <form action="/submitComment/?id=<%= item._id %>" method="POST">
+                  <div class="form-group position-relative">
+                    <label for="commentText">New Comment</label>
+                    <textarea name="text" id="commentText" class="form-control" placeholder="Write your comment here..." required style="padding-right: 50px;"></textarea>
+                    <button type="submit" class="btn btn-link btn-sm position-absolute top-50 end-0 translate-middle-y" style="right: 10px;">
+                        <img src="send.png" alt="Send" style="width: 25px; height: 25px;">
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 <script>
     var timeDifferenceElements = document.getElementsByClassName('timeDifference');
@@ -162,6 +214,11 @@ body {
   
         timeDifferenceElements[i].textContent = timeDifferenceText;
     }
+
+    var modal = new bootstrap.Modal(document.getElementById('commentsModal'), {});
+        document.getElementById('openCommentsModal').addEventListener('click', function () {
+        modal.show();
+  });
   </script>
 
 <%- include("templates/footer") %>

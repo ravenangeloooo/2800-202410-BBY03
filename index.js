@@ -221,12 +221,32 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
     item['owner_name'] = owner_name;
     console.log(item);
 
+    // Fetch comments associated with the item
+    let comments = await commentCollection.find({ itemId: item_id }).toArray();
+    console.log(comments);
+
     // Get the referer URL
     const backUrl = req.headers.referer || '/';
     console.log(backUrl);
 
-    res.render('itemDetail', { item: item, backUrl: backUrl });
+    res.render('itemDetail', { item: item, backUrl: backUrl, comments: comments });
 })
+
+app.post('/submitComment', sessionValidation, async (req, res) => {
+  let item_id = req.query.id;
+  console.log("Item ID: " + item_id);
+  let timestamp = new Date().toISOString();
+  const comment = {
+      text: req.body.text,
+      displayName: req.session.displayname, // Replace with actual user ID
+      userId: req.session.userId,
+      itemId: item_id,
+      timestamp: timestamp
+  };
+  console.log(comment);
+  await commentCollection.insertOne(comment);
+  res.redirect('/itemDetail?id=' + item_id);
+});
 
 
 //Sign up for a new account
@@ -520,26 +540,6 @@ app.post("/requests/:id/delete", async (req, res) => {
 
   console.log("Request Deleted:" + requestId);
   res.redirect("/myRequests");
-});
-
-// Create a new comment
-app.post('/items/:itemId/comments', async (req, res) => {
-  const comment = {
-    text: req.body.text,
-    userId: req.session.userId, // Replace with actual user ID
-    itemId: req.params.itemId
-  };
-  await commentCollection.insertOne(comment);
-  res.redirect('/items/' + req.params.itemId);
-});
-
-// Displaying the item detail page with comments
-app.get('/items/:itemId', async (req, res) => {
-  const item = await itemCollection.findOne({ _id: new mongodb.ObjectId(req.params.itemId) });
-  console.log("Item Details: " + item);
-  const comments = await commentCollection.find({ itemId: req.params.itemId }).toArray();
-  console.log("Comments" + comments);
-  res.render('itemDetail', { item: item, comments: comments });
 });
 
 //Post page
@@ -848,6 +848,7 @@ app.post("/loggingin", async (req, res) => {
     req.session.user_type = user.user_type;
     req.session.email = user.email;
     req.session.name = user.username; // Store user's name in the session
+    req.session.displayname = user.displayname;
     req.session.birthdate = user.birthdate;
     req.session.cookie.maxAge = expireTime;
     req.session.userId = user._id;
