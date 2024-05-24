@@ -8,7 +8,13 @@
                     <h5 class="card-title"><%= user.displayname%></h5>
         </div>
         <div class="col-auto ms-auto pt-5 mt-4">
-            <a href="" class="btn btn-primary" role="button">Accept</a>
+            <% if (item.personaccepted == user._id) { %>
+                <a href="/acceptPeopleInterested/<%= user._id %>/<%= item._id %>" class="btn " role="button"  style="background-color: #71d671; color: black;">&#10004;Accepted</a>
+            <% } else { %>
+                <a href="/acceptPeopleInterested/<%= user._id %>/<%= item._id %>" class="btn btn-primary" role="button">Accept</a>
+            <% } %>
+
+
         </div>
     </div>
 </div>

@@ -745,8 +745,13 @@ app.get("/discoverGroups/search", async (req, res) => {
 });
 
 app.get("/peopleInterested/:id", async (req, res) => {
+  // Get the item ID from the URL
   const item_id = new mongodb.ObjectId(req.params.id)
+
+  // Find the item in the database
   let item = await itemCollection.findOne({ _id: item_id });
+  
+  //create empty array to prevent error if null
   let peopleinterested = item.peopleinterested || [];
 
   //from array of peopleinterested, create Arrays of user object ids(user)
@@ -759,6 +764,37 @@ app.get("/peopleInterested/:id", async (req, res) => {
       res.redirect("/collections");
     }
 });
+
+app.get("/acceptPeopleInterested/:userId/:itemId", async (req, res) => {
+  var userId = req.params.userId;
+  var itemId = req.params.itemId;
+  console.log("User ID: ", userId);
+  console.log("Item ID: ", itemId);
+
+  // Find the item in the database
+  let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(itemId) });
+
+
+  if (item.personaccepted == userId) {
+    // If personaccepted is equal to userId, remove it
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(itemId) },
+      { $set: { personaccepted: "" } }
+    );
+  } else {
+    // If personaccepted is not equal to userId, set it
+    await itemCollection.updateOne(
+      { _id: new mongodb.ObjectId(itemId) },
+      { $set: { personaccepted: userId } }
+    );
+  }
+
+  // Redirect back to the item page
+  res.redirect("/peopleInterested/" + itemId);
+
+});
+
+
 
 app.get("/peopleOffering/:id", async (req, res) => {
   const request_id = new mongodb.ObjectId(req.params.id)
@@ -776,6 +812,38 @@ app.get("/peopleOffering/:id", async (req, res) => {
       res.redirect("/myRequests");
     }
 });
+
+
+app.get("/acceptPeopleOffering/:userId/:requestId", async (req, res) => {
+  var userId = req.params.userId;
+  var requestId = req.params.requestId;
+  console.log("User ID: ", userId);
+  console.log("Request ID: ", requestId);
+
+  // Find the item in the database
+  let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(requestId) });
+
+
+  if (request.personaccepted == userId) {
+    // If personaccepted is equal to userId, remove it
+    await requestCollection.updateOne(
+      { _id: new mongodb.ObjectId(requestId) },
+      { $set: { personaccepted: "" } }
+    );
+  } else {
+    // If personaccepted is not equal to userId, set it
+    await requestCollection.updateOne(
+      { _id: new mongodb.ObjectId(requestId) },
+      { $set: { personaccepted: userId } }
+    );
+  }
+
+  // Redirect back to the item page
+  res.redirect("/peopleOffering/" + requestId);
+
+});
+
+
 
 
 app.post("/loggingin", async (req, res) => {
