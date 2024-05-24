@@ -402,8 +402,19 @@ app.get("/editItem", sessionValidation, async (req, res) => {
 
   let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
   console.log("Fetched item: ", item);
+
+  // Get the user ID from the session
+  const userId = req.session.userId;
+
+  // Fetch the groups the user is a member of from the database
+  const groups = await groupCollection
+  .find({ members: { $in: [userId] } })
+  .project({ groupname: 1, _id: 1 })
+  .toArray();
+
+  console.log(groups);
   
-  res.render("editItem", { item: item });
+  res.render("editItem", { item: item, groups: groups});
 });
 
 app.get("/editRequest", sessionValidation, async (req, res) => {
@@ -414,8 +425,19 @@ app.get("/editRequest", sessionValidation, async (req, res) => {
 
   let request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
   console.log("Fetched Request: ", request);
+
+  // Get the user ID from the session
+  const userId = req.session.userId;
+
+  // Fetch the groups the user is a member of from the database
+  const groups = await groupCollection
+  .find({ members: { $in: [userId] } })
+  .project({ groupname: 1, _id: 1 })
+  .toArray();
+
+  console.log(groups);
   
-  res.render("editRequest", { request: request });
+  res.render("editRequest", { request: request, groups: groups});
 });
 
 app.post("/updateItem", sessionValidation, upload.single('image'), async (req, res) => {
@@ -666,8 +688,7 @@ app.post("/signupSubmit", async (req, res) => {
     displayname,
     email,
     password,
-    birthdate,
-    notifications: []
+    birthdate
   });
 
   if (validationResult.error != null) {
@@ -688,6 +709,7 @@ app.post("/signupSubmit", async (req, res) => {
           password: hashedPassword,
           user_type: "user",
           birthdate: birthdate,
+          notifications: []
       });
 
       var user = await userCollection.findOne({ email: email, username: username, birthdate: birthdate})

@@ -20,13 +20,15 @@
         </div>
 
         <div class="form-floating py-3">
-            <select class="form-select" id="visibility" name="visibility" required="">
-                <option selected><%= request.visibility %></option>
-                <option>Group 1</option>
-                <option>Group 2</option>
-                <!--Create a function that includes all the groups that user is in-->
+            <select class="form-select" id="visibility" name="visibility">
+                <option value="global" <%= request.visibility === 'global' ? 'selected' : '' %>>Global (default)</option>
+                
+                <% for (let group of groups) { %>
+                    <option value="<%= group.groupname %>" <%= request.visibility === group.groupname ? 'selected' : '' %>> <%= group.groupname %> </option>
+                <% } %>
+                
             </select>
-            <label for="visibility">Edit Visibility</label>
+            <label for="floatingInput">Edit Visibility</label>
             <div class="invalid-feedback">
                 Please select a valid visibility.
             </div>
