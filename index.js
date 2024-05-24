@@ -850,13 +850,13 @@ app.get("/acceptPeopleOffering/:userId/:requestId", async (req, res) => {
     // If personaccepted is equal to userId, remove it
     await requestCollection.updateOne(
       { _id: new mongodb.ObjectId(requestId) },
-      { $set: { personaccepted: "" } }
+      { $set: { personaccepted: "", status: "Active" } }
     );
   } else {
     // If personaccepted is not equal to userId, set it
     await requestCollection.updateOne(
       { _id: new mongodb.ObjectId(requestId) },
-      { $set: { personaccepted: userId } }
+      { $set: { personaccepted: userId, status: "Pending Exchange" } }
     );
   }
 
