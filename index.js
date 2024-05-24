@@ -801,13 +801,13 @@ app.get("/acceptPeopleInterested/:userId/:itemId", async (req, res) => {
     // If personaccepted is equal to userId, remove it
     await itemCollection.updateOne(
       { _id: new mongodb.ObjectId(itemId) },
-      { $set: { personaccepted: "" } }
+      { $set: { personaccepted: "", status: "Available" } }
     );
   } else {
     // If personaccepted is not equal to userId, set it
     await itemCollection.updateOne(
       { _id: new mongodb.ObjectId(itemId) },
-      { $set: { personaccepted: userId } }
+      { $set: { personaccepted: userId, status: "Pending Exchange" } }
     );
   }
 
@@ -1058,11 +1058,11 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
 
   console.log(userProfileId);
 
-  const users = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
+  const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
 
   // let user_id = req.session.userId;
 
-  if (!users) {
+  if (!user) {
     // If no group was found, send a 404 error
     return res.status(404).send({ message: 'Group not found' });
   }
@@ -1089,7 +1089,7 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
   console.log(backUrl);
 
   // Render the groupProfile page with the group data
-  res.render('userProfile', { users: users, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
+  res.render('userProfile', { user: user, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
 });
 
 
