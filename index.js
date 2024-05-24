@@ -287,14 +287,14 @@ app.get("/collections/search", async (req, res) => {
   let searchTerm = req.query.search;
   console.log("Search term: ", searchTerm);
 
+  // Get the user's ID from the session
+  const userId = req.session.userId;
+
   // Query the database with the search term
-  let items = await itemCollection.find({ title: new RegExp(searchTerm, 'i') }).toArray();
-  let requests = await requestCollection.find({ title: new RegExp(searchTerm, 'i') }).toArray();
+  let items = await itemCollection.find({ title: new RegExp(searchTerm, 'i'), user_id: userId }).toArray();
+  let requests = await requestCollection.find({ title: new RegExp(searchTerm, 'i'), user_id: userId  }).toArray();
 
   //For easter egg
-
-    // Get the user's ID from the session
-    const userId = req.session.userId;
 
     // Get the user document from the database
     const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
