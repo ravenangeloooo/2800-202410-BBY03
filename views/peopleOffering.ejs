@@ -16,9 +16,8 @@
             <!--Temporary image card-->
             <div class="container d-flex justify-content-center">
                 <div class="card p-4 bg-body-secondary" style="border-radius: 15px;">
-                    <h2>Item Name</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Curabitur euismod vulputate vehicula. Nunc in ligula tortor.</p>
+                    <h2><%= request.title %></h2>
+                    <p><%= request.description %></p>
                 </div>
                 
             </div>
@@ -32,9 +31,9 @@
             <div class="row pb-5">
                 <div class="container">
 
-                    <% for (let i=0; i < 6; i++) { %>
-                        <%- include('templates/peopleInterestedCard') %>
-                            <% } %>
+                    <% users.forEach(function(user) { %>
+                        <%-  include("templates/peopleInterestedCard", {user: user}) %>
+                        <% }) %>
 
                 </div>
             </div>

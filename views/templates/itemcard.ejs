@@ -18,9 +18,9 @@
           <small class="text-body-secondary">Visible to: <%= item.visibility %></small>
         </div>
 
-        <a href="/peopleInterested" class="btn btn-info" role="button"
-          >3 people are interested</a
-        >
+        <a href="/peopleInterested/<%= item._id %>" class="btn btn-info" role="button">
+          <%= item.peopleinterested?.length || 0 %> people are interested
+        </a>
       </div>
     </div>
 

@@ -15,11 +15,11 @@
         <div class="container">
             <!--Temporary image card-->
             <div class="container d-flex justify-content-center">
-                <img id="uploadedimg" src="https://dummyimage.com/400x300/000/fff&amp;text=Item"
+                <img id="uploadedimg" src="https://res.cloudinary.com/deisln2yq/image/upload/c_scale,w_100,h_100/<%= item.image_id %>"
                     style="max-width: 350px; max-height: 250px; border-radius: 10%;" height="250px">
             </div>
             <!--End of temporary image card-->
-            <h2 class="text-center mt-2">Item Name</h2>
+            <h2 class="text-center mt-2"><%= item.title %></h2>
         </div>
     </section>
     <hr>
@@ -28,9 +28,14 @@
             <div class="row pb-5">
                 <div class="container">
 
-                    <% for (let i=0; i < 6; i++) { %>
-                        <%- include('templates/peopleInterestedCard') %>
-                            <% } %>
+                    <% users.forEach(function(user) { %>
+                    <%-  include("templates/peopleInterestedCard", {user: user}) %>
+                    <% }) %>
+                    
+
+                        
+
+                 
 
                 </div>
             </div>
