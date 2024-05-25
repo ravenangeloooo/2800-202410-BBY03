@@ -769,6 +769,7 @@ app.post("/signupSubmit", async (req, res) => {
       req.session.birthdate = birthdate;
       req.session.cookie.maxAge = expireTime;
       req.session.userId = user._id;
+      req.session.displayName = user.displayname;
 
       res.redirect("/");
   }
