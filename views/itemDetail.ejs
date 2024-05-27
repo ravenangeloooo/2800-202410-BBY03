@@ -153,10 +153,16 @@
             <!-- <button class="interested-button mt-4">INTERESTED</button> -->
             <div class="container d-flex">
                 <% if(item.user_id != user_id) { %>
+                  <% if (!item.peopleinterested?.includes(user_id)){%>
+                  <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
+                      <h4>INTERESTED</h4>
+                  </a>
+                  <% } else { %>
+                  <a href="/notInterested/<%= item._id %>" class="btn btn-info text-white " role="button">
+                      <h4>NOT INTERESTED</h4>
+                  </a>
+                  <% } %>
 
-                <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
-                    <h4>INTERESTED</h4>
-                </a>
 
                 <% } %>
                 
