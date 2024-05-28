@@ -98,10 +98,12 @@ app.get("/", sessionValidation, async (req, res) => {
   // Fetch global items and requests
   let items = await itemCollection
   .find({ user_id: { $ne: user_id }, visibility: "global" })
+  .sort({ timestamp: -1 })
   .toArray();
 
   let requests = await requestCollection
     .find({ user_id: { $ne: user_id }, visibility: "global" })
+    .sort({ timestamp: -1 })
     .toArray();
 
   res.render("index", { items: items, requests: requests });
