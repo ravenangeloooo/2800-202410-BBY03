@@ -3,7 +3,7 @@
   <style>
       .profile-container {
           max-width: 600px;
-          margin: 50px auto;
+          margin-top: 25px;
           padding: 30px;
           background: white;
           border-radius: 10px;
@@ -71,6 +71,40 @@
                     <div>
                         <h4 class="mb-0">Description</h4>
                         <p class="mb-0"><%= user.description %></p>
+                    </div>
+                </div>
+            </div>
+            <div class="list-group-item list-group-item-action py-3 profile-info">
+                <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div>
+                        <h4 class="mb-0">Ratings</h4>
+                        <p class="text-center">Average Rating: <%= averageRating.toFixed(2) %></p>
+                        <% let countAwful=0, countBad=0, countOkay=0, countGood=0, countGreat=0; for(let rating of ratings) {
+                            if(rating.emoji==='Awful' ) countAwful++; else if(rating.emoji==='Bad' ) countBad++; else if(rating.emoji==='Okay' )
+                            countOkay++; else if(rating.emoji==='Good' ) countGood++; else if(rating.emoji==='Great' ) countGreat++; } %>
+                        
+                    </div>
+                </div>
+                <div class="row p-0 m-0">
+                    <div class="col d-flex flex-column align-items-center text-center">
+                        <img src="https://assets.codepen.io/210284/Falling_in_love.svg" alt="Falling in love" class="row img-fluid" style="max-width: 200px; max-height: 200px;">
+                        <small class="row text-muted"><%= countGreat++ %></small>
+                    </div>
+                    <div class="col d-flex flex-column align-items-center text-center">
+                        <img src="https://assets.codepen.io/210284/Smile.svg" alt="Smile" class="row img-fluid" style="max-width: 200px; max-height: 200px;">
+                        <small class="row text-muted"><%= countGood++ %></small>
+                    </div>
+                    <div class="col d-flex flex-column align-items-center text-center">
+                        <img src="https://assets.codepen.io/210284/Expressionless.svg" alt="Expressionless" class="row img-fluid" style="max-width: 200px; max-height: 200px;">
+                        <small class="row text-muted"><%= countOkay++ %></small>
+                    </div>
+                    <div class="col d-flex flex-column align-items-center text-center">
+                        <img src="https://assets.codepen.io/210284/Sad.svg" alt="Sad" class="row img-fluid" style="max-width: 200px; max-height: 200px;">
+                        <small class="row text-muted"><%= countBad++ %></small>
+                    </div>
+                    <div class="col d-flex flex-column align-items-center text-center">
+                        <img src="https://assets.codepen.io/210284/Disappointed.svg" alt="Disappointed" class="row img-fluid" style="max-width: 200px; max-height: 200px;">
+                        <small class="row text-muted"><%= countAwful++ %></small>
                     </div>
                 </div>
             </div>

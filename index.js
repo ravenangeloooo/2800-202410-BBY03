@@ -660,10 +660,25 @@ app.get('/profile', sessionValidation, async (req, res) => {
   console.log('User:', user);
   console.log('User description:', user.description);
 
+  // Fetch the ratings for the user
+  let ratings = await ratingCollection.find({ userProfileId: new mongodb.ObjectId(user_id) }).toArray();
+  console.log(ratings);
+
+  // Calculate the average rating
+  let averageRating = 0;
+  if (ratings.length > 0) {
+    let sum = 0;
+    for (let rating of ratings) {
+      sum += Number(rating.value);
+    }
+    console.log(sum);
+    averageRating = sum / ratings.length;
+  }
+
   // Check if the user has a notifications property
   const notifications = user.notifications ? user.notifications : [];
 
-  res.render('profile', { user: user, notifications: notifications});
+  res.render('profile', { user: user, notifications: notifications, ratings: ratings, averageRating: averageRating });
 });
 
 
