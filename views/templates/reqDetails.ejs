@@ -69,9 +69,17 @@
       </div>
      
       <div class="container d-flex mt-3">
-        <a href="/haveOne/<%= request._id %>" class="btn btn-info text-white " role="button">
-          <h4>I HAVE ONE!</h4>
-        </a>
+        <% if(request.user_id != user_id) { %>
+          <% if(!request.peopleHave?.includes(user_id)){%>
+            <a href="/haveOne/<%= request._id %>" class="btn btn-info text-white " role="button">
+              <h4>I HAVE ONE!</h4>
+            </a>
+          <%} else { %>
+            <a href="/unavailable/<%= request._id %>" class="btn btn-info text-white " role="button">
+              <h4>UNAVAILABLE</h4>
+          </a>
+          <% } %>
+          <% } %>
         
         <button type="button" class="btn btn-link" id="openCommentsModal">
           <img src="/comments.png" alt="Open Comments" style="width: 35px; height: 35px;">

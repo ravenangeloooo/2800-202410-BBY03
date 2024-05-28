@@ -189,9 +189,28 @@ app.get("/haveOne/:id", sessionValidation, async (req, res) => {
   await userCollection.updateOne({ _id: requestOwner._id }, { $set: { notifications: requestOwner.notifications } });
 
 
-  res.redirect("/");
+  res.redirect("/requestDetails?id=" + requestId);
   
 })
+
+
+app.get("/unavailable/:id", sessionValidation, async (req, res) => {
+  const requestId = new mongodb.ObjectId(req.params.id)
+  let request = await requestCollection.findOne({ _id: requestId });
+  
+  const oldPeopleHave = request.peopleHave;
+  const newPeopleHave = oldPeopleHave.filter(id => id !== req.session.userId);
+
+  requestCollection.updateOne(
+    { _id: requestId },
+    { $set: {
+        peopleHave: newPeopleHave
+      }
+    });
+
+
+  res.redirect("/requestDetails?id=" + requestId);
+});
 
 app.get("/interested/:id", sessionValidation, async (req, res) => {
   const itemId = new mongodb.ObjectId(req.params.id)
@@ -244,7 +263,6 @@ app.get("/notInterested/:id", sessionValidation, async (req, res) => {
   itemCollection.updateOne(
     { _id: itemId },
     { $set: {
-        //spread out to prevent array in array
         peopleinterested: newPeopleInterested
       }
     });  
