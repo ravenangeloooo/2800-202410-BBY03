@@ -1444,19 +1444,23 @@ app.post("/deleteNotification", sessionValidation, async (req, res) => {
   const userId = req.session.userId;
 
   // Get the index of the notification from the request body
-  const index = Number(req.body.index);
+  const clientSideIndex = Number(req.body.index);
 
   // Get the user document from the database
   const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
 
   // Check if the user and the notification exist
-  if (user && index < user.notifications.length) {
-    // Remove the notification from the user's notifications array
-    user.notifications.splice(index, 1);
+  if (user) {
+    // Calculate the server-side index
+    const serverSideIndex = user.notifications.length - 1 - clientSideIndex;
 
-  // Update the user document in the database
-  await userCollection.updateOne({ _id: user._id }, { $set: { notifications: user.notifications } });
+    if (serverSideIndex >= 0 && serverSideIndex < user.notifications.length) {
+      // Remove the notification from the user's notifications array
+      user.notifications.splice(serverSideIndex, 1);
 
+      // Update the user document in the database
+      await userCollection.updateOne({ _id: user._id }, { $set: { notifications: user.notifications } });
+    }
   }
   
   // Redirect to the profile page
