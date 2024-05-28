@@ -4,7 +4,7 @@
       <div class="card-body">
         
         <div>
-          <a href="/requestDetails/<%= request._id %>" style="text-decoration: none;">
+          <a href="/requestDetails/<%= request._id %>" style="text-decoration: none; color: black;">
           <h5 class="card-title"><%= request.title %></h5>
           <small class="text-body-secondary"><%= request.status %></small>
           <br />
@@ -19,13 +19,12 @@
         >
       </div>
     </div>
-    <div class="col-auto" style="margin-top: 25px; margin-right: 27px">
+    <div class="col-auto" style="margin-top: 25px; margin-right: 27px;">
       <a href="/editRequest?id=<%= request._id %>">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="30"
           height="30"
-          fill="currentColor"
           class="bi bi-three-dots-vertical"
           viewBox="0 0 16 16"
         >
