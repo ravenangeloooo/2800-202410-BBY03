@@ -1,0 +1,54 @@
+<%- include("templates/header") %>
+<div class="container mt-4" style = "margin-bottom: 75px;">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h4 class="mb-4">Notifications</h4>
+            <% if (notifications.length > 0) { %>
+                <% notifications.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(function(notification, index) { %>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <form action="/deleteNotification" method="POST">
+                                <input type="hidden" name="index" value="<%= index %>">
+                                <button type="submit" class="btn-close float-end" aria-label="Close"></button>
+                            </form>
+                            <p class="mb-0"><%= notification.message %></p>
+                            <small class="text-muted">
+                                <p class="timeDifference mt-2" data-timestamp="<%= notification.date %>"></p>
+                            </small>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="mb-0">You have no notifications.</p>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<script>
+    var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+    for (var i = 0; i < timeDifferenceElements.length; i++) {
+        var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+  
+        var now = new Date();
+        var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+  
+        var timeDifferenceText;
+        if (diffInMinutes >= 1440) { // 1440 minutes in a day
+            var diffInDays = Math.round(diffInMinutes / 1440);
+            timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+        } else if (diffInMinutes >= 60) {
+            var diffInHours = Math.round(diffInMinutes / 60);
+            timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+        } else {
+            timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+        }
+  
+        timeDifferenceElements[i].textContent = timeDifferenceText;
+    }
+  </script>
+
+<%- include("templates/footer") %>
