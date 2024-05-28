@@ -109,6 +109,15 @@ app.get("/", sessionValidation, async (req, res) => {
   res.render("index", { items: items, requests: requests });
 });
 
+app.get("/notification", sessionValidation, async (req, res) => {
+  let user_id = req.session.userId;
+  let user = await userCollection.findOne({ _id: new mongodb.ObjectId(user_id) });
+
+  const notifications = user.notifications ? user.notifications : [];
+
+  res.render("notification", { notifications: notifications, user: user });
+});
+
 //Deprecated route
 /*
 app.get("/requests", sessionValidation, async (req, res) => {
@@ -1444,7 +1453,7 @@ app.post("/deleteNotification", sessionValidation, async (req, res) => {
   }
   
   // Redirect to the profile page
-  res.redirect("/profile");
+  res.redirect("/notification");
 });
 
 
