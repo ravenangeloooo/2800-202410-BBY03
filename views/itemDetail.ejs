@@ -185,6 +185,7 @@
         </div>
         <div class="modal-body">
           <!-- Display existing comments -->
+          <div id="comments">
           <% comments.forEach(function(comment) { %>
             <div class="card mb-3">
               <div class="card-body">
@@ -195,11 +196,13 @@
               </div>
             </div>
           <% }) %>
+        </div>
   
           <div class="sticky-comment-form">
             <div class="card bg-light mb-3">
               <div class="card-body">
-                <form action="/submitComment/?id=<%= item._id %>" method="POST">
+                <form id = "submitCommentForm" action="/submitComment/?id=<%= item._id %>" method="POST">
+                  <input type="hidden" id="itemId" value="<%= item._id %>">
                   <div class="form-group position-relative">
                     <label for="commentText">New Comment</label>
                     <textarea name="text" id="commentText" class="form-control" placeholder="Write your comment here..." required style="padding-right: 50px;"></textarea>
@@ -220,6 +223,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script>
     var timeDifferenceElements = document.getElementsByClassName('timeDifference');
@@ -247,6 +252,52 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
         document.getElementById('openCommentsModal').addEventListener('click', function () {
         modal.show();
   });
+
+  $('#commentsModal').on('shown.bs.modal', function () {
+  var modalBody = $(this).find('.modal-body');
+  modalBody.scrollTop(modalBody.prop('scrollHeight'));
+});
+
+$(document).ready(function() {
+  $('#submitCommentForm').on('submit', function(e) {
+    e.preventDefault(); // Prevent the form from submitting normally
+
+    $.ajax({
+      type: 'POST',
+      url: '/submitComment', // The URL where you're posting the comment
+      data: {
+        text: $('#commentText').val(),
+        id: $('#itemId').val()
+      }, // Serialize the form data for the AJAX request
+      success: function(response) {
+        // Handle the response from the server
+        // For example, you can add the new comment to the page:
+
+        var timeAgo = moment(response.timestamp).fromNow();
+
+        $('#comments').append(
+          '<div class="card mb-3">' +
+          '<div class="card-body">' +
+          '<p class="card-text">' + response.text + '</p>' +
+          '<p class="card-subtitle mb-2 text-muted">Posted by: ' + response.displayName + '</p>' +
+          '<p class="card-subtitle mb-2 text-muted timeDifference" data-timestamp="' + response.timestamp + '">' + timeAgo + '</p>' +
+          '</div>' +
+          '</div>'
+        );
+        
+        // Clear the comment form
+        $('#commentText').val('');
+
+      var commentSection = $('#comments');
+        commentSection.scrollTop(commentSection.prop('scrollHeight'));
+      },
+      error: function(error) {
+        // Handle any errors
+        console.error('Error posting comment:', error);
+      }
+    });
+  });
+});
   </script>
 
     <%- include("templates/footer") %>
