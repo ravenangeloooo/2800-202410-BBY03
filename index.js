@@ -1285,7 +1285,7 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
 
   if (!user) {
     // If no group was found, send a 404 error
-    return res.status(404).send({ message: 'Group not found' });
+    return res.status(404).send({ message: 'User not found' });
   }
 
   let ratings = await ratingCollection.find({ userProfileId: new mongodb.ObjectId(userProfileId) }).toArray();
@@ -1304,19 +1304,29 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
   console.log(sum);
   averageRating = sum / ratings.length;
   }
+
+  const currentUserId = req.session.userId; // Get the current user's ID from the session
+
+  console.log(userProfileId);
+  console.log(currentUserId);
+
+  // if (userProfileId === currentUserId) {
+  //   // If the user is trying to rate themselves, send an error message
+  //   return res.status(400).send({ message: 'You cannot rate yourself' });
+  // }
   
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
   console.log(backUrl);
 
   // Render the groupProfile page with the group data
-  res.render('userProfile', { user: user, ratings: ratings, averageRating: averageRating, backUrl: backUrl});
+  res.render('userProfile', { user: user, ratings: ratings, averageRating: averageRating, backUrl: backUrl, currentUserId: currentUserId});
 });
 
 
 // Rate User page
 app.get('/userProfile/:userProfileId/rateUser', sessionValidation, async (req, res) => {
-  const userProfileId = req.params.userProfileId; // Get the group ID from the route parameter
+  const userProfileId = req.params.userProfileId; // Get the user ID from the route parameter
   const userId = req.session.userId; // Get the current user's ID from the session
 
   console.log(userProfileId);
@@ -1331,7 +1341,7 @@ app.get('/userProfile/:userProfileId/rateUser', sessionValidation, async (req, r
 
   if (!users) {
       // If no group was found, send a 404 error
-      return res.status(404).send({ message: 'Group not found' });
+      return res.status(404).send({ message: 'User not found' });
   }
 
   // Get the referer URL
@@ -1339,7 +1349,7 @@ app.get('/userProfile/:userProfileId/rateUser', sessionValidation, async (req, r
   console.log(backUrl);
 
   // Render the groupProfile page with the group data
-  res.render('userRating', { users: users, backUrl: backUrl});
+  res.render('userRating', { users: users, backUrl: backUrl, userProfileId: userProfileId});
 });
 
 
@@ -1349,6 +1359,11 @@ app.post('/userProfile/:userProfileId/submitRating', sessionValidation, async (r
     const userId = req.session.userId; // Get the current user's ID from the session
     const ratingValue = req.body.rating; // Get the rating from the request body
     const ratingEmoji = req.body.emoji; // Get the emoji from the request body
+
+    // Prevent a user from rating themselves
+    if (userId === userProfileId) {
+      return res.status(400).send({ message: 'You cannot rate yourself' });
+  }
 
     // Fetch the user from your database
     const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });

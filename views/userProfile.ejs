@@ -1,5 +1,110 @@
 <%- include("templates/header") %>
 
+<style>
+
+.rateUser {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 80vh;
+  color: rgba(0,0,0,0.7);
+}
+.containerRate {
+  width: 300px;
+  padding: 0 10px;
+  background: #B4BED9;
+  border-radius: 20px;
+  padding: 40px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  text-align: center;
+  justify-content: space-around;
+  position: relative;
+  transition: background .5s ease-in-out;
+}
+
+.titleRate {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  line-height: .9;
+}
+.userName {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  line-height: .9;
+}
+.subtitleRate {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80%;
+  background: #e5e5e5;
+  height: 2px;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: #f2d2bd;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  padding: 5px;
+  height: 5px;
+  width: 5px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #4c4c4c;
+}
+
+/* FIREFOX */
+input[type="range"]::-moz-range-thumb {
+  padding: 5px;
+  height: 5px;
+  width: 5px;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #4c4c4c;
+}
+
+#imgRate {
+  height: 150px;
+  width: 150px;
+  outline: none;
+  animation: dance 1s infinite;
+}
+.rating {
+  font-size: 20px;
+  font-weight: 100;
+  
+}
+
+@keyframes dance {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+</style>
+
 
 <main class="mb-5">
     <section class="jumbotron text-left mt-3">
@@ -8,7 +113,7 @@
                 <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px"></a>
             </div>
             <div class="col-auto">
-                <h1 class="jumbotron-heading"><%= user.username %></h1>
+                <h1 class="jumbotron-heading"><%= user.displayname %></h1>
             </div>
             
         </div>
@@ -19,21 +124,19 @@
             <img src="<%= user.image_url ? user.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture"
                 class="img-fluid" alt="..." style="width: 200px; height: 200px; border-radius: 50%;"/>
         </div>
-        <div class="d-flex flex-column align-items-center text-center">
-                    <h5 class="card-title"><%= user.displayname %></h5>
+        <div class="d-flex flex-column align-items-center text-center py-4 px-4">
                     <p class="card-title"><%= user.description %></p>
         </div>
     </div>
-    <div class="container">
-        <a href="/userProfile/<%= user._id %>/rateUser" class="btn btn-primary w-100 d-block mt-4">
-        <p class="py-0 my-0">RATE THIS USER</p>
-        </a>
-        </div>
-        <div class="container">
-            <a href="" class="btn btn-primary w-100 d-block mt-4">
-            <p class="py-0 my-0">CHAT THIS USER</p>
-            </a>
-            </div>
+    
+    <!-- Button trigger modal -->
+
+    <div class="container d-flex justify-content-center mt-3">
+        <button type="button" class="btn btn-success btn-lg px-5" data-bs-toggle="modal" data-bs-target="#rateUserModal">
+            RATE THIS USER
+          </button>
+    </div>
+    
     <div class="container mt-5 bg-body-secondary py-4 px-1 w-100 d-block">
         <!-- <h4 class="text-center">Rating</h4> -->
 
@@ -52,26 +155,31 @@
         %>
     
     <div class="row p-0 m-0">
+
         <div class="col d-flex flex-column align-items-center text-center">
-            <img src="https://assets.codepen.io/210284/Falling_in_love.svg" alt="Falling in love" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
-            <small class="row text-muted"><%= countGreat++ %></small>
+            <img src="https://assets.codepen.io/210284/Disappointed.svg" alt="Disappointed" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countAwful++ %></small>
         </div>
+
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Sad.svg" alt="Sad" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countBad++ %></small>
+        </div>
+
+        <div class="col d-flex flex-column align-items-center text-center">
+            <img src="https://assets.codepen.io/210284/Expressionless.svg" alt="Expressionless" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countOkay++ %></small>
+        </div>
+
         <div class="col d-flex flex-column align-items-center text-center">
             <img src="https://assets.codepen.io/210284/Smile.svg" alt="Smile" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
             <small class="row text-muted"><%= countGood++ %></small>
         </div>
         <div class="col d-flex flex-column align-items-center text-center">
-            <img src="https://assets.codepen.io/210284/Expressionless.svg" alt="Expressionless" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
-            <small class="row text-muted"><%= countOkay++ %></small>
-        </div>
-        <div class="col d-flex flex-column align-items-center text-center">
-            <img src="https://assets.codepen.io/210284/Sad.svg" alt="Sad" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
-            <small class="row text-muted"><%= countBad++ %></small>
-        </div>
-        <div class="col d-flex flex-column align-items-center text-center">
-            <img src="https://assets.codepen.io/210284/Disappointed.svg" alt="Disappointed" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
-            <small class="row text-muted"><%= countAwful++ %></small>
-        </div>
+            <img src="https://assets.codepen.io/210284/Falling_in_love.svg" alt="Falling in love" class="row img-fluid" style="max-width: 100px; max-height: 100px;">
+            <small class="row text-muted"><%= countGreat++ %></small>
+        </div>      
+        
     </div>
         
     </div>
@@ -82,4 +190,58 @@
 
 
 </main>
+
+
+  
+  <!-- Modal -->
+
+  <div class="modal fade" id="rateUserModal" tabindex="-1" aria-labelledby="rateUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered rateUser pt-5 mt-4">
+      <div class="modal-content containerRate">
+        <div class="modal-header">
+
+          <h5 class="modal-title titleRate" id="rateUserModalLabel">Rate your experience with</h5>
+          <button type="button" class="btn-close p-4" data-bs-dismiss="modal" aria-label="Close"></button>
+          
+        </div>
+        <div class="modal-body py-5">
+
+          <p class="userName"><%= user.displayname %></p>
+          <p class="subtitleRate pt-2">Use the slider to rate</p>
+          <img id="imgRate" src="https://essykings.github.io/JavaScript/svg-emojis/Neutral.svg" class="emoji pb-0"></img>
+          
+          <div class="rating pl-4 d-flex justify-content-center">
+            <p class="text-center" id="message">&nbsp;</p>
+          </div>
+          
+          <form action="/userProfile/<%= user._id %>/submitRating" method="POST">
+              <input id="slider" type="range" min="0" max="100" value="50" name="rating" />
+              <input id="emoji" type="hidden" name="emoji" />
+              <button type="submit" class="btn btn-primary mt-5">Submit Rating</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/scripts/userRating.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUserId = '<%= currentUserId %>'; // Replace with the actual current user ID
+        const userProfileId = '<%= user._id %>'; // Replace with the actual user profile ID
+
+        const rateButton = document.querySelector('.btn[data-bs-toggle="modal"]');
+
+        rateButton.addEventListener('click', function(event) {
+            if (currentUserId === userProfileId) {
+                event.preventDefault();
+                event.stopPropagation();
+                alert('You cannot rate yourself');
+            }
+        });
+    });
+</script>
+  
 <%- include("templates/footer") %>
