@@ -425,8 +425,8 @@ app.get("/collections/search", async (req, res) => {
 }
 });
 
-
-/* Deprecated route
+//Deprecated route
+/* 
 app.get("/myRequests", sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
   let requests = await requestCollection.find({user_id: user_id}).toArray();
