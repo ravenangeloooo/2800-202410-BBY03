@@ -190,7 +190,8 @@
               <div class="card-body">
                 <p class="card-text"><%= comment.text %></p>
                 <p class="card-subtitle mb-2 text-muted">Posted by: <%= comment.displayName %></p>
-                <p class="card-subtitle mb-2 text-muted">Posted at: <%= comment.timestamp %></p>
+                <p class="card-subtitle mb-2 text-muted timeDifference" data-timestamp="<%= comment.timestamp %>"></p>
+
               </div>
             </div>
           <% }) %>
