@@ -95,13 +95,20 @@ app.get("/", sessionValidation, async (req, res) => {
   var user = isValidSession(req);
   let user_id = req.session.userId;
 
+  // Fetch global items and requests
   let items = await itemCollection
   .find({ user_id: { $ne: user_id }, visibility: "global" })
   .toArray();
 
-  res.render("index", { items: items });
+  let requests = await requestCollection
+    .find({ user_id: { $ne: user_id }, visibility: "global" })
+    .toArray();
+
+  res.render("index", { items: items, requests: requests });
 });
 
+//Deprecated route
+/*
 app.get("/requests", sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
 
@@ -112,7 +119,8 @@ app.get("/requests", sessionValidation, async (req, res) => {
   res.render("requests", { requests: requests });
   
 
-});
+}); 
+*/
 
 app.get("/requestDetails", sessionValidation, async (req, res) => {
   let user_id = req.session.userId;
