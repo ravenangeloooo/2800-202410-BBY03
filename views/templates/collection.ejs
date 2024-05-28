@@ -2,11 +2,19 @@
   <div class="d-flex flex-column align-items-center" style="width: 100%">
     <h1 class="mt-4">MY COLLECTIONS</h1>
     <div class="row justify-content-evenly; mt-3; mb-3">
-      <div class="col-4">
-        <a href="/collections" class="btn btn-info" role="button">Items</a>
-      </div>
-      <div class="col-4">
-        <a href="/myRequests" class="btn btn-info" role="button">Requests</a>
+      <div class="container d-flex justify-content-center">
+
+
+        <!-- toggle switch -->
+        <label class="switch mb-3">
+
+            <input class="toggle" type="checkbox">
+
+            <span class="slider"></span>
+            <span class="card-side"></span>
+
+        </label>
+    </div>
       </div>
     </div>
   </div>
@@ -23,3 +31,72 @@
     <button type="submit" style="display: none;">Search</button>
   </form>
 </div>
+
+<style>
+  .switch {
+      --input-focus: #a7a64d;
+      --font-color: #323232;
+      --font-color-sub: #666;
+      --bg-color: #fff;
+      --bg-color-alt: #666;
+      --main-color: #323232;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      width: 140px;
+      height: 35px;
+      font-size: 20px;
+  }
+
+  .toggle {
+      opacity: 0;
+      width: 0;
+      height: 0;
+  }
+
+  .slider {
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 2px solid var(--main-color);
+      box-shadow: 4px 4px var(--main-color);
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg-colorcolor);
+      transition: 0.3s;
+      text-align: end;
+      padding-right: 35px;
+  }
+
+  .slider:before {
+      box-sizing: border-box;
+      position: absolute;
+      content: "";
+      height: 30px;
+      width: 30px;
+      border: 2px solid var(--main-color);
+      border-radius: 5px;
+      left: -2px;
+      bottom: 2px;
+      background-color: var(--bg-color);
+      box-shadow: 0 3px 0 var(--main-color);
+      transition: 0.3s;
+
+  }
+
+  .toggle:checked+.slider {
+      background-color: var(--input-focus);
+  }
+
+  .toggle:checked+.slider:before {
+      transform: translateX(110px);
+  }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
