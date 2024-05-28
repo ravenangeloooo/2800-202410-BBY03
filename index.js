@@ -153,11 +153,11 @@ app.get("/requestDetails", sessionValidation, async (req, res) => {
   const backUrl = req.headers.referer || '/';
   console.log(backUrl);
 
-  res.render("templates/reqDetails", { request: request, user_id: user_id, backUrl: backUrl, comments: comments });  
+  res.render("templates/reqDetails", { request: request, user_id: user_id, backUrl: backUrl, comments: comments });
 })
 
 app.post('/submitCommentReq', sessionValidation, async (req, res) => {
-  let request_id = req.query.id;
+  let request_id = req.body.id;
   console.log("Request ID: " + request_id);
   let timestamp = new Date().toISOString();
   const comment = {
@@ -169,7 +169,7 @@ app.post('/submitCommentReq', sessionValidation, async (req, res) => {
   };
   console.log(comment);
   await commentCollection.insertOne(comment);
-  res.redirect('/requestDetails?id=' + request_id);
+  res.json(comment);
 });
 
 app.get("/haveOne/:id", sessionValidation, async (req, res) => {
@@ -313,7 +313,7 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
 })
 
 app.post('/submitComment', sessionValidation, async (req, res) => {
-  let item_id = req.query.id;
+  let item_id = req.body.id;
   console.log("Item ID: " + item_id);
   let timestamp = new Date().toISOString();
   const comment = {
@@ -325,7 +325,7 @@ app.post('/submitComment', sessionValidation, async (req, res) => {
   };
   console.log(comment);
   await commentCollection.insertOne(comment);
-  res.redirect('/itemDetail?id=' + item_id);
+  res.json(comment);
 });
 
 
