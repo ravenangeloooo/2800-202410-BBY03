@@ -1,29 +1,164 @@
 <%- include("templates/header") %>
     <section class="jumbotron text-center mt-3">
-        <div class="container">
-            <h1 class="jumbotron-heading">EXPLORE</h1>
-            <p>
-                <a href="/" class="btn btn-primary my-2">Item</a>
-                <a href="/requests" class="btn btn-secondary my-2">Request</a>
-            </p>
+        <h1 class="jumbotron-heading">EXPLORE</h1>
+
+        <div class="container d-flex justify-content-center">
+
+
+            <!-- toggle switch -->
+            <label class="switch mb-3">
+
+                <input class="toggle" type="checkbox">
+
+                <span class="slider"></span>
+                <span class="card-side"></span>
+
+            </label>
+
+
+
         </div>
     </section>
     <div class="album py-5 bg-light">
         <div class="container">
             <div class="row">
-                
+
+                <!-- Render both sections on the server side -->
                 <% items.forEach(function(item){ %>
-                    
-                    
-                    
-                    
-                    
                     <%- include("templates/homepageCard", {item: item}) %>
-                  <% }) %>
-                
-                
+                        <% }) %>
+
+
+                            <% requests.forEach(function(request){ %>
+                                <%- include("templates/homepageRequestCard", {request: request}) %>
+                                    <% }) %>
+
+
+
 
             </div>
         </div>
-</main>
-<%- include("templates/footer") %>
+    </div>
+
+    <style>
+        .switch {
+            --input-focus: #a7a64d;
+            --font-color: #323232;
+            --font-color-sub: #666;
+            --bg-color: #fff;
+            --bg-color-alt: #666;
+            --main-color: #323232;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            width: 140px;
+            height: 35px;
+            font-size: 20px;
+        }
+
+        .toggle {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 2px solid var(--main-color);
+            box-shadow: 4px 4px var(--main-color);
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-colorcolor);
+            transition: 0.3s;
+            text-align: end;
+            padding-right: 35px;
+        }
+
+        .slider:before {
+            box-sizing: border-box;
+            position: absolute;
+            content: "";
+            height: 30px;
+            width: 30px;
+            border: 2px solid var(--main-color);
+            border-radius: 5px;
+            left: -2px;
+            bottom: 2px;
+            background-color: var(--bg-color);
+            box-shadow: 0 3px 0 var(--main-color);
+            transition: 0.3s;
+
+        }
+
+        .toggle:checked+.slider {
+            background-color: var(--input-focus);
+        }
+
+        .toggle:checked+.slider:before {
+            transform: translateX(110px);
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $('.slider').text('ITEMS');
+        $('.homepageRequestCard').hide();
+
+
+        $(document).ready(function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            console.log(urlParams);
+            var toggle = urlParams.get('toggle');
+            console.log(toggle);
+            if (toggle === 'requests') {
+                $('.toggle').prop('checked', true);
+                $('.homepageCard').hide();
+                $('.homepageRequestCard').show();
+
+
+                $('.slider').text('REQUESTS');
+                $(".slider").css("text-align", "start");
+                $(".slider").css("padding-left", "10px");
+                $(".slider").css("padding-right", "10px");
+            }
+        });
+
+
+
+
+        $('.toggle').change(function () {
+            if (this.checked) {
+                console.log('checked');
+                $('.homepageCard').hide();
+                $('.homepageRequestCard').show();
+
+
+                $('.slider').text('REQUESTS');
+                $(".slider").css("text-align", "start");
+                $(".slider").css("padding-left", "10px");
+                $(".slider").css("padding-right", "10px");
+
+
+            } else {
+                console.log('unchecked');
+
+                $('.homepageCard').show();
+                $('.homepageRequestCard').hide();
+
+
+                $('.slider').text('ITEMS');
+                $(".slider").css("text-align", "end");
+                $(".slider").css("padding-right", "35px");
+            }
+        });
+    </script>
+
+    <%- include("templates/footer") %>
