@@ -101,7 +101,7 @@
                   <div class="card-body">
                     <p class="card-text"><%= comment.text %></p>
                     <p class="card-subtitle mb-2 text-muted">Posted by: <%= comment.displayName %></p>
-                    <p class="card-subtitle mb-2 text-muted">Posted at: <%= comment.timestamp %></p>
+                    <p class="card-subtitle mb-2 text-muted timeDifference" data-timestamp="<%= comment.timestamp %>"></p>
                   </div>
                 </div>
               <% }) %>
@@ -136,6 +136,34 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
   var modal = new bootstrap.Modal(document.getElementById('commentsModal'), {});
 document.getElementById('openCommentsModal').addEventListener('click', function () {
 modal.show();
+});
+</script>
+
+<script>
+  var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+  for (var i = 0; i < timeDifferenceElements.length; i++) {
+      var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+
+      var now = new Date();
+      var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+
+      var timeDifferenceText;
+      if (diffInMinutes >= 1440) { // 1440 minutes in a day
+          var diffInDays = Math.round(diffInMinutes / 1440);
+          timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+      } else if (diffInMinutes >= 60) {
+          var diffInHours = Math.round(diffInMinutes / 60);
+          timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+      } else {
+          timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+      }
+
+      timeDifferenceElements[i].textContent = timeDifferenceText;
+  }
+
+  var modal = new bootstrap.Modal(document.getElementById('commentsModal'), {});
+      document.getElementById('openCommentsModal').addEventListener('click', function () {
+      modal.show();
 });
 </script>
 
