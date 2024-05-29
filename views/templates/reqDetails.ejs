@@ -71,11 +71,11 @@
       <div class="container d-flex mt-3">
         <% if(request.user_id != user_id) { %>
           <% if(!request.peopleHave?.includes(user_id)){%>
-            <a href="/haveOne/<%= request._id %>" class="btn btn-info text-white " role="button">
+            <a href="/haveOne/<%= request._id %>" class="btn text-white" style="background-color: #A7A64D;" role="button">
               <h4>I HAVE ONE!</h4>
             </a>
           <%} else { %>
-            <a href="/unavailable/<%= request._id %>" class="btn btn-info text-white " role="button">
+            <a href="/unavailable/<%= request._id %>" class="btn" style="color: #9B9A30; border-color: #9B9A30;" role="button">
               <h4>UNAVAILABLE</h4>
           </a>
           <% } %>

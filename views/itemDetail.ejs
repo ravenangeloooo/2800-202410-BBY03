@@ -154,11 +154,11 @@
             <div class="container d-flex">
                 <% if(item.user_id != user_id) { %>
                   <% if (!item.peopleinterested?.includes(user_id)){%>
-                  <a href="/interested/<%= item._id %>" class="btn btn-info text-white " role="button">
+                  <a href="/interested/<%= item._id %>" class="btn text-white" style="background-color: #A7A64D;" role="button">
                       <h4>INTERESTED</h4>
                   </a>
                   <% } else { %>
-                  <a href="/notInterested/<%= item._id %>" class="btn btn-info text-white " role="button">
+                  <a href="/notInterested/<%= item._id %>" class="btn" style="color: #9B9A30; border-color: #9B9A30;" role="button">
                       <h4>NOT INTERESTED</h4>
                   </a>
                   <% } %>
