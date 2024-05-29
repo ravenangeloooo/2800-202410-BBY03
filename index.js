@@ -606,7 +606,7 @@ app.post("/updateRequest", sessionValidation, async (req, res) => {
   );
 
   console.log("Request Updated:" + title);
-  res.redirect("/myRequests"); // maybe include a modal?
+  res.redirect("/collections"); // maybe include a modal?
 });
 
 app.post("/items/:id/delete", async (req, res) => {
