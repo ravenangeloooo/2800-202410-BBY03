@@ -111,41 +111,37 @@
 
 
         $(document).ready(function () {
-            var urlParams = new URLSearchParams(window.location.search);
-            console.log(urlParams);
-            var toggle = urlParams.get('toggle');
-            console.log(toggle);
-            if (toggle === 'requests') {
+            if (Cookies.get('toggle') === 'requests') {
                 $('.toggle').prop('checked', true);
                 $('.homepageCard').hide();
                 $('.homepageRequestCard').show();
 
-
                 $('.slider').text('REQUESTS');
                 $(".slider").css("text-align", "start");
+                $(".slider").css("color", "white");
                 $(".slider").css("padding-left", "10px");
                 $(".slider").css("padding-right", "10px");
             }
         });
 
 
-
-
         $('.toggle').change(function () {
             if (this.checked) {
-                console.log('checked');
+                console.log('toggle checked');
                 $('.homepageCard').hide();
                 $('.homepageRequestCard').show();
-
 
                 $('.slider').text('REQUESTS');
                 $(".slider").css("text-align", "start");
                 $(".slider").css("padding-left", "10px");
                 $(".slider").css("padding-right", "10px");
+                $(".slider").css("color", "white");
 
+
+                Cookies.set('toggle', 'requests');
 
             } else {
-                console.log('unchecked');
+                console.log('toggle unchecked');
 
                 $('.homepageCard').show();
                 $('.homepageRequestCard').hide();
@@ -154,6 +150,10 @@
                 $('.slider').text('ITEMS');
                 $(".slider").css("text-align", "end");
                 $(".slider").css("padding-right", "35px");
+                $(".slider").css("color", "black");
+
+                Cookies.set('toggle', 'items');
+
             }
         });
     </script>
