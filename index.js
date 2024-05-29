@@ -1387,7 +1387,7 @@ app.post('/userProfile/:userProfileId/submitRating', sessionValidation, async (r
     await ratingCollection.insertOne(newRating);
 
     // Redirect to the user's profile
-    res.redirect(`/userProfile/${userProfileId}`);
+    res.redirect(`/collections`);
 });
 
 
