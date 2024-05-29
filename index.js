@@ -626,7 +626,7 @@ app.post("/requests/:id/delete", async (req, res) => {
   await requestCollection.deleteOne({ _id: new mongodb.ObjectId(requestId) });
 
   console.log("Request Deleted:" + requestId);
-  res.redirect("/myRequests");
+  res.redirect("/collections");
 });
 
 //Post page
