@@ -337,9 +337,15 @@ app.get("/signup", (req, res) => {
 app.get("/collections", sessionValidation, async (req, res) => {
     let user_id = req.session.userId;
     
-    let items = await itemCollection.find({user_id: user_id}).toArray();
-    let requests = await requestCollection.find({user_id: user_id}).toArray();
+    let items = await itemCollection
+      .find({user_id: user_id})
+      .srot({timestamp: -1})
+      .toArray();
 
+    let requests = await requestCollection
+      .find({user_id: user_id})
+      .sort({timestamp: -1})
+      .toArray();
 
     res.render("myCollections", {items: items, requests: requests});
     
