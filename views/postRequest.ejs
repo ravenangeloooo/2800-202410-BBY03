@@ -13,7 +13,7 @@
 
 .containers {
     max-width: 500px;
-    margin: 0 auto;
+    margin-top: 50px;
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -26,11 +26,6 @@ header {
 
 .back-button {
     margin-right: 20px;
-}
-
-h1 {
-    font-size: 1.5em;
-    margin: 0;
 }
 
 form {
@@ -59,6 +54,7 @@ select {
 button {
     width: 100%;
     padding: 10px;
+    margin-bottom: 50px;
     background-color: #007bff;
     border: none;
     color: #fff;
@@ -98,9 +94,9 @@ nav ul li a img {
         margin-bottom: 10px;
     }
 
-    h1 {
+    /* h1 {
         font-size: 1.2em;
-    }
+    } */
 
     form {
         margin-top: 10px;
@@ -131,11 +127,11 @@ nav ul li a img {
 
     <body>
         <div class="containers">
-            <header>
+            <header class="d-flex flex-row">
                 <div class="back-button">
                     <a href="/"><img src="/backarrow.png" alt="Back" width="30px"></a>
                 </div>
-                <h1>Post Request</h1>
+                <h1 class="jumbotron-heading" style="text-align: center; flex-grow: 1; font-weight: 500;">Post Request</h1>
             </header>
 
             <main>
@@ -171,7 +167,7 @@ nav ul li a img {
                     <!-- Add a timestamp input -->
                     <input type="hidden" id="timestamp" name="timestamp" value="">
 
-                    <button type="submit" onclick="document.getElementById('timestamp').value = new Date().toISOString();">Submit</button>
+                    <button type="submit" style="background-color: #A7A64D;" onclick="document.getElementById('timestamp').value = new Date().toISOString();">Submit</button>
                 </form>
             </main>
 
