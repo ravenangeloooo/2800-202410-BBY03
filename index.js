@@ -647,6 +647,7 @@ app.get("/groups", sessionValidation, async (req, res) => {
   const result = await groupCollection
     .find({ members: { $in: [userId] } })
     .project({ groupname: 1, _id: 1, image_id: 1, createdBy: 1})
+    .sort({timestamp: -1})
     .toArray();
   console.log(result);
 
@@ -1196,7 +1197,10 @@ app.get('/groupProfile/:groupId', sessionValidation, async (req, res) => {
 
     let user_id = req.session.userId;
 
-    let items = await itemCollection.find({ user_id: { $ne: user_id }, visibility: groupname  }).toArray();
+    let items = await itemCollection
+      .find({ user_id: { $ne: user_id }, visibility: groupname  })
+      .sort({timestamp: -1})
+      .toArray();
     console.log(items);
 
     if (!groups) {
@@ -1223,7 +1227,10 @@ app.get('/groupProfile/:groupId/requests', sessionValidation, async (req, res) =
 
   let user_id = req.session.userId;
 
-  let requests = await requestCollection.find({ user_id: { $ne: user_id }, visibility: groupname  }).toArray();
+  let requests = await requestCollection
+    .find({ user_id: { $ne: user_id }, visibility: groupname  })
+    .sort({timestamp: -1})
+    .toArray();
   console.log(requests);
 
   if (!groups) {
