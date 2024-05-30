@@ -339,7 +339,7 @@ app.get("/collections", sessionValidation, async (req, res) => {
     
     let items = await itemCollection
       .find({user_id: user_id})
-      .srot({timestamp: -1})
+      .sort({timestamp: -1})
       .toArray();
 
     let requests = await requestCollection
