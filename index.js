@@ -868,6 +868,7 @@ app.get("/discoverGroups", sessionValidation, async (req, res) => {
   const result = await groupCollection
     .find({ members: { $ne: user_id } })
     .project({ groupname: 1, _id: 1, image_id: 1 })
+    .sort({ _id: -1 })
     .toArray();
   console.log(result);
 
