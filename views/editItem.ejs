@@ -46,8 +46,8 @@
 
             <div class="form-floating py-3">
                 <select class="form-select" id="status" name="status" required="">
-                    <option selected>Available</option>
-                    <option>Unavailable</option>
+                    <option <%= item.status === 'Available' ? 'selected' : '' %>>Available</option>
+                    <option <%= item.status === 'Unavailable' ? 'selected' : '' %>>Unavailable</option>
                 </select>
                 <label for="status">Edit Status</label>
                 <div class="invalid-feedback">
