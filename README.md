@@ -3,6 +3,9 @@
     <h1>ShareLoop by BBY-03</h1>
 </div>
 
+## 1. Project Title
+shareLoop
+
 ## 2. Project Description (One Sentence Pitch)
 Our team, BBY-03, is developing shareLoop, a community-driven platform to help reduce waste by facilitating 1) sharing items, and 2) posting requests, hence connecting people and promoting sustainability.
 
@@ -148,6 +151,7 @@ Click on the “Bell” icon on the header nav bar to see the notification
 - [Node.js Documentation](https://nodejs.org/en/docs/)
 - [Cloudinary Documentation](https://cloudinary.com/documentation)
 - [Stack Overflow](https://stackoverflow.com/)
+
 ## 8. How did we use AI?
 
 ### To help create our app with AI
@@ -166,8 +170,8 @@ Yes, we encountered limitations while using AI. One significant challenge was th
 ## 10. Project link
 -   [GitHub](https://github.com/ravenangeloooo/2800-202410-BBY03)
 -   [Trello](https://trello.com/b/6x1h5bUW/2800-202410-bby03)
--[FigJamBoard](https://www.figma.com/board/9sEPqNrDMChRBF5zJIgOKs/2800-202410-BBY03?node-id=0-1&t=TwoQrEdLPAppPClM-0)
--[FigmaBoard](https://www.figma.com/design/DpQngK82L6cBl1DfetqkS7/2800-202410-BBY03?node-id=0-1&t=cdxD3F7Zr7OcdkQB-0)
+-   [FigJamBoard](https://www.figma.com/board/9sEPqNrDMChRBF5zJIgOKs/2800-202410-BBY03?node-id=0-1&t=TwoQrEdLPAppPClM-0)
+-   [FigmaBoard](https://www.figma.com/design/DpQngK82L6cBl1DfetqkS7/2800-202410-BBY03?node-id=0-1&t=cdxD3F7Zr7OcdkQB-0)
 
 
 ## 11. Team Members Contact Info
