@@ -1,5 +1,5 @@
 <div align="center">
-    <img width="50%" src="/sharelooplogo.png" />
+    <img width="50%" src="/public/sharelooplogo.png" />
     <h1>ShareLoop by BBY-03</h1>
 </div>
 
