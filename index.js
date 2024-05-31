@@ -392,10 +392,10 @@ app.get("/collections/search", async (req, res) => {
   } else {
     if (items.length > 0) {
       // If there are items that match the search term, render the items page with the search results
-      res.render("items", { items: items });
+      res.render("myCollections", { items: items, requests: requests });
     } else if (requests.length > 0) {
       // If there are requests that match the search term, render the requests page with the search results
-      res.render("myRequests", { requests: requests });
+      res.render("myCollections", { items: items, requests: requests });
     } else {
       // If no match, redirect to collections page
       res.redirect("/collections");
@@ -545,7 +545,7 @@ app.post("/updateRequest", sessionValidation, async (req, res) => {
   res.redirect("/collections"); // maybe include a modal?
 });
 
-
+//Delete item
 app.post("/items/:id/delete", async (req, res) => {
   let itemId = req.params.id;
 
@@ -555,7 +555,7 @@ app.post("/items/:id/delete", async (req, res) => {
   res.redirect("/collections");
 });
 
-
+//Delete request
 app.post("/requests/:id/delete", async (req, res) => {
   let requestId = req.params.id;
 
