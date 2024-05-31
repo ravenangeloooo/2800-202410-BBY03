@@ -560,7 +560,8 @@ app.post("/updateItem", sessionValidation, upload.single('image'), async (req, r
   let title = req.body.title;
   let description = req.body.description;
   let visibility = req.body.visibility;
-  let updateData = { title: title, description: description, visibility: visibility };
+  let status = req.body.status;
+  let updateData = { title: title, description: description, visibility: visibility, status: status};
 
   if (req.file) {
     let image_uuid = uuid(); // Generate a new UUID for the new image
