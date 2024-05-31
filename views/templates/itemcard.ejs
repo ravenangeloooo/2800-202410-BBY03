@@ -1,4 +1,4 @@
-<div class="card mb-3" style="max-width: 100%; ">
+<div class="card mb-3 itemCard" style="max-width: 100%; ">
   <div class="row g-0">
     <div class="col-auto" style="margin-left: 15px">
       <a href="/itemDetail?id=<%= item._id %>">
@@ -21,19 +21,18 @@
           <small class="text-body-secondary">Visible to: <%= item.visibility %></small>
         </div>
 
-        <a href="/peopleInterested/<%= item._id %>" class="btn btn-info" role="button">
+        <a href="/peopleInterested/<%= item._id %>" class="btn" role="button" style="background-color: #9B9A30; color: white;">
           <%= item.peopleinterested?.length || 0 %> people are interested
         </a>
       </div>
     </div>
 
-    <div class="col-auto ms-auto pt-2 pr-5 mr-5">
+    <div class="col-auto ms-auto pt-4 pr-5 mr-5">
       <a href = "/editItem?id=<%= item._id %>">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="30"
           height="30"
-          fill="currentColor"
           class="bi bi-three-dots-vertical"
           viewBox="0 0 16 16"
         >

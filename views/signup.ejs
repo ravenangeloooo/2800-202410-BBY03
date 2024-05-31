@@ -4,145 +4,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <style>
-        body {
-            background-color: hsl(0, 0%, 96%);
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
 
-        .form-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    /* Container styles */
+.container.card-body.p-5 {
+    padding: 5rem !important;
+}
 
-        .form-outline {
-            position: relative;
-            margin-bottom: 20px;
-        }
+@media (max-width: 576px) {
+    .container.card-body.p-5 {
+        padding: 2rem !important;
+    }
+}
 
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: #181616;
-        }
+/* Card styles */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            border: none;
-            background-color: #f2f4f6;
-            color: rgb(18, 18, 18);
-        }
+/* Form header styles */
+.card-body h2 {
+    color: #333;
+    font-weight: bold;
+}
 
-        .form-control::placeholder {
-            color: #141212;
-        }
+/* Form input styles */
+.form-outline {
+    position: relative;
+    margin-bottom: 2rem;
+}
 
-        .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #ccc;
-        }
+.form-outline .form-label {
+    position: absolute;
+    top: -0.75rem;
+    left: 1rem;
+    background-color: #fff;
+    padding: 0 0.5rem;
+    color: #6c757d;
+}
 
-        .btn-primary {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #1BB9F5;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+.form-control {
+    padding: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    box-shadow: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
 
-        .login-link {
-            text-align: center;
-            margin-top: 10px;
-        }
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
 
-        .login-link a {
-            color: #1BB9F5;
-            text-decoration: none;
-        }
+/* Password toggle icon styles */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+}
 
-        .login-link a:hover {
-            text-decoration: underline;
-        }
+.toggle-password:hover {
+    color: #495057;
+}
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 10px;
-            }
-            
-            .card-body {
-                padding: 20px;
-            }
-            
-            .form-outline {
-                margin-bottom: 15px;
-            }
-            
-            .form-control, .btn-primary {
-                padding: 10px;
-                font-size: 14px;
-            }
+/* Button styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
 
-            .toggle-password {
-                right: 5px;
-                font-size: 14px;
-            }
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
 
-            .login-link {
-                font-size: 14px;
-            }
-        }
+/* Login link styles */
+.login-link {
+    margin-top: 1rem;
+    text-align: center;
+    color: #6c757d;
+}
 
-        @media (max-width: 480px) {
-            .form-container {
-                width: 100%;
-                max-width: 90%;
-                padding: 20px;
-            }
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+}
 
-            .card-body {
-                padding: 15px;
-            }
+.login-link a:hover {
+    text-decoration: underline;
+}
 
-            .form-outline {
-                margin-bottom: 10px;
-            }
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container.card-body.p-5 {
+        padding: 0.5rem !important;
+    }
 
-            .form-control, .btn-primary {
-                padding: 8px;
-                font-size: 12px;
-            }
+    .form-control {
+        padding: 0.75rem;
+    }
 
-            .toggle-password {
-                right: 2px;
-                font-size: 12px;
-            }
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
 
-            .login-link {
-                font-size: 12px;
-            }
-        }
-    </style>
+    .login-link {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container.card-body.p-5 {
+        padding: 0.5rem !important;
+    }
+
+    .form-control {
+        padding: 0.5rem;
+    }
+
+    .btn-primary {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .login-link {
+        font-size: 0.75rem;
+    }
+}
+</style>
+    
 </head>
 <body>
-    <br>
     <br>
     <br>
     
@@ -157,31 +158,27 @@
 
                                 <form action='/signupSubmit' method='post'>
                                     <div data-mdb-input-init class="form-outline mb-2">
-                                        <label class="form-label" for="form3Example1cg">Username</label>
-                                        <input type='text' name='username' placeholder='username' id="form3Example1cg"
+                                        <input type='text' name='username' placeholder='Username' 
                                             class="form-control" required/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-2">
-                                        <label class="form-label" for="form3Example1cg">Full Name</label>
-                                        <input type='text' name='displayname' placeholder='display name' id="form3Example1cg"
+                                        <input type='text' name='displayname' placeholder='Display Name' 
                                             class="form-control" required/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-2">
-                                        <label class="form-label" for="form3Example3cg">Email</label>
-                                        <input type='email' name='email' placeholder='email' id="form3Example3cg"
+                                        <input type='email' name='email' placeholder='Email' 
                                             class="form-control" required/>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-2">
                                         <label class="form-label" for="form3Example3cg">Date of Birth</label>
-                                        <input type='date' name='date' placeholder='birthdate' id="form3Example3cg"
+                                        <input type='date' name='date' placeholder='birthdate' 
                                             class="form-control" required/>
                                     </div>
 
                                     <div class="form-outline mb-2">
-                                        <label class="form-label" for="password" style="display: block;">Password</label>
                                         <div style="position: relative;">
                                             <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
                                             <span class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
@@ -189,7 +186,7 @@
                                     </div>
 
                                     <div class="form-outline mb-2">
-                                        <label class="form-label" for="confirm-password" style="display: block;">Confirm Password</label>
+
                                         <div style="position: relative;">
                                             <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" class="form-control" required>
                                             <span class="toggle-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
@@ -208,6 +205,10 @@
             </div>
         </div>
     </div>
+    <br>
+    <br>
+    <br>
+
 
     <script>
         document.querySelectorAll('.toggle-password').forEach(item => {

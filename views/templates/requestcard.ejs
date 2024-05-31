@@ -1,10 +1,10 @@
-<div class="card mb-3" style="max-width: 450px; max-height: 150px">
+<div class="card mb-3 requestCard" style="max-width: 450px; max-height: 150px">
   <div class="row g-0">
     <div class="col-auto me-auto">
       <div class="card-body">
         
         <div>
-          <a href="/requestDetails?id=<%= request._id %>" style="text-decoration: none;">
+          <a href="/requestDetails?id=<%= request._id %>" style="text-decoration: none; color: black;">
           <h5 class="card-title"><%= request.title %></h5>
           <small class="text-body-secondary"><%= request.status %></small>
           <br />
@@ -14,18 +14,17 @@
           </div>
         
 
-        <a href="/peopleOffering/<%= request._id %>" class="btn btn-info" role="button"
+        <a href="/peopleOffering/<%= request._id %>" class="btn" role="button" style="background-color: #9B9A30; color: white;"
           ><%= request.peopleHave?.length || 0 %> people are offering</a
         >
       </div>
     </div>
-    <div class="col-auto" style="margin-top: 25px; margin-right: 27px">
+    <div class="col-auto" style="margin-top: 25px; margin-right: 27px;">
       <a href="/editRequest?id=<%= request._id %>">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="30"
           height="30"
-          fill="currentColor"
           class="bi bi-three-dots-vertical"
           viewBox="0 0 16 16"
         >

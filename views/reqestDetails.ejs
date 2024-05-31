@@ -1,0 +1,229 @@
+<%- include("templates/header") %>
+<style>
+  .containers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 375px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  .modal-dialog-custom {
+    width: 90%; /* Adjust as needed */
+    max-width: none;
+    height: 90%; /* Adjust as needed */
+    margin: 30px auto;
+  }
+  
+  .modal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-body {
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+  
+  .sticky-comment-form {
+    position: sticky;
+    bottom: 0;
+    background: #f1f1f1; /* Add a background color to cover the comments behind */
+  }
+
+  #openCommentsModal {
+    padding-left: 35%;
+  }
+
+  </style>
+  <div class = "containers my-5 py-4">
+    <section class="jumbotron text-left mt-5">
+      <div class="container d-flex align-items-center">
+        <div class="p-1">
+          <a href="<%= backUrl %>"><img src="/backarrow.png" alt="Back" width="30px" /></a>
+        </div>
+        <div>
+          <h1 class="jumbotron-heading mb-0"> <!-- mb-0 to remove the bottom margin -->
+            REQUEST: <%= request.title %>
+          </h1>
+        </div>
+      </div>
+    </section>
+
+    <div class="row container mt-4 d-flex justify-content-center">
+      <dl class="row">
+        <dt class="col-sm-2">Description:</dt>
+        <dd class="col-sm-9">
+          <%= request.description %>
+        </dd>
+      </dl>
+
+      <div class="row">
+        <dt class="col-sm-2">By:</dt>
+        <dd class="col-sm-10"><%= request.owner_name %></dd>
+      </div>
+     
+      <div class="container d-flex mt-3">
+        <% if(request.user_id != user_id) { %>
+          <% if(!request.peopleHave?.includes(user_id)){%>
+            <a href="/haveOne/<%= request._id %>" class="btn text-white" style="background-color: #A7A64D;" role="button">
+              <h4>I HAVE ONE!</h4>
+            </a>
+          <%} else { %>
+            <a href="/unavailable/<%= request._id %>" class="btn" style="color: #9B9A30; border-color: #9B9A30;" role="button">
+              <h4>UNAVAILABLE</h4>
+          </a>
+          <% } %>
+          <% } %>
+        
+        <button type="button" class="btn btn-link" id="openCommentsModal">
+          <img src="/comments.png" alt="Open Comments" style="width: 35px; height: 35px;">
+        </button>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-custom">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="commentsModalLabel">Comments</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <!-- Display existing comments -->
+            <div id="comments">
+              <% comments.forEach(function(comment) { %>
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <p class="card-text">
+                      <%= comment.text %>
+                    </p>
+                    <p class="card-subtitle mb-2 text-muted">Posted by: <%= comment.displayName %>
+                    </p>
+                    <p class="card-subtitle mb-2 text-muted timeDifference" data-timestamp="<%= comment.timestamp %>"></p>
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+              <div class="sticky-comment-form">
+                <div class="card bg-light mb-3">
+                  <div class="card-body">
+                    <form id = "submitCommentForm" action="/submitCommentReq/?id=<%= request._id %>" method="POST">
+                      <input type="hidden" id="requestId" value="<%= request._id %>">
+                      <div class="form-group position-relative">
+                        <label for="commentText">New Comment</label>
+                        <textarea name="text" id="commentText" class="form-control" placeholder="Write your comment here..." required style="padding-right: 50px;"></textarea>
+                        <button type="submit" class="btn btn-link btn-sm position-absolute top-50 end-0 translate-middle-y" style="right: 10px;">
+                            <img src="/send.png" alt="Send" style="width: 25px; height: 25px;">
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+<script>
+    /**
+   *  Display the time difference between the current time and the timestamp
+   * 
+   *  Generated by Copilot
+   *  @author: Copilot
+   */
+  var timeDifferenceElements = document.getElementsByClassName('timeDifference');
+  for (var i = 0; i < timeDifferenceElements.length; i++) {
+      var timestampFromDatabase = new Date(timeDifferenceElements[i].dataset.timestamp);
+
+      var now = new Date();
+      var diffInMinutes = Math.round((now - timestampFromDatabase) / 60000); // 60000 ms in a minute
+
+      var timeDifferenceText;
+      if (diffInMinutes >= 1440) { // 1440 minutes in a day
+          var diffInDays = Math.round(diffInMinutes / 1440);
+          timeDifferenceText = diffInDays + (diffInDays === 1 ? ' day ago' : ' days ago');
+      } else if (diffInMinutes >= 60) {
+          var diffInHours = Math.round(diffInMinutes / 60);
+          timeDifferenceText = diffInHours + (diffInHours === 1 ? ' hour ago' : ' hours ago');
+      } else {
+          timeDifferenceText = diffInMinutes + (diffInMinutes === 1 ? ' min ago' : ' mins ago');
+      }
+
+      timeDifferenceElements[i].textContent = timeDifferenceText;
+  }
+
+  var modal = new bootstrap.Modal(document.getElementById('commentsModal'), {});
+      document.getElementById('openCommentsModal').addEventListener('click', function () {
+      modal.show();
+});
+
+$('#commentsModal').on('shown.bs.modal', function () {
+  var modalBody = $(this).find('.modal-body');
+  modalBody.scrollTop(modalBody.prop('scrollHeight'));
+});
+
+  /**
+   *  Handle the submission of a comment and update the comment section
+   * 
+   *  Generated by Copilot
+   *  @author: Copilot
+   */
+$(document).ready(function() {
+  $('#submitCommentForm').on('submit', function(e) {
+    e.preventDefault(); // Prevent the form from submitting normally
+
+    $.ajax({
+      type: 'POST',
+      url: '/submitCommentReq', // The URL where you're posting the comment
+      data: {
+        text: $('#commentText').val(),
+        id: $('#requestId').val()
+      }, // Serialize the form data for the AJAX request
+      success: function(response) {
+        // Handle the response from the server
+        // For example, you can add the new comment to the page:
+
+        var timeAgo = moment(response.timestamp).fromNow();
+
+        $('#comments').append(
+          '<div class="card mb-3">' +
+          '<div class="card-body">' +
+          '<p class="card-text">' + response.text + '</p>' +
+          '<p class="card-subtitle mb-2 text-muted">Posted by: ' + response.displayName + '</p>' +
+          '<p class="card-subtitle mb-2 text-muted timeDifference" data-timestamp="' + response.timestamp + '">' + timeAgo + '</p>' +
+          '</div>' +
+          '</div>'
+        );
+        
+        // Clear the comment form
+        $('#commentText').val('');
+
+      var commentSection = $('#comments');
+        commentSection.scrollTop(commentSection.prop('scrollHeight'));
+      },
+      error: function(error) {
+        // Handle any errors
+        console.error('Error posting comment:', error);
+      }
+    });
+  });
+});
+</script>
+
+
+  <%- include("templates/footer") %>

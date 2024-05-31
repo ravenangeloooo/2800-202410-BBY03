@@ -39,14 +39,14 @@
         <input type="hidden" name="user_id" value="<%= user._id %>">
         <div class="container-custom p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="/profile" class="btn btn-secondary">Cancel</a>
-                <h5>Edit</h5>
-                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="/profile" class="btn" style="background-color: #dcdddb;">Cancel</a>
+                <h3>Edit</h3>
+                <button type="submit" class="btn" style="background-color: #A7A64D;">Update</button>
             </div>
             <div class="text-center mb-4">
                 <img id="imagePreview" src="<%= user.image_url ? user.image_url : 'https://dummyimage.com/150x150/000/fff&text=Profile+pic' %>" class="profile-img" alt="Profile Picture">
                 <input type="file" id="mypic-input" name="image" accept="image/*" class="form-control mt-3" style="display: none;">
-                <button type="button" class="btn btn-outline-primary mt-2" onclick="document.getElementById('mypic-input').click();">Change Profile Picture</button>
+                <button type="button" class="btn mt-2" style="border-color: #A7A64D; color: #A7A64D;" onclick="document.getElementById('mypic-input').click();">Change Profile Picture</button>
             </div>
             <div class="form-group">
                 <label for="displayname">Display Name</label>
