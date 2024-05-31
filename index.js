@@ -150,26 +150,36 @@ app.post('/submitCommentReq', sessionValidation, async (req, res) => {
   };
   await commentCollection.insertOne(comment);
   
-  const request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
-  const requestOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
+// Fetch the request/post from the database using its ID
+const request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
 
-  let notificationIndex = requestOwner.notifications.findIndex(notification => 
-    notification.requestId === request_id && notification.userId === req.session.userId);
+// Fetch the owner of the request/post from the database using their ID
+const requestOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
 
-  if (notificationIndex !== -1) {
-    requestOwner.notifications[notificationIndex].date = new Date();
-  } else {
-    let notification = {
-      userId: req.session.userId,
-      requestId: request_id,
-      message: `${req.session.displayname} commented on your post ${request.title}.`,
-      date: new Date()
-    };
-    requestOwner.notifications.push(notification);
-  }
+// Find the index of the notification for the current user's comment on this post, if it exists
+let notificationIndex = requestOwner.notifications.findIndex(notification => 
+  notification.requestId === request_id && notification.userId === req.session.userId);
 
-  await userCollection.updateOne({ _id: requestOwner._id }, 
-    { $set: { notifications: requestOwner.notifications } });
+// If a notification already exists for this comment
+if (notificationIndex !== -1) {
+  // Update the date of the notification to the current date
+  requestOwner.notifications[notificationIndex].date = new Date();
+} else {
+  // If no notification exists, create a new one
+  let notification = {
+    userId: req.session.userId, // ID of the user who made the comment
+    requestId: request_id, // ID of the post that was commented on
+    message: `${req.session.displayname} commented on your post ${request.title}.`, // Notification message
+    date: new Date() // Current date
+  };
+
+  // Add the new notification to the owner's list of notifications
+  requestOwner.notifications.push(notification);
+}
+
+// Update the owner's list of notifications in the database
+await userCollection.updateOne({ _id: requestOwner._id }, 
+  { $set: { notifications: requestOwner.notifications } });
 
   res.json(comment);
 });
@@ -324,24 +334,34 @@ app.post('/submitComment', sessionValidation, async (req, res) => {
   };
   await commentCollection.insertOne(comment);
 
+  // Fetch the item that the comment is for from the database
   const item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
+
+  // Fetch the owner of the item from the database
   const itemOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(item.user_id) });
 
+  // Find the index of the notification for the current user's comment on this item, if it exists
   let notificationIndex = itemOwner.notifications.findIndex(notification =>
     notification.itemId === item_id && notification.userId === req.session.userId);
 
+  // If a notification already exists for this comment
   if (notificationIndex !== -1) {
+    // Update the date of the notification to the current date
     itemOwner.notifications[notificationIndex].date = new Date();
   } else {
+    // If no notification exists, create a new one
     let notification = {
-      userId: req.session.userId,
-      itemId: item_id,
-      message: `${req.session.displayname} commented on your post ${item.title}.`,
-      date: new Date()
+      userId: req.session.userId, // ID of the user who made the comment
+      itemId: item_id, // ID of the item that was commented on
+      message: `${req.session.displayname} commented on your post ${item.title}.`, // Notification message
+      date: new Date() // Current date
     };
+
+    // Add the new notification to the owner's list of notifications
     itemOwner.notifications.push(notification);
   }
 
+  // Update the owner's list of notifications in the database
   await userCollection.updateOne({ _id: itemOwner._id },
     { $set: { notifications: itemOwner.notifications } });
   res.json(comment);
