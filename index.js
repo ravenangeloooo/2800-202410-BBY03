@@ -134,7 +134,7 @@ app.get("/requestDetails", sessionValidation, async (req, res) => {
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
 
-  res.render("templates/reqDetails", { request: request, user_id: user_id, backUrl: backUrl, comments: comments });
+  res.render("reqestDetails", { request: request, user_id: user_id, backUrl: backUrl, comments: comments });
 })
 
 
@@ -286,7 +286,7 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
 
-  res.render('itemDetail', { item: item, backUrl: backUrl, user_id: user_id, comments: comments });
+  res.render('itemDetails', { item: item, backUrl: backUrl, user_id: user_id, comments: comments });
 })
 
 
