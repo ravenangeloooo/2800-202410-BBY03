@@ -127,15 +127,12 @@ app.get("/requestDetails", sessionValidation, async (req, res) => {
   let owner_name = owner.displayname;
 
   request['owner_name'] = owner_name;
-  console.log(request);
 
   // Fetch comments associated with the request
   let comments = await commentCollection.find({ requestId: request_id }).toArray();
-  console.log(comments);
 
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
-  console.log(backUrl);
 
   res.render("templates/reqDetails", { request: request, user_id: user_id, backUrl: backUrl, comments: comments });
 })
@@ -143,7 +140,6 @@ app.get("/requestDetails", sessionValidation, async (req, res) => {
 
 app.post('/submitCommentReq', sessionValidation, async (req, res) => {
   let request_id = req.body.id;
-  console.log("Request ID: " + request_id);
   let timestamp = new Date().toISOString();
   const comment = {
     text: req.body.text,
@@ -152,7 +148,6 @@ app.post('/submitCommentReq', sessionValidation, async (req, res) => {
     requestId: request_id,
     timestamp: timestamp
   };
-  console.log(comment);
   await commentCollection.insertOne(comment);
   res.json(comment);
 });
@@ -174,9 +169,7 @@ app.get("/haveOne/:id", sessionValidation, async (req, res) => {
       }
     });
 
-
   //For notification
-
   //user who has the item
   const userHave = await userCollection.findOne({ _id: new mongodb.ObjectId(req.session.userId) });
 
@@ -286,15 +279,12 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
   let owner_name = owner.displayname;
 
   item['owner_name'] = owner_name;
-  console.log(item);
 
   // Fetch comments associated with the item
   let comments = await commentCollection.find({ itemId: item_id }).toArray();
-  console.log(comments);
 
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
-  console.log(backUrl);
 
   res.render('itemDetail', { item: item, backUrl: backUrl, user_id: user_id, comments: comments });
 })
@@ -302,7 +292,6 @@ app.get('/itemDetail', sessionValidation, async (req, res) => {
 
 app.post('/submitComment', sessionValidation, async (req, res) => {
   let item_id = req.body.id;
-  console.log("Item ID: " + item_id);
   let timestamp = new Date().toISOString();
   const comment = {
     text: req.body.text,
@@ -311,7 +300,6 @@ app.post('/submitComment', sessionValidation, async (req, res) => {
     itemId: item_id,
     timestamp: timestamp
   };
-  console.log(comment);
   await commentCollection.insertOne(comment);
   res.json(comment);
 });
@@ -365,7 +353,6 @@ app.get("/easterEgg", sessionValidation, async (req, res) => {
   // Get the user document from the database
   const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
   const username = user.username;
-  console.log(user.username);
 
   // Get the message from the session
   const message = req.session.message;
@@ -377,7 +364,6 @@ app.get("/easterEgg", sessionValidation, async (req, res) => {
 //End of easter egg page
 app.get("/collections/search", async (req, res) => {
   let searchTerm = req.query.search;
-  console.log("Search term: ", searchTerm);
 
   // Get the user's ID from the session
   const userId = req.session.userId;
@@ -390,9 +376,6 @@ app.get("/collections/search", async (req, res) => {
 
   // Get the user document from the database
   const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userId) });
-
-  console.log('Is user birthday:', isUserBirthday(user.birthdate));
-  console.log(user.birthdate + " " + new Date());
 
   // Check if the search query is "birthday" and if the current date matches the user's birthday
   if (searchTerm === "mybirthday" && isUserBirthday(user.birthdate)) {
@@ -449,8 +432,6 @@ app.post("/resetPassword", async (req, res) => {
   const validationResult = schema.validate({ email, birthdate, newPassword });
 
   if (validationResult.error != null) {
-    console.log(validationResult.error);
-
     var error = validationResult.error.details[0].context.label;
     var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
 
@@ -462,7 +443,6 @@ app.post("/resetPassword", async (req, res) => {
       birthdate: birthdate,
     });
     if (!user) {
-      console.log("User not found");
       return res.render("userNotFound");
     }
 
@@ -472,7 +452,6 @@ app.post("/resetPassword", async (req, res) => {
       { email: email, birthdate: birthdate },
       { $set: { password: hashedPassword } }
     );
-    console.log("Password updated");
 
     return res.render("resetSuccess");
   }
@@ -480,11 +459,7 @@ app.post("/resetPassword", async (req, res) => {
 
 
 app.get("/editItem", sessionValidation, async (req, res) => {
-  console.log("Query parameters: ", req.query);
-
   let item_id = req.query.id;
-  console.log("Item ID: ", item_id);
-
   let item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
 
   // Get the user ID from the session
@@ -604,7 +579,6 @@ app.get("/groups", sessionValidation, async (req, res) => {
     .project({ groupname: 1, _id: 1, image_id: 1, createdBy: 1 })
     .sort({ timestamp: -1 })
     .toArray();
-  console.log(result);
 
   // Field to each group indicating whether the user in session is the creator of the group
   result.forEach((group) => {
@@ -632,7 +606,6 @@ app.get('/profile', sessionValidation, async (req, res) => {
   }
 
   let user = await userCollection.findOne({ _id: new mongodb.ObjectId(user_id) });
-  console.log(user.image_id);
 
   if (!user) {
     return res.status(404).send('User not found');
@@ -756,14 +729,12 @@ app.post("/signupSubmit", async (req, res) => {
 
   if (validationResult.error != null) {
     // Sends an error message saying which field was missing
-    console.log(validationResult.error);
     var error = validationResult.error.details[0].context.label;
     var errormessage = error.charAt(0).toUpperCase() + error.slice(1);
     res.render("submitError", { errormessage: errormessage });
   } else {
     // If the fields are valid, proceed with user creation
     var hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("hashedPassword:" + hashedPassword);
 
     await userCollection.insertOne({
       username: username,
@@ -1179,9 +1150,6 @@ app.post('/groupProfile/:groupId/join', sessionValidation, async (req, res) => {
 //Other User Profile page
 app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
   const userProfileId = req.params.userProfileId; // Get the group ID from the route parameter
-
-  console.log(userProfileId);
-
   const user = await userCollection.findOne({ _id: new mongodb.ObjectId(userProfileId) });
 
   // let user_id = req.session.userId;
@@ -1191,7 +1159,6 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
   }
 
   let ratings = await ratingCollection.find({ userProfileId: new mongodb.ObjectId(userProfileId) }).toArray();
-  console.log(ratings);
 
   // Calculate the average rating to display on the user's profile
   let averageRating = 0;
@@ -1209,7 +1176,6 @@ app.get('/userProfile/:userProfileId', sessionValidation, async (req, res) => {
 
   // Get the referer URL
   const backUrl = req.headers.referer || '/';
-  console.log(backUrl);
 
   // Render the groupProfile page with the group data
   res.render('userProfile', { user: user, ratings: ratings, averageRating: averageRating, backUrl: backUrl, currentUserId: currentUserId });
@@ -1252,8 +1218,6 @@ app.post('/userProfile/:userProfileId/submitRating', sessionValidation, async (r
 
 
 app.get('/editProfile', sessionValidation, async (req, res) => {
-  console.log("Query parameters: ", req.query);
-
   // let user_id = req.query.id;
   let user_id = req.session.userId;
 
