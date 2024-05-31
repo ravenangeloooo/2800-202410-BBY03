@@ -35,9 +35,9 @@
         </div>
 
         <div class="form-floating py-3">
-            <select class="form-select" id="status" required="">
-                <option selected>Available</option> 
-                <option>Unavailable</option>
+            <select class="form-select" id="status" name="status" required="">
+                <option <%= request.status === 'Active' ? 'selected' : '' %>>Active</option> 
+                <option <%= request.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
                
             </select>
             <label for="status">Edit Status</label>

@@ -598,9 +598,10 @@ app.post("/updateRequest", sessionValidation, async (req, res) => {
   let title = req.body.title;
   let description = req.body.description;
   let visibility = req.body.visibility;
+  let status = req.body.status;
 
   // Update the request in the database with the new data
-  let updateData = { title: title, description: description, visibility: visibility };
+  let updateData = { title: title, description: description, visibility: visibility, status: status };
   await requestCollection.updateOne(
     { _id: new mongodb.ObjectId(request_id) },
     { $set: updateData }
