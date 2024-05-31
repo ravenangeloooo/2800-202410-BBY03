@@ -10,10 +10,27 @@ shareLoop
 Our team, BBY-03, is developing shareLoop, a community-driven platform to help reduce waste by facilitating 1) sharing items, and 2) posting requests, hence connecting people and promoting sustainability.
 
 ## 3. Project Technologies Used
-*Front End Tools: HTML, CSS, JavaScript, Bootstrap, jQuery, EJS
-*Back-End Tools: JavaScript, Node.js, Express.js
-*Database Tools: MongoDB, Cloudinary
-*Project Management Tools: Trello, Figma
+
+### Front End Tools
+- HTML
+- CSS
+- JavaScript
+- Bootstrap
+- jQuery
+- EJS
+
+### Back End Tools
+- JavaScript
+- Node.js
+- Express.js
+
+### Database Tools
+- MongoDB
+- Cloudinary
+
+### Project Management Tools
+- Trello
+- Figma
 
 ## 4. List of file content inside folder
 ```
