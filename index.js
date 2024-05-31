@@ -1003,7 +1003,7 @@ app.get("/peopleOffering/:id", async (req, res) => {
   if (users.length != 0) {
     res.render("peopleOffering",{users: users, request: request});}
     else{
-      res.redirect("/myRequests");
+      res.redirect("/collections");
     }
 });
 
