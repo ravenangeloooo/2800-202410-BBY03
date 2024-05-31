@@ -169,6 +169,28 @@ app.post('/submitCommentReq', sessionValidation, async (req, res) => {
   };
   console.log(comment);
   await commentCollection.insertOne(comment);
+  
+  const request = await requestCollection.findOne({ _id: new mongodb.ObjectId(request_id) });
+  const requestOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(request.user_id) });
+
+  let notificationIndex = requestOwner.notifications.findIndex(notification => 
+    notification.requestId === request_id && notification.userId === req.session.userId);
+
+  if (notificationIndex !== -1) {
+    requestOwner.notifications[notificationIndex].date = new Date();
+  } else {
+    let notification = {
+      userId: req.session.userId,
+      requestId: request_id,
+      message: `${req.session.displayname} commented on your post ${request.title}.`,
+      date: new Date()
+    };
+    requestOwner.notifications.push(notification);
+  }
+
+  await userCollection.updateOne({ _id: requestOwner._id }, 
+    { $set: { notifications: requestOwner.notifications } });
+
   res.json(comment);
 });
 
@@ -317,14 +339,35 @@ app.post('/submitComment', sessionValidation, async (req, res) => {
   console.log("Item ID: " + item_id);
   let timestamp = new Date().toISOString();
   const comment = {
-      text: req.body.text,
-      displayName: req.session.displayname, // Replace with actual user ID
-      userId: req.session.userId,
-      itemId: item_id,
-      timestamp: timestamp
+    text: req.body.text,
+    displayName: req.session.displayname, // Replace with actual user ID
+    userId: req.session.userId,
+    itemId: item_id,
+    timestamp: timestamp
   };
   console.log(comment);
   await commentCollection.insertOne(comment);
+
+  const item = await itemCollection.findOne({ _id: new mongodb.ObjectId(item_id) });
+  const itemOwner = await userCollection.findOne({ _id: new mongodb.ObjectId(item.user_id) });
+
+  let notificationIndex = itemOwner.notifications.findIndex(notification =>
+    notification.itemId === item_id && notification.userId === req.session.userId);
+
+  if (notificationIndex !== -1) {
+    itemOwner.notifications[notificationIndex].date = new Date();
+  } else {
+    let notification = {
+      userId: req.session.userId,
+      itemId: item_id,
+      message: `${req.session.displayname} commented on your post ${item.title}.`,
+      date: new Date()
+    };
+    itemOwner.notifications.push(notification);
+  }
+
+  await userCollection.updateOne({ _id: itemOwner._id },
+    { $set: { notifications: itemOwner.notifications } });
   res.json(comment);
 });
 
